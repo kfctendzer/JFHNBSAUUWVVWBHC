@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shiro's LED Portal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+body{margin:0;padding:0;font-family:'Orbitron',sans-serif;overflow:hidden;background:#000;color:#fff;}
+.video-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;overflow:hidden;}
+.video-bg iframe{width:100%;height:100%;border:0;}
+.intro{text-align:center;padding-top:120px;animation:fadeOut 5s forwards;animation-delay:5s;position:relative;z-index:3;}
+.wave-text{font-size:4em;color:#f00;text-shadow:0 0 25px #f00;animation:wave 2s infinite;}
+.made-by{position:absolute;top:20px;left:20px;font-size:1.2em;color:#f00;z-index:5;}
+.fact{position:absolute;top:60px;left:20px;font-size:1em;color:#fff;z-index:5;opacity:0;transition:opacity 1s ease;}
+.welcome-back{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;font-size:2rem;color:#fff;background-color:#000;opacity:0;visibility:hidden;transition:opacity 1s ease,visibility 1s ease;z-index:20;}
+@keyframes wave{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
+.snowflakes{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.snowflake{position:absolute;top:-10px;font-size:1.5em;color:#fff;animation:fall linear infinite;}
+@keyframes fall{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(100vh);opacity:0;}}
+.discord-btn{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:2px solid #f00;border-radius:12px;padding:12px 20px;color:#f00;font-weight:bold;cursor:pointer;z-index:10;transition:all 0.4s ease;text-decoration:none;}
+.discord-btn:hover{box-shadow:0 0 35px #f00;animation:ledglow 2s infinite alternate;}
+.discord-hover{position:absolute;background:#000;border:2px solid #f00;border-radius:10px;padding:16px;color:#f00;display:none;pointer-events:none;white-space:nowrap;font-family:'Orbitron',sans-serif;box-shadow:0 0 25px #f00;z-index:15;transition:all 0.3s ease;}
+@keyframes ledglow{0%{box-shadow:0 0 15px #f00;}100%{box-shadow:0 0 40px #f00;}}
+</style>
+</head>
+<body>
+
+<!-- Video Background Embed -->
+<div class="video-bg">
+<iframe id="ytVideo" src="https://www.youtube-nocookie.com/embed/AaF7rXatU9E?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=AaF7rXatU9E&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
+
+<!-- Intro -->
+<div class="intro">
+<h1 class="wave-text">Shiro</h1>
+</div>
+
+<!-- Made by Shiro -->
+<div class="made-by">Made by SHIRO</div>
+
+<!-- Random Facts -->
+<div class="fact" id="fact"></div>
+
+<!-- Welcome Back Overlay -->
+<div class="welcome-back" id="welcomeBack">Welcome Back!</div>
+
+<!-- Discord Button -->
+<a class="discord-btn" href="https://discord.gg/ybyBNDg2ht" target="_blank" id="discordBtn">Discord</a>
+<div class="discord-hover" id="discordCard">
+<strong>Shiro's Secret Community</strong><br>
+We are a small, notorious, secret group. Join us for impossible things, gaming, and fun.
+</div>
+
+<!-- Snow Effect -->
+<div class="snowflakes" id="snowflakes"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+// Snowfall
+const snowflakesContainer = document.getElementById('snowflakes');
+const snowflakeSymbols = ['❄','❅','❆'];
+const count = 150;
+for(let i=0;i<count;i++){
+  const s=document.createElement('div');
+  s.className='snowflake';
+  s.textContent=snowflakeSymbols[Math.floor(Math.random()*snowflakeSymbols.length)];
+  s.style.left=Math.random()*100+'vw';
+  s.style.animationDuration=(3+Math.random()*5)+'s';
+  s.style.fontSize=(1+Math.random()*2)+'em';
+  snowflakesContainer.appendChild(s);
+}
+
+// Discord hover
+const discordBtn=document.getElementById('discordBtn');
+const discordCard=document.getElementById('discordCard');
+discordBtn.addEventListener('mouseenter',()=>{discordCard.style.display='block';});
+discordBtn.addEventListener('mousemove',(e)=>{
+  let hoverX=e.clientX+20; let hoverY=e.clientY;
+  if(hoverX+discordCard.offsetWidth>window.innerWidth){hoverX=e.clientX-discordCard.offsetWidth-20;}
+  if(hoverY+discordCard.offsetHeight>window.innerHeight){hoverY=e.clientY-discordCard.offsetHeight-20;}
+  discordCard.style.left=hoverX+'px'; discordCard.style.top=hoverY+'px';
+});
+discordBtn.addEventListener('mouseleave',()=>{discordCard.style.display='none';});
+
+// Random Facts
+const facts=["We stay secret.","We are a notorious group.","We do the impossible.","Shiro created this.","Gaming and fun included.","Small but powerful community."];
+const factEl=document.getElementById('fact');
+let factIndex=0;
+function showFact(){
+  factEl.style.opacity=0;
+  setTimeout(()=>{
+    factEl.textContent=facts[factIndex];
+    factEl.style.opacity=1;
+    factIndex=(factIndex+1)%facts.length;
+  },500);
+}
+showFact();
+setInterval(showFact,5000);
+
+// Welcome Back
+const welcomeBackEl=document.getElementById('welcomeBack');
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){welcomeBackEl.style.opacity='0';welcomeBackEl.style.visibility='hidden';}
+  else{
+    welcomeBackEl.style.opacity='1';
+    welcomeBackEl.style.visibility='visible';
+    setTimeout(()=>{welcomeBackEl.style.opacity='0';welcomeBackEl.style.visibility='hidden';},3000);
+  }
+});
+
+// YouTube Player API
+let player;
+function onYouTubeIframeAPIReady(){
+  player=new YT.Player('ytVideo',{events:{onReady:onPlayerReady}});
+}
+function onPlayerReady(event){
+  document.body.addEventListener('click',()=>{player.unMute(); player.playVideo();}, {once:true});
+}
+</script>
+</body>
+</html>
