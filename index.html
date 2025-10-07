@@ -44,7 +44,7 @@ padding:8px 16px;cursor:pointer;transition:0.4s;}
 <body>
 <!-- ⚡ Shiro’s Protected Build -->
 <div class="video-bg">
-<iframe id="ytVideo" src="https://www.youtube-nocookie.com/embed/7pnzR6kD2Q4?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=7pnzR6kD2Q4&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe id="ytVideo" src="https://www.youtube-nocookie.com/embed/54Td5wxNDpo?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=54Td5wxNDpo&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
 
 <div class="intro"><h1 class="wave-text">Shiro</h1></div>
@@ -92,14 +92,16 @@ else{welcome.style.opacity='1';welcome.style.visibility='visible';setTimeout(()=
 
 let player;
 window.onYouTubeIframeAPIReady=()=>{player=new YT.Player('ytVideo',{events:{onReady:(e)=>{
+  // Autoplay muted (YouTube policy)
   player.mute();player.playVideo();
+  // Unmute on first user interaction
   document.body.addEventListener('click',()=>{
     player.unMute();player.playVideo();
     g('ytVideo').style.pointerEvents='none';
   },{once:true});
 }}});}
 
-// Forum Chat
+// Forum Chat Logic
 forumBtn.onclick=()=>{forumPage.style.display='flex';}
 closeForum.onclick=()=>{forumPage.style.display='none';}
 chatInput.addEventListener('keypress',e=>{
