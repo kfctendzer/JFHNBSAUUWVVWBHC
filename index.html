@@ -44,7 +44,7 @@ padding:8px 16px;cursor:pointer;transition:0.4s;}
 <body>
 <!-- ⚡ Shiro’s Protected Build -->
 <div class="video-bg">
-<iframe id="ytVideo" src="https://www.youtube-nocookie.com/embed/54Td5wxNDpo?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=54Td5wxNDpo&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe id="ytVideo" src="https://www.youtube-nocookie.com/embed/jKpXBEL9xhs?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=jKpXBEL9xhs&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
 
 <div class="intro"><h1 class="wave-text">Shiro</h1></div>
@@ -70,8 +70,8 @@ padding:8px 16px;cursor:pointer;transition:0.4s;}
 <script>
 /* 🔒 Protected JS Logic by Shiro */
 (()=>{const g=id=>document.getElementById(id);
-const discord=g('discordBtn'),card=g('discordCard'),fact=g('fact'),welcome=g('welcomeBack');
-const forumBtn=g('forumBtn'),forumCard=g('forumCard'),forumPage=g('forumPage');
+const discord=g('discordBtn'),card=g('discordHover')||g('discordCard'),fact=g('fact'),welcome=g('welcomeBack');
+const forumBtn=g('forumBtn'),forumCard=g('forumHover')||g('forumCard'),forumPage=g('forumPage');
 const chatBox=g('chatBox'),chatInput=g('chatInput'),closeForum=g('closeForum');
 
 let facts=["We stay secret.","We are a notorious group.","We do the impossible.","Shiro created this.","Gaming and fun included.","Small but powerful community."];
@@ -92,16 +92,14 @@ else{welcome.style.opacity='1';welcome.style.visibility='visible';setTimeout(()=
 
 let player;
 window.onYouTubeIframeAPIReady=()=>{player=new YT.Player('ytVideo',{events:{onReady:(e)=>{
-  // Autoplay muted (YouTube policy)
   player.mute();player.playVideo();
-  // Unmute on first user interaction
   document.body.addEventListener('click',()=>{
     player.unMute();player.playVideo();
     g('ytVideo').style.pointerEvents='none';
   },{once:true});
 }}});}
 
-// Forum Chat Logic
+// Forum Chat
 forumBtn.onclick=()=>{forumPage.style.display='flex';}
 closeForum.onclick=()=>{forumPage.style.display='none';}
 chatInput.addEventListener('keypress',e=>{
