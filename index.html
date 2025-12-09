@@ -3,114 +3,171 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shiro's LED Portal</title>
+<title>Ashihiro</title>
 <style>
-/* ⚡ Protected by Shiro — All Rights Reserved */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-body{margin:0;padding:0;font-family:'Orbitron',sans-serif;overflow:hidden;background:#000;color:#fff;}
-.video-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;overflow:hidden;}
-.video-bg iframe{width:100%;height:100%;border:0;pointer-events:none;}
-.intro{text-align:center;padding-top:120px;animation:fadeOut 5s forwards;animation-delay:5s;position:relative;z-index:3;}
-.wave-text{font-size:4em;color:#f00;text-shadow:0 0 25px #f00;animation:wave 2s infinite;}
-.made-by{position:absolute;top:20px;left:20px;font-size:1.2em;color:#f00;z-index:5;}
-.fact{position:absolute;top:60px;left:20px;font-size:1em;color:#fff;z-index:5;opacity:0;transition:opacity 1s ease;}
-.welcome-back{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;font-size:2rem;
-color:#fff;background-color:#000;opacity:0;visibility:hidden;transition:opacity 1s ease,visibility 1s ease;z-index:20;}
-.discord-btn,.forum-btn{position:fixed;background:#000;border:2px solid #f00;border-radius:12px;padding:12px 20px;color:#f00;
-font-weight:bold;cursor:pointer;z-index:10;transition:all 0.4s ease;text-decoration:none;}
-.discord-btn:hover,.forum-btn:hover{box-shadow:0 0 35px #f00;animation:ledglow 2s infinite alternate;}
-.discord-btn{top:50%;left:50%;transform:translate(-50%,-50%);}
-.forum-btn{top:20px;right:20px;}
-.discord-hover,.forum-hover{position:absolute;background:#000;border:2px solid #f00;border-radius:10px;padding:16px;color:#f00;
-display:none;pointer-events:none;white-space:nowrap;font-family:'Orbitron',sans-serif;box-shadow:0 0 25px #f00;z-index:15;transition:all 0.3s ease;}
-@keyframes wave{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
-@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
-@keyframes ledglow{0%{box-shadow:0 0 15px #f00;}100%{box-shadow:0 0 40px #f00;}}
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 
-/* Forum Chatroom */
-#forumPage{display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(20,0,0,0.7);
-backdrop-filter:blur(6px);z-index:30;flex-direction:column;align-items:center;justify-content:center;}
-#chatBox{width:70%;height:60%;overflow-y:auto;border:2px solid #f00;border-radius:12px;padding:10px;
-background:rgba(0,0,0,0.6);box-shadow:0 0 30px #f00;scroll-behavior:smooth;}
-#chatBox p{margin:6px 0;padding:6px 10px;background:rgba(255,0,0,0.1);border-left:2px solid #f00;border-radius:8px;}
-#chatInput{margin-top:15px;width:70%;padding:12px;border:2px solid #f00;border-radius:12px;background:#000;color:#fff;
-font-family:'Orbitron',sans-serif;outline:none;transition:0.3s;}
-#chatInput:focus{box-shadow:0 0 20px #f00;}
-.closeForum{position:absolute;top:20px;right:20px;border:2px solid #f00;background:#000;color:#f00;border-radius:10px;
-padding:8px 16px;cursor:pointer;transition:0.4s;}
-.closeForum:hover{box-shadow:0 0 25px #f00;}
+:root {
+  --primary:#00ffff;
+  --accent:#ff00ff;
+}
+
+/* Reset */
+body {
+  margin:0; padding:0;
+  background:#000; color:#fff;
+  font-family:'Audiowide',sans-serif;
+  overflow:hidden;
+}
+
+/* Background video */
+.video-bg {
+  position:fixed; inset:0;
+  z-index:-2; overflow:hidden;
+}
+.video-bg video {
+  width:100%; height:100%;
+  object-fit:cover;
+  border:0;
+  display:block;
+  opacity:0.85;
+}
+
+/* Intro overlay */
+.intro {
+  position:fixed; inset:0; z-index:3;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,0.6);
+  animation:introFadeOut 6s forwards;
+  animation-delay:6s;
+}
+.intro-hero {
+  width:80%; height:60%;
+  border:3px solid var(--primary);
+  border-radius:18px;
+  box-shadow:0 0 25px var(--primary),0 0 45px var(--accent);
+  background:url('assets/intro.gif') center/cover no-repeat;
+  opacity:0.6;
+  margin-bottom:20px;
+}
+
+/* Title / Logo */
+.title {
+  font-size:clamp(3rem,8vw,5rem);
+  color:#fff;
+  display:inline-flex; gap:0.05em;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 15px var(--primary),
+    0 0 30px var(--accent),
+    2px 2px 4px rgba(0,0,0,0.8);
+  position:relative;
+  animation:logoMove 2s ease-in-out forwards;
+  animation-delay:6s;
+}
+.title span {
+  display:inline-block;
+  animation:waveY 2.5s ease-in-out infinite;
+}
+.title span:nth-child(1){animation-delay:0s;}
+.title span:nth-child(2){animation-delay:0.1s;}
+.title span:nth-child(3){animation-delay:0.2s;}
+.title span:nth-child(4){animation-delay:0.3s;}
+.title span:nth-child(5){animation-delay:0.4s;}
+.title span:nth-child(6){animation-delay:0.5s;}
+.title span:nth-child(7){animation-delay:0.6s;}
+.title span:nth-child(8){animation-delay:0.7s;}
+
+/* Discord button bottom-right */
+.discord-btn {
+  position:fixed;
+  bottom:20px; right:20px;
+  background:rgba(0,0,0,0.7);
+  border:2px solid var(--primary);
+  border-radius:50%;
+  width:50px; height:50px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--primary);
+  font-size:0.9rem;
+  text-decoration:none;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  z-index:5;
+  box-shadow:0 0 15px var(--primary);
+}
+.discord-btn:hover {
+  box-shadow:0 0 25px var(--primary),0 0 40px var(--accent);
+  transform:scale(1.1);
+}
+
+/* Animations */
+@keyframes waveY {
+  0%,100%{transform:translateY(0);}
+  25%{transform:translateY(-10px);}
+  75%{transform:translateY(10px);}
+}
+@keyframes introFadeOut {
+  to {opacity:0; visibility:hidden;}
+}
+@keyframes logoMove {
+  from {transform:translate(0,0);}
+  to {
+    position:fixed;
+    top:20px; right:20px;
+    font-size:2rem;
+    content:"@Ashihiro";
+  }
+}
 </style>
 </head>
 <body>
-<!-- ⚡ Shiro’s Protected Build -->
+<!-- Background video -->
 <div class="video-bg">
-<iframe id="ytVideo" src="https://www.youtube-nocookie.com/embed/jKpXBEL9xhs?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=jKpXBEL9xhs&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  <video id="bgVideo" autoplay loop playsinline>
+    <source src="assets/background.webm" type="video/webm">
+    Your browser does not support WebM video.
+  </video>
 </div>
 
-<div class="intro"><h1 class="wave-text">Shiro</h1></div>
-<div class="made-by">Made by SHIRO</div>
-<div class="fact" id="fact"></div>
-<div class="welcome-back" id="welcomeBack">Welcome Back!</div>
+<!-- Discord button -->
+<a class="discord-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" id="discordBtn">D</a>
 
-<a class="discord-btn" href="https://discord.gg/ybyBNDg2ht" target="_blank" id="discordBtn">Discord</a>
-<div class="discord-hover" id="discordCard"><strong>Shiro's Secret Community</strong><br>We are a small, notorious, secret group. Join us for impossible things, gaming, and fun.</div>
-
-<button class="forum-btn" id="forumBtn">Forum</button>
-<div class="forum-hover" id="forumCard"><strong>Shiro's Anonymous Forum</strong><br>Chat with others, no login required.</div>
-
-<!-- Anonymous Forum -->
-<div id="forumPage">
-<button class="closeForum" id="closeForum">X</button>
-<h2 style="color:#f00;text-align:center;">Anonymous Forum</h2>
-<div id="chatBox"></div>
-<input id="chatInput" type="text" placeholder="Type a message and press Enter...">
+<!-- Intro overlay -->
+<div class="intro">
+  <div class="intro-hero"></div>
+  <div class="title" id="title"></div>
 </div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-/* 🔒 Protected JS Logic by Shiro */
-(()=>{const g=id=>document.getElementById(id);
-const discord=g('discordBtn'),card=g('discordHover')||g('discordCard'),fact=g('fact'),welcome=g('welcomeBack');
-const forumBtn=g('forumBtn'),forumCard=g('forumHover')||g('forumCard'),forumPage=g('forumPage');
-const chatBox=g('chatBox'),chatInput=g('chatInput'),closeForum=g('closeForum');
+function buildTitle(text){
+  const el=document.getElementById('title');
+  el.innerHTML='';
+  [...text].forEach((ch)=>{
+    const span=document.createElement('span');
+    span.textContent=ch;
+    el.appendChild(span);
+  });
+}
+buildTitle('Ashihiro');
 
-let facts=["We stay secret.","We are a notorious group.","We do the impossible.","Shiro created this.","Gaming and fun included.","Small but powerful community."];
-let i=0;
-const nextFact=()=>{fact.style.opacity=0;setTimeout(()=>{fact.textContent=facts[i];fact.style.opacity=1;i=(i+1)%facts.length;},500);}
-nextFact();setInterval(nextFact,5000);
+// After intro fade, change logo to @Ashihiro smaller in corner
+setTimeout(()=>{
+  const el=document.getElementById('title');
+  el.style.fontSize='2rem';
+  el.textContent='@Ashihiro';
+  el.style.position='fixed';
+  el.style.top='20px';
+  el.style.right='20px';
+  el.style.textShadow='0 0 5px #fff,0 0 15px var(--primary),0 0 30px var(--accent),2px 2px 4px rgba(0,0,0,0.8)';
+},8000);
 
-const hover=(b,c)=>{b.onmouseenter=()=>c.style.display='block';
-b.onmousemove=e=>{let x=e.clientX+20,y=e.clientY;
-if(x+c.offsetWidth>innerWidth)x=e.clientX-c.offsetWidth-20;
-if(y+c.offsetHeight>innerHeight)y=e.clientY-c.offsetHeight-20;
-c.style.left=x+'px';c.style.top=y+'px';};
-b.onmouseleave=()=>c.style.display='none';};
-hover(discord,card);hover(forumBtn,forumCard);
-
-document.addEventListener('visibilitychange',()=>{if(document.hidden){welcome.style.opacity='0';welcome.style.visibility='hidden';}
-else{welcome.style.opacity='1';welcome.style.visibility='visible';setTimeout(()=>{welcome.style.opacity='0';welcome.style.visibility='hidden';},3000);}});
-
-let player;
-window.onYouTubeIframeAPIReady=()=>{player=new YT.Player('ytVideo',{events:{onReady:(e)=>{
-  player.mute();player.playVideo();
-  document.body.addEventListener('click',()=>{
-    player.unMute();player.playVideo();
-    g('ytVideo').style.pointerEvents='none';
-  },{once:true});
-}}});}
-
-// Forum Chat
-forumBtn.onclick=()=>{forumPage.style.display='flex';}
-closeForum.onclick=()=>{forumPage.style.display='none';}
-chatInput.addEventListener('keypress',e=>{
- if(e.key==='Enter'&&chatInput.value.trim()!==''){
-  const msg=document.createElement('p');
-  msg.textContent="Anon: "+chatInput.value;
-  chatBox.appendChild(msg);
-  chatBox.scrollTop=chatBox.scrollHeight;
-  chatInput.value='';
- }});
-})();
+// Enable sound after user gesture (browser policy)
+const bgVideo=document.getElementById('bgVideo');
+document.body.addEventListener('click',()=>{
+  bgVideo.muted=false;
+  bgVideo.play();
+},{once:true});
 </script>
 </body>
 </html>
