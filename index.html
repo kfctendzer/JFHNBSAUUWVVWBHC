@@ -7,10 +7,10 @@
 
 <!-- Open Graph / Link preview -->
 <meta property="og:title" content="Ashihiro Interactive Social Site">
-<meta property="og:description" content="An immersive interactive social site Where we make remade hacking programs etc come join — connect, share programs, sources, and socials. Owner: 9f2n">
-<meta property="og:type" content="website">
+<meta property="og:description" content="We remake Hacking programs like luna grabber etc, downloads, sources, and socials. Owner: 9f2n">
+<meta property="og:type" content="Ashihiros Website">
 <meta property="og:url" content="https://shiroshome.vercel.app/">
-<meta property="og:image" content="https://yourwebsite.com/assets/banner.gif">
+<meta property="og:image" content="https://shiroshome.vercel.app/assets/banner.gif">
 <meta property="og:image:type" content="image/gif">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -18,58 +18,132 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ashihiro Interactive Social Site">
-<meta name="twitter:description" content="An immersive interactive social site — connect, share programs, sources, and socials. Owner: 9f2n">
-<meta name="twitter:image" content="https://yourwebsite.com/assets/banner.gif">
+<meta name="twitter:description" content="An immersive interactive social site — programs, downloads, sources, and socials. Owner: 9f2n">
+<meta name="twitter:image" content="https://shiroshome.vercel.app/assets/banner.gif">
 
 <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+
 <style>
 :root{
-  --bg:#0a0a0f; --primary:#b100ff; --primarySoft:#d26aff; --accent:#00ffff; --text:#eae7ff;
+  --bg:#0a0a0f; --panel:#0f0f18;
+  --primary:#b100ff; --primarySoft:#d26aff; --accent:#00ffff;
+  --text:#eae7ff; --muted:#cfc8ff;
 }
+
+/* Base reset */
+*{box-sizing:border-box}
+html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',sans-serif;overflow:hidden}
 
 /* Background video */
-.video-bg{position:fixed;inset:0;z-index:-2}
+.video-bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
 .video-bg video{width:100%;height:100%;object-fit:cover;opacity:.9;filter:saturate(1.1) contrast(1.05)}
 
-/* Intro overlay */
-.intro{position:fixed;inset:0;z-index:10;display:grid;place-items:center;
-backdrop-filter:blur(16px);background:radial-gradient(circle,rgba(177,0,255,.22),rgba(15,15,24,.75));
-animation:introHold 5s ease-in forwards,introFade 1.2s ease-in-out 5s forwards}
-.title{font-size:clamp(2.8rem,7vw,5rem);color:#fff;text-shadow:0 0 18px var(--primary),0 0 42px var(--primarySoft)}
-.title span{animation:wavy 2.8s ease-in-out infinite}
-.flash{position:absolute;inset:0;display:grid;place-items:center;opacity:0;
-animation:flashShow 1s ease-in 5s forwards,flashHide .9s ease-out 6s forwards}
-.flash-text{font-size:clamp(2.6rem,6vw,5rem);color:#fff;text-shadow:0 0 22px var(--primary),0 0 48px var(--primarySoft)}
-.pin-logo{position:fixed;top:22px;right:22px;font-size:1.6rem;color:#fff;opacity:0;
-animation:pinReveal .9s ease 6.1s forwards;text-shadow:0 0 18px var(--primary),0 0 36px var(--primarySoft)}
+/* Intro: blur veil + wavy title + flash */
+.intro{
+  position:fixed;inset:0;z-index:10;display:grid;place-items:center;
+  backdrop-filter:blur(16px);
+  background:radial-gradient(circle at center, rgba(177,0,255,0.22), rgba(15,15,24,0.75));
+  animation:introHold 5s ease-in forwards, introFade 1.2s ease-in-out 5s forwards;
+  pointer-events:none; /* never block clicks */
+}
+.title{
+  display:inline-flex;gap:.06em;font-size:clamp(3rem,7vw,5.4rem);color:#fff;
+  text-shadow:0 0 6px #fff,0 0 18px var(--primary),0 0 42px var(--primarySoft);
+}
+.title span{display:inline-block;animation:wavy 2.8s ease-in-out infinite}
+.title span:nth-child(odd){animation-delay:.1s}
+.title span:nth-child(even){animation-delay:.3s}
+.flash{
+  position:absolute;inset:0;display:grid;place-items:center;opacity:0;pointer-events:none;
+  animation:flashShow 1s ease-in 5s forwards, flashHide .9s ease-out 6s forwards;
+}
+.flash .flash-text{
+  font-size:clamp(2.6rem,6vw,4.6rem);color:#fff;
+  text-shadow:0 0 8px #fff,0 0 22px var(--primary),0 0 48px var(--primarySoft);
+}
 
-/* Sound gate */
-.sound-gate{position:fixed;inset:0;z-index:12;display:grid;place-items:center;background:rgba(0,0,0,.6)}
-.sound-btn{padding:12px 18px;border-radius:999px;color:#fff;cursor:pointer;
-background:linear-gradient(180deg,rgba(177,0,255,.28),rgba(177,0,255,.14));border:1px solid rgba(177,0,255,.6)}
+/* Pinned logo */
+.pin-logo{
+  position:fixed;top:16px;right:16px;z-index:7;font-size:1.5rem;color:#fff;
+  text-shadow:0 0 6px #fff,0 0 18px var(--primary),0 0 36px var(--primarySoft);
+  opacity:0;transform:translateY(-8px);animation:pinReveal .9s ease 6.1s forwards;
+}
 
-/* Menu */
-.menu{position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:7;display:flex;gap:10px;flex-wrap:wrap}
-.tab-btn{padding:8px 14px;border-radius:999px;background:rgba(177,0,255,.18);border:1px solid rgba(177,0,255,.55);color:#fff;cursor:pointer;font-size:.9rem}
-.tab-btn.active{background:rgba(177,0,255,.36);box-shadow:0 0 20px var(--primary)}
+/* Sound gate (always clickable, topmost) */
+.sound-gate{
+  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(8px);
+}
+.sound-btn{
+  padding:12px 18px;border-radius:999px;color:#fff;cursor:pointer;
+  background:linear-gradient(180deg, rgba(177,0,255,0.28), rgba(177,0,255,0.14));
+  border:1px solid rgba(177,0,255,0.6);
+  box-shadow:0 0 22px rgba(177,0,255,0.55);
+  font-size:1rem;
+}
+.sound-btn:focus{outline:none;box-shadow:0 0 0 3px rgba(177,0,255,.35)}
 
-/* Panels */
-.tabs{position:fixed;top:90px;left:50%;transform:translateX(-50%);width:80%;height:65%;border-radius:16px;
-background:rgba(15,15,24,.75);backdrop-filter:blur(10px);overflow:auto;box-shadow:0 12px 32px rgba(0,0,0,.45)}
-.tab-content{display:none;padding:20px}
+/* Centered, smaller menu */
+.menu{
+  position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:7;
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.tab-btn{
+  padding:8px 14px;border-radius:999px;font-size:.9rem;color:#fff;cursor:pointer;
+  background:linear-gradient(180deg, rgba(177,0,255,0.18), rgba(177,0,255,0.08));
+  border:1px solid rgba(177,0,255,0.55);
+  transition:transform .18s ease, box-shadow .25s ease, background .25s ease;
+}
+.tab-btn:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(177,0,255,0.55)}
+.tab-btn.active{
+  background:linear-gradient(180deg, rgba(177,0,255,0.36), rgba(177,0,255,0.22));
+  box-shadow:0 0 22px rgba(177,0,255,0.7);
+}
+
+/* Panels: centered and smaller */
+.tabs{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%);
+  width:min(900px,82vw);height:min(62vh,620px);z-index:5;
+  border:1px solid rgba(177,0,255,0.4);border-radius:16px;
+  background:linear-gradient(180deg, rgba(15,15,24,0.78), rgba(12,12,20,0.68));
+  backdrop-filter:blur(10px) saturate(110%);
+  box-shadow:0 12px 32px rgba(0,0,0,0.45), 0 0 22px rgba(177,0,255,0.25);
+  overflow:auto;
+}
+.tab-content{display:none;padding:18px;animation:panelFade .45s ease-out forwards}
 .tab-content.active{display:block}
-.section-title{font-size:1.2rem;margin:4px 0 14px}
+.section-title{font-size:1.1rem;margin:2px 0 12px}
 
-/* Cards */
+/* Cards/grids */
 .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
-.card{padding:12px;border-radius:12px;background:rgba(177,0,255,.12);border:1px solid rgba(177,0,255,.35)}
-.card:hover{transform:translateY(-2px);box-shadow:0 0 16px rgba(177,0,255,.5)}
+.card{
+  padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(177,0,255,0.12), rgba(177,0,255,0.06));
+  border:1px solid rgba(177,0,255,0.35);
+  box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  transition:transform .18s ease, box-shadow .25s ease, background .25s ease;
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(177,0,255,0.5)}
+.card h3{margin:0 0 8px;font-size:1.02rem}
+.card p{margin:0 0 10px;opacity:.9}
+.card .meta{font-size:.88rem;opacity:.82}
 
-/* Socials */
-.socials{position:fixed;bottom:22px;right:22px;display:flex;gap:12px}
-.icon-btn{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(177,0,255,.32);border:1px solid rgba(177,0,255,.55)}
+/* Socials with logos */
+.socials{position:fixed;bottom:16px;right:16px;z-index:7;display:flex;gap:10px}
+.icon-btn{
+  width:48px;height:48px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle, rgba(177,0,255,0.32), rgba(15,15,24,0.7));
+  border:1px solid rgba(177,0,255,0.55);box-shadow:0 0 18px rgba(177,0,255,0.55);
+}
 .icon svg{width:24px;height:24px;fill:#fff}
+
+/* Tooltip */
+.tooltip{
+  position:fixed;z-index:20;padding:6px 10px;border-radius:10px;
+  background:rgba(20,10,40,.9);color:#fff;font-size:.85rem;border:1px solid rgba(177,0,255,.45);
+  box-shadow:0 0 14px rgba(177,0,255,.55);pointer-events:none;opacity:0;transition:opacity .15s ease;
+}
 
 /* Animations */
 @keyframes wavy{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
@@ -77,43 +151,250 @@ background:rgba(15,15,24,.75);backdrop-filter:blur(10px);overflow:auto;box-shado
 @keyframes introFade{0%{opacity:1}100%{opacity:0;visibility:hidden}}
 @keyframes flashShow{0%{opacity:0}100%{opacity:1}}
 @keyframes flashHide{0%{opacity:1}100%{opacity:0}}
-@keyframes pinReveal{0%{opacity:0}100%{opacity:1}}
+@keyframes pinReveal{0%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes panelFade{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 
+<!-- Background video (muted initially for autoplay) -->
 <div class="video-bg">
   <video id="bgVideo" autoplay loop playsinline muted>
     <source src="assets/background.webm" type="video/webm">
     <source src="assets/background.mp4" type="video/mp4">
+    Your browser does not support the video tag.
   </video>
 </div>
 
+<!-- Intro -->
 <div class="intro" id="intro">
   <div class="title" id="title"></div>
   <div class="flash"><div class="flash-text">@Ashihiro</div></div>
 </div>
 
-<div class="sound-gate" id="soundGate">
-  <button class="sound-btn" id="enableSound">Enter with sound</button>
+<!-- Sound gate (fixed) -->
+<div class="sound-gate" id="soundGate" aria-modal="true" role="dialog">
+  <button class="sound-btn" id="enableSound" type="button" aria-label="Enable sound">Enter with sound</button>
 </div>
 
+<!-- Pinned logo -->
 <div class="pin-logo" id="pinLogo">@Ashihiro</div>
 
-<nav class="menu">
-  <button class="tab-btn active" data-tab="home">Home</button>
-  <button class="tab-btn" data-tab="about">About</button>
-  <button class="tab-btn" data-tab="owners">Owners</button>
-  <button class="tab-btn" data-tab="programs">Programs</button>
-  <button class="tab-btn" data-tab="downloads">Downloads</button>
-  <button class="tab-btn" data-tab="sources">Sources</button>
-  <button class="tab-btn" data-tab="socials">Socials</button>
-  <button class="tab-btn" data-tab="contact">Contact</button>
-  <button class="tab-btn" data-tab="audio">Audio</button>
+<!-- Centered, smaller menu -->
+<nav class="menu" id="menu">
+  <button class="tab-btn active" data-tab="home" data-tip="Main page">Home</button>
+  <button class="tab-btn" data-tab="about" data-tip="Who we are">About me</button>
+  <button class="tab-btn" data-tab="owners" data-tip="Team leadership">Owners</button>
+  <button class="tab-btn" data-tab="programs" data-tip="Our tools">Programs</button>
+  <button class="tab-btn" data-tab="downloads" data-tip="Direct downloads">Downloads</button>
+  <button class="tab-btn" data-tab="sources" data-tip="References and repos">Sources</button>
+  <button class="tab-btn" data-tab="socials" data-tip="Social profiles">Socials</button>
+  <button class="tab-btn" data-tab="contact" data-tip="Reach out">Contact</button>
+  <button class="tab-btn" data-tab="audio" data-tip="Bass & treble EQ">Audio</button>
 </nav>
 
+<!-- Panels -->
 <section class="tabs">
-  <div id="home" class="tab-content active"><h2 class="section-title">Home</h2><p>Welcome to the Ashihiro portal — neon, immersive, flawless vibe.</p></div>
-  <div id="about" class="tab-content"><h2 class="section-title">About</h2><p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot.</p></div>
- 
+  <div id="home" class="tab-content active">
+    <h2 class="section-title">Home</h2>
+    <p>Welcome to the Ashihiro portal — neon, immersive, and tuned for a flawless vibe.</p>
+  </div>
 
+  <div id="about" class="tab-content">
+    <h2 class="section-title">About me</h2>
+    <p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot.</p>
+  </div>
+
+  <div id="owners" class="tab-content">
+    <h2 class="section-title">Owners</h2>
+    <ul>
+      <li>Shiro</li>
+      <li>Ashihiro</li>
+      <li>St4r</li>
+      <li>Starfire</li>
+      <li>Minix</li>
+      <li><strong>9f2n (Site Owner)</strong></li>
+    </ul>
+  </div>
+
+  <div id="programs" class="tab-content">
+    <h2 class="section-title">Programs</h2>
+    <div class="grid" id="programsGrid"></div>
+  </div>
+
+  <div id="downloads" class="tab-content">
+    <h2 class="section-title">Downloads</h2>
+    <div class="grid" id="downloadsGrid"></div>
+  </div>
+
+  <div id="sources" class="tab-content">
+    <h2 class="section-title">Sources</h2>
+    <div class="grid" id="sourcesGrid"></div>
+  </div>
+
+  <div id="socials" class="tab-content">
+    <h2 class="section-title">Socials</h2>
+    <p><strong>Discord:</strong> ghastly.m</p>
+    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/whatzthattea/" target="_blank" style="color:var(--accent)">@whatzthattea</a></p>
+  </div>
+
+  <div id="contact" class="tab-content">
+    <h2 class="section-title">Contact</h2>
+    <p>Professional inquiries welcome. Reach out via Discord: <strong>ghastly.m</strong>.</p>
+  </div>
+
+  <div id="audio" class="tab-content">
+    <h2 class="section-title">Audio controls</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Make it thump</h3>
+        <p>Boost bass and treble to sculpt the vibe. Playback slowed slightly for feel.</p>
+        <div class="control-row">
+          <label for="bass">Bass</label>
+          <input type="range" id="bass" min="-30" max="30" value="16">
+        </div>
+        <div class="control-row">
+          <label for="mid">Mid</label>
+          <input type="range" id="mid" min="-15" max="15" value="2">
+        </div>
+        <div class="control-row">
+          <label for="treble">Treble</label>
+          <input type="range" id="treble" min="-30" max="30" value="10">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Socials -->
+<div class="socials">
+  <!-- Instagram -->
+  <a class="icon-btn" href="https://www.instagram.com/whatzthattea/" target="_blank" aria-label="Instagram" data-tip="Instagram profile">
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm6.75-2.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0z"/></svg>
+    </span>
+  </a>
+  <!-- Discord -->
+  <a class="icon-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" aria-label="Discord" data-tip="Discord server">
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515c-.211.375-.447.864-.612 1.249a18.06 18.06 0 0 0-5.48 0c-.165-.397-.401-.874-.612-1.249A19.736 19.736 0 0 0 3.13 4.396C1.875 9.281 1.145 14.085 1.22 18.834a19.9 19.9 0 0 0 6.02 3.055c.463-.634.876-1.304 1.23-2.003-.662-.25-1.291-.558-1.882-.916.398-.3.794-.615 1.166-.938 3.927 1.798 8.18 1.798 12.061 0 .372.323.767.64 1.166.94a10.381 10.381 0 0 1-1.883.916c.36.695.774 1.365 1.23 2.002a19.9 19.9 0 0 0 6.02-3.055c.102-6.63-1.08-11.404-3.487-14.438zM8.7 15.325c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438zm6.622 0c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438z"/></svg>
+    </span>
+  </a>
+</div>
+
+<!-- Tooltip element -->
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+/* Wavy title */
+function buildTitle(text){
+  const el=document.getElementById('title'); el.innerHTML='';
+  [...text].forEach(ch=>{ const span=document.createElement('span'); span.textContent=ch; el.appendChild(span); });
+}
+buildTitle('Ashihiro');
+
+/* Tabs */
+const buttons=[...document.querySelectorAll('.tab-btn')];
+const panels=[...document.querySelectorAll('.tab-content')];
+buttons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    buttons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const id=btn.getAttribute('data-tab');
+    panels.forEach(p=>p.classList.toggle('active', p.id===id));
+  });
+});
+
+/* Tooltip */
+const tooltip=document.getElementById('tooltip');
+function showTip(e,text){
+  tooltip.textContent=text; tooltip.style.opacity='1';
+  const pad=12; let x=e.clientX+pad, y=e.clientY+pad;
+  const rect=tooltip.getBoundingClientRect();
+  if(x+rect.width>window.innerWidth-8) x=e.clientX-rect.width-pad;
+  if(y+rect.height>window.innerHeight-8) y=e.clientY-rect.height-pad;
+  tooltip.style.left=x+'px'; tooltip.style.top=y+'px';
+}
+function hideTip(){ tooltip.style.opacity='0'; }
+[...document.querySelectorAll('[data-tip]')].forEach(el=>{
+  el.addEventListener('mousemove',e=>showTip(e,el.getAttribute('data-tip')));
+  el.addEventListener('mouseleave',hideTip);
+});
+
+/* Video + EQ */
+const video=document.getElementById('bgVideo');
+const gate=document.getElementById('soundGate');
+const enableBtn=document.getElementById('enableSound');
+
+let audioCtx, source, bass, mid, treble;
+function setupEQ(){
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  source=audioCtx.createMediaElementSource(video);
+
+  bass=audioCtx.createBiquadFilter();
+  bass.type="lowshelf"; bass.frequency.value=110; bass.gain.value=16; // thump
+
+  mid=audioCtx.createBiquadFilter();
+  mid.type="peaking"; mid.frequency.value=1000; mid.Q.value=1; mid.gain.value=2;
+
+  treble=audioCtx.createBiquadFilter();
+  treble.type="highshelf"; treble.frequency.value=4500; treble.gain.value=10; // clarity
+
+  source.connect(bass); bass.connect(mid); mid.connect(treble); treble.connect(audioCtx.destination);
+
+  // Sliders
+  document.getElementById('bass').addEventListener('input', e=> bass.gain.value=Number(e.target.value));
+  document.getElementById('mid').addEventListener('input', e=> mid.gain.value=Number(e.target.value));
+  document.getElementById('treble').addEventListener('input', e=> treble.gain.value=Number(e.target.value));
+}
+
+async function enterWithSound(){
+  try{
+    if(!audioCtx) setupEQ();
+    video.muted=false;
+    video.playbackRate=0.998; // slow to 99.8%
+    await video.play();
+    await audioCtx.resume();
+    gate.style.display='none';
+  }catch(e){
+    // Fallback: still hide gate to not block UI
+    gate.style.display='none';
+  }
+}
+
+/* Fixed: multiple ways to enable sound */
+enableBtn.addEventListener('click', enterWithSound);
+gate.addEventListener('click', (e)=>{
+  if(e.target===gate) enterWithSound(); // click outside button also enables
+});
+window.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' || e.key===' ') enterWithSound();
+});
+
+/* Data-driven sections */
+async function loadData(url){ try{ const r=await fetch(url,{cache:'no-store'}); return r.ok? r.json(): null; }catch(e){ return null; } }
+function renderCards(targetId, items){
+  const grid=document.getElementById(targetId); grid.innerHTML='';
+  if(!items||items.length===0){ grid.innerHTML='<p style="opacity:.8">No items yet.</p>'; return; }
+  items.forEach(item=>{
+    const div=document.createElement('div'); div.className='card';
+    div.innerHTML=`
+      <h3>${item.name||'Untitled'}</h3>
+      <p>${item.description||''}</p>
+      ${item.version?`<p class="meta"><strong>Version:</strong> ${item.version}</p>`:''}
+      ${item.author?`<p class="meta"><strong>Author:</strong> ${item.author}</p>`:''}
+      ${item.tags?`<p class="meta"><strong>Tags:</strong> ${Array.isArray(item.tags)?item.tags.join(', '):item.tags}</p>`:''}
+      ${item.link?`<p><a href="${item.link}" target="_blank" style="color:var(--accent)">Open</a></p>`:''}
+      ${item.download?`<p><a href="${item.download}" target="_blank" style="color:var(--accent)">Download</a></p>`:''}
+    `;
+    grid.appendChild(div);
+  });
+}
+(async ()=>{
+  renderCards('programsGrid', await loadData('data/programs.json'));
+  renderCards('downloadsGrid', await loadData('data/downloads.json'));
+  renderCards('sourcesGrid', await loadData('data/sources.json'));
+})();
+</script>
+</body>
+</html>
