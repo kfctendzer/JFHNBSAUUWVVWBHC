@@ -23,68 +23,164 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
 <style>
-/* Neon purple theme, intro, menu, tabs, socials, cards */
-body{margin:0;background:#0a0a0f;color:#eae7ff;font-family:'Audiowide',sans-serif;overflow:hidden}
-.video-bg{position:fixed;inset:0;z-index:-2}
+:root{
+  --bg:#0a0a0f;
+  --panel:#0f0f18;
+  --primary:#b100ff;
+  --primarySoft:#d26aff;
+  --accent:#00ffff;
+  --text:#eae7ff;
+  --shadow:rgba(0,0,0,0.5);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:'Audiowide',sans-serif;overflow:hidden;
+}
+
+/* Background video */
+.video-bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
 .video-bg video{width:100%;height:100%;object-fit:cover;opacity:.9;filter:saturate(1.1) contrast(1.05)}
-.intro{position:fixed;inset:0;z-index:10;display:grid;place-items:center;
-backdrop-filter:blur(16px);background:radial-gradient(circle,rgba(177,0,255,.22),rgba(15,15,24,.75));
-animation:introHold 5s ease-in forwards,introFade 1.2s ease-in-out 5s forwards}
-.intro-hero{width:80%;height:60%;border:2px solid #b100ff;border-radius:24px;
-background:url('assets/intro.gif') center/cover no-repeat;box-shadow:0 0 28px #b100ff,0 0 64px #d26aff}
-.title{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
-display:inline-flex;gap:.06em;font-size:clamp(3rem,8vw,5.6rem);color:#fff;
-text-shadow:0 0 6px #fff,0 0 18px #b100ff,0 0 42px #d26aff}
-.title span{animation:wavy 2.8s ease-in-out infinite}
-.flash{position:absolute;inset:0;display:grid;place-items:center;opacity:0;
-animation:flashShow 1s ease-in 5s forwards,flashHide .9s ease-out 6s forwards}
-.flash-text{font-size:clamp(2.6rem,6vw,5rem);color:#fff;text-shadow:0 0 8px #fff,0 0 22px #b100ff,0 0 48px #d26aff}
-.pin-logo{position:fixed;top:22px;right:22px;font-size:1.8rem;color:#fff;opacity:0;
-animation:pinReveal .9s ease 6.1s forwards;text-shadow:0 0 18px #b100ff,0 0 36px #d26aff}
-.sound-gate{position:fixed;inset:0;z-index:12;display:grid;place-items:center;background:rgba(0,0,0,.6)}
-.sound-btn{padding:12px 18px;border-radius:999px;background:linear-gradient(180deg,rgba(177,0,255,.28),rgba(177,0,255,.14));
-border:1px solid rgba(177,0,255,.6);color:#fff;cursor:pointer}
-.menu{position:fixed;top:22px;left:22px;display:flex;gap:12px;z-index:7}
-.tab-btn{padding:10px 16px;border-radius:999px;background:rgba(177,0,255,.18);border:1px solid rgba(177,0,255,.55);color:#fff;cursor:pointer}
-.tab-btn.active{background:rgba(177,0,255,.36);box-shadow:0 0 26px #b100ff}
-.tabs{position:fixed;top:78px;left:22px;right:22px;bottom:92px;overflow:auto;background:rgba(15,15,24,.75);border-radius:18px}
-.tab-content{display:none;padding:22px}
+
+/* Intro: blur veil + hero + wavy title + flash */
+.intro{
+  position:fixed;inset:0;z-index:10;display:grid;place-items:center;
+  backdrop-filter:blur(16px);
+  background:radial-gradient(circle at center, rgba(177,0,255,0.22), rgba(15,15,24,0.75));
+  animation:introHold 5s ease-in forwards, introFade 1.2s ease-in-out 5s forwards;
+}
+.intro-hero{
+  width:min(900px,85vw);height:min(55vh,500px);
+  border:2px solid var(--primary);border-radius:24px;
+  background:url('assets/intro.gif') center/cover no-repeat;
+  box-shadow:0 0 28px var(--primary),0 0 64px var(--primarySoft),0 20px 40px var(--shadow);
+  animation:glowPulse 3.2s ease-in-out infinite;opacity:.92;
+}
+.title{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:inline-flex;gap:.06em;z-index:11;
+  font-size:clamp(3.2rem,8vw,5.6rem);color:#fff;
+  text-shadow:0 0 6px #fff,0 0 18px var(--primary),0 0 42px var(--primarySoft);
+}
+.title span{display:inline-block;animation:wavy 2.8s ease-in-out infinite}
+.title span:nth-child(odd){animation-delay:.1s}
+.title span:nth-child(even){animation-delay:.3s}
+.flash{
+  position:absolute;inset:0;display:grid;place-items:center;opacity:0;pointer-events:none;
+  animation:flashShow 1s ease-in 5s forwards, flashHide .9s ease-out 6s forwards;
+}
+.flash .flash-text{
+  font-size:clamp(2.6rem,6vw,5rem);color:#fff;
+  text-shadow:0 0 8px #fff,0 0 22px var(--primary),0 0 48px var(--primarySoft);
+}
+
+/* Pinned logo after intro */
+.pin-logo{
+  position:fixed;top:22px;right:22px;z-index:7;font-size:1.8rem;color:#fff;
+  text-shadow:0 0 6px #fff,0 0 18px var(--primary),0 0 36px var(--primarySoft);
+  opacity:0;transform:translateY(-8px);animation:pinReveal .9s ease 6.1s forwards;
+}
+
+/* Sound gate */
+.sound-gate{position:fixed;inset:0;z-index:12;display:grid;place-items:center;background:rgba(0,0,0,.6);backdrop-filter:blur(8px)}
+.sound-btn{
+  padding:12px 18px;border-radius:999px;color:#fff;cursor:pointer;
+  background:linear-gradient(180deg, rgba(177,0,255,0.28), rgba(177,0,255,0.14));
+  border:1px solid rgba(177,0,255,0.6);
+}
+
+/* Menu */
+.menu{
+  position:fixed;top:22px;left:22px;z-index:7;display:flex;gap:12px;flex-wrap:wrap;backdrop-filter:blur(8px);
+}
+.tab-btn{
+  background:linear-gradient(180deg, rgba(177,0,255,0.18), rgba(177,0,255,0.08));
+  border:1px solid rgba(177,0,255,0.55);color:#fff;padding:10px 16px;border-radius:999px;cursor:pointer;
+  transition:transform .18s ease, box-shadow .25s ease, background .25s ease;
+}
+.tab-btn:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(177,0,255,0.55)}
+.tab-btn.active{
+  background:linear-gradient(180deg, rgba(177,0,255,0.36), rgba(177,0,255,0.22));
+  box-shadow:0 0 26px rgba(177,0,255,0.7);
+}
+
+/* Panels */
+.tabs{
+  position:fixed;top:78px;left:22px;right:22px;bottom:92px;z-index:5;
+  border:1px solid rgba(177,0,255,0.4);border-radius:18px;
+  background:linear-gradient(180deg, rgba(15,15,24,0.75), rgba(12,12,20,0.65));
+  backdrop-filter:blur(10px) saturate(110%);overflow:auto;
+  box-shadow:0 12px 32px rgba(0,0,0,0.45), 0 0 28px rgba(177,0,255,0.25);
+}
+.tab-content{display:none;padding:22px;animation:panelFade .45s ease-out forwards}
 .tab-content.active{display:block}
+.section-title{font-size:1.3rem;margin:4px 0 14px}
+
+/* Grids */
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-.card{padding:14px;border-radius:14px;background:rgba(177,0,255,.12);border:1px solid rgba(177,0,255,.35)}
-.socials{position:fixed;bottom:22px;right:22px;display:flex;gap:12px}
-.icon-btn{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:rgba(177,0,255,.32);border:1px solid rgba(177,0,255,.55)}
-.icon svg{width:26px;height:26px;fill:#fff}
+.card{
+  background:linear-gradient(180deg, rgba(177,0,255,0.12), rgba(177,0,255,0.06));
+  border:1px solid rgba(177,0,255,0.35);border-radius:14px;padding:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.35);transition:transform .18s ease, box-shadow .25s ease;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 0 20px rgba(177,0,255,0.5)}
+.card h3{margin:0 0 8px;font-size:1.05rem}
+.card p{margin:0 0 10px;opacity:.9}
+.card .meta{font-size:.9rem;opacity:.8}
+
+/* Social buttons */
+.socials{position:fixed;bottom:22px;right:22px;z-index:7;display:flex;gap:12px}
+.icon-btn{
+  width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle, rgba(177,0,255,0.32), rgba(15,15,24,0.7));
+  border:1px solid rgba(177,0,255,0.55);box-shadow:0 0 18px rgba(177,0,255,0.55);
+}
+.icon{width:26px;height:26px}
+.icon svg{width:100%;height:100%;fill:#fff}
+
+/* Keyframes */
+@keyframes glowPulse{
+  0%,100%{box-shadow:0 0 26px var(--primary),0 0 64px var(--primarySoft),0 20px 40px var(--shadow)}
+  50%{box-shadow:0 0 42px var(--primarySoft),0 0 88px var(--primary),0 26px 52px var(--shadow)}
+}
 @keyframes wavy{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes introHold{0%{opacity:1}100%{opacity:1}}
 @keyframes introFade{0%{opacity:1}100%{opacity:0;visibility:hidden}}
 @keyframes flashShow{0%{opacity:0}100%{opacity:1}}
 @keyframes flashHide{0%{opacity:1}100%{opacity:0}}
 @keyframes pinReveal{0%{opacity:0}100%{opacity:1}}
+@keyframes panelFade{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 
+<!-- Background video -->
 <div class="video-bg">
   <video id="bgVideo" autoplay loop playsinline muted>
     <source src="assets/background.webm" type="video/webm">
     <source src="assets/background.mp4" type="video/mp4">
+    Your browser does not support the video tag.
   </video>
 </div>
 
+<!-- Intro -->
 <div class="intro" id="intro">
   <div class="intro-hero"></div>
   <div class="title" id="title"></div>
   <div class="flash"><div class="flash-text">@Ashihiro</div></div>
 </div>
 
+<!-- Sound gate -->
 <div class="sound-gate" id="soundGate">
   <button class="sound-btn" id="enableSound">Enter with sound</button>
 </div>
 
+<!-- Pinned logo -->
 <div class="pin-logo" id="pinLogo">@Ashihiro</div>
 
-<nav class="menu">
+<!-- Menu -->
+<nav class="menu" id="menu">
   <button class="tab-btn active" data-tab="home">Home</button>
   <button class="tab-btn" data-tab="about">About me</button>
   <button class="tab-btn" data-tab="owners">Owners</button>
@@ -96,10 +192,166 @@ border:1px solid rgba(177,0,255,.6);color:#fff;cursor:pointer}
   <button class="tab-btn" data-tab="audio">Audio</button>
 </nav>
 
+<!-- Panels -->
 <section class="tabs">
-  <div id="home" class="tab-content active"><h2>Home</h2><p>Welcome to the Ashihiro portal — neon, immersive, flawless vibe.</p></div>
-  <div id="about" class="tab-content"><h2>About me</h2><p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot.</p></div>
-  <div id="owners" class="tab-content"><h2>Owners</h2><ul><li>Shiro</li><li>Ashihiro</li><li>St4r</li><li>Starfire</li><li>Minix</li><li><strong>9f2n (Site Owner)</strong></li></ul></div>
-  <div id="programs" class="tab-content"><h2>Programs</h2><div class="grid" id="programsGrid"></div></div>
-  <div id="downloads" class="tab-content"><h2>Downloads</h2><div class="grid" id="downloadsGrid"></div></div>
-  <div id="sources"
+  <div id="home" class="tab-content active">
+    <h2 class="section-title">Home</h2>
+    <p>Welcome to the Ashihiro portal — neon, immersive, and tuned for a flawless vibe.</p>
+  </div>
+
+  <div id="about" class="tab-content">
+    <h2 class="section-title">About me</h2>
+    <p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot.</p>
+  </div>
+
+  <div id="owners" class="tab-content">
+    <h2 class="section-title">Owners</h2>
+    <ul>
+      <li>Shiro</li>
+      <li>Ashihiro</li>
+      <li>St4r</li>
+      <li>Starfire</li>
+      <li>Minix</li>
+      <li><strong>9f2n (Site Owner)</strong></li>
+    </ul>
+  </div>
+
+  <div id="programs" class="tab-content">
+    <h2 class="section-title">Programs</h2>
+    <div class="grid" id="programsGrid"></div>
+  </div>
+
+  <div id="downloads" class="tab-content">
+    <h2 class="section-title">Downloads</h2>
+    <div class="grid" id="downloadsGrid"></div>
+  </div>
+
+  <div id="sources" class="tab-content">
+    <h2 class="section-title">Sources</h2>
+    <div class="grid" id="sourcesGrid"></div>
+  </div>
+
+  <div id="socials" class="tab-content">
+    <h2 class="section-title">Socials</h2>
+    <p><strong>Discord:</strong> ghastly.m</p>
+    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/whatzthattea/" target="_blank" style="color:var(--accent)">@whatzthattea</a></p>
+  </div>
+
+  <div id="contact" class="tab-content">
+    <h2 class="section-title">Contact</h2>
+    <p>Professional inquiries welcome. Reach out via Discord: <strong>ghastly.m</strong>.</p>
+  </div>
+
+  <div id="audio" class="tab-content">
+    <h2 class="section-title">Audio controls</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Tune the vibe</h3>
+        <p>Bass, mid, and treble controls for immersive sound.</p>
+        <div class="control-row">
+          <label for="bass">Bass</label>
+          <input type="range" id="bass" min="-30" max="30" value="12">
+        </div>
+        <div class="control-row">
+          <label for="mid">Mid</label>
+          <input type="range" id="mid" min="-15" max="15" value="3">
+        </div>
+        <div class="control-row">
+          <label for="treble">Treble</label>
+          <input type="range" id="treble" min="-30" max="30" value="6">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Floating socials with logos -->
+<div class="socials">
+  <!-- Instagram -->
+  <a class="icon-btn" href="https://www.instagram.com/whatzthattea/" target="_blank" aria-label="Instagram">
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm6.75-2.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0z"/>
+      </svg>
+    </span>
+  </a>
+  <!-- Discord -->
+  <a class="icon-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" aria-label="Discord">
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515..."/>
+      </svg>
+    </span>
+  </a>
+</div>
+
+<script>
+/* Build wavy title text */
+function buildTitle(text){
+  const el=document.getElementById('title');
+  el.innerHTML='';
+  [...text].forEach(ch=>{
+    const span=document.createElement('span');
+    span.textContent=ch;
+    el.appendChild(span);
+  });
+}
+buildTitle('Ashihiro');
+
+/* Tabs */
+const buttons=document.querySelectorAll('.tab-btn');
+const panels=document.querySelectorAll('.tab-content');
+buttons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    buttons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const id=btn.getAttribute('data-tab');
+    panels.forEach(p=>p.classList.toggle('active', p.id===id));
+  });
+});
+
+/* Video sound gate */
+const video=document.getElementById('bgVideo');
+const gate=document.getElementById('soundGate');
+document.getElementById('enableSound').addEventListener('click', async ()=>{
+  try{ video.muted=false; await video.play(); } finally { gate.style.display='none'; }
+});
+
+/* Web Audio EQ */
+const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+const source=audioCtx.createMediaElementSource(video);
+const bass=audioCtx.createBiquadFilter(); bass.type="lowshelf"; bass.frequency.value=120; bass.gain.value=12;
+const mid=audioCtx.createBiquadFilter(); mid.type="peaking"; mid.frequency.value=1000; mid.Q.value=1; mid.gain.value=3;
+const treble=audioCtx.createBiquadFilter(); treble.type="highshelf"; treble.frequency.value=4000; treble.gain.value=6;
+source.connect(bass); bass.connect(mid); mid.connect(treble); treble.connect(audioCtx.destination);
+document.getElementById('bass').addEventListener('input', e=> bass.gain.value=Number(e.target.value));
+document.getElementById('mid').addEventListener('input', e=> mid.gain.value=Number(e.target.value));
+document.getElementById('treble').addEventListener('input', e=> treble.gain.value=Number(e.target.value));
+
+/* Data-driven Programs/Downloads/Sources */
+async function loadData(url){ try{ const r=await fetch(url,{cache:'no-store'}); return r.ok? r.json(): null; }catch(e){ return null; } }
+function renderCards(targetId, items){
+  const grid=document.getElementById(targetId); grid.innerHTML='';
+  if(!items||items.length===0){ grid.innerHTML='<p style="opacity:.8">No items yet.</p>'; return; }
+  items.forEach(item=>{
+    const div=document.createElement('div'); div.className='card';
+    div.innerHTML=`
+      <h3>${item.name||'Untitled'}</h3>
+      <p>${item.description||''}</p>
+      ${item.version?`<p class="meta"><strong>Version:</strong> ${item.version}</p>`:''}
+      ${item.author?`<p class="meta"><strong>Author:</strong> ${item.author}</p>`:''}
+      ${item.tags?`<p class="meta"><strong>Tags:</strong> ${Array.isArray(item.tags)?item.tags.join(', '):item.tags}</p>`:''}
+      ${item.link?`<p><a href="${item.link}" target="_blank" style="color:var(--accent)">Open</a></p>`:''}
+      ${item.download?`<p><a href="${item.download}" target="_blank" style="color:var(--accent)">Download</a></p>`:''}
+    `;
+    grid.appendChild(div);
+  });
+}
+(async ()=>{
+  renderCards('programsGrid', await loadData('data/programs.json'));
+  renderCards('downloadsGrid', await loadData('data/downloads.json'));
+  renderCards('sourcesGrid', await loadData('data/sources.json'));
+})();
+</script>
+</body>
+</html>
