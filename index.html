@@ -1,149 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Ashihiro</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 
-:root {
-  --primary:#00ffff;
-  --accent:#ff00ff;
+:root{
+  --bg:#0a0a0f;
+  --panel:#0f0f18;
+  --primary:#b100ff;      /* neon purple */
+  --primarySoft:#d26aff;  /* soft neon purple */
+  --accent:#00ffff;       /* cyan accent */
+  --text:#eae7ff;
+  --shadow:rgba(0,0,0,0.5);
 }
 
-/* Reset */
-body {
-  margin:0; padding:0;
-  background:#000; color:#fff;
+/* Reset / Base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
   font-family:'Audiowide',sans-serif;
   overflow:hidden;
 }
 
 /* Background video */
-.video-bg {
-  position:fixed; inset:0;
-  z-index:-2; overflow:hidden;
-}
-.video-bg video {
-  width:100%; height:100%;
-  object-fit:cover;
-  border:0;
-  display:block;
-  opacity:0.85;
+.video-bg{position:fixed; inset:0; z-index:-2; overflow:hidden}
+.video-bg video{
+  width:100%; height:100%; object-fit:cover;
+  filter:saturate(1.1) contrast(1.05) brightness(0.9);
+  opacity:0.9;
 }
 
-/* Intro overlay */
-.intro {
-  position:fixed; inset:0; z-index:3;
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  background:rgba(0,0,0,0.6);
-  animation:introFadeOut 6s forwards;
-  animation-delay:6s;
+/* Intro overlay: blur + veil, then flash @Ashihiro */
+.intro{
+  position:fixed; inset:0; z-index:10;
+  display:grid; place-items:center;
+  backdrop-filter:blur(16px);
+  background:radial-gradient(circle at center, rgba(177,0,255,0.22), rgba(15,15,24,0.75));
+  animation:introReveal 5s ease-in forwards, introFade 1.2s ease-in-out 5s forwards;
 }
-.intro-hero {
-  width:80%; height:60%;
-  border:3px solid var(--primary);
-  border-radius:18px;
-  box-shadow:0 0 25px var(--primary),0 0 45px var(--accent);
-  background:url('assets/intro.gif') center/cover no-repeat;
-  opacity:0.6;
-  margin-bottom:20px;
+.flash{
+  position:absolute;
+  inset:0; display:grid; place-items:center;
+  opacity:0; pointer-events:none;
+  animation:flashShow 1s ease-in 5s forwards, flashHide .9s ease-out 6s forwards;
 }
-
-/* Title / Logo */
-.title {
-  font-size:clamp(3rem,8vw,5rem);
+.flash .flash-text{
+  font-size:clamp(2.6rem,6vw,5rem);
   color:#fff;
-  display:inline-flex; gap:0.05em;
   text-shadow:
-    0 0 5px #fff,
-    0 0 15px var(--primary),
-    0 0 30px var(--accent),
-    2px 2px 4px rgba(0,0,0,0.8);
-  position:relative;
-  animation:logoMove 2s ease-in-out forwards;
-  animation-delay:6s;
+    0 0 8px #fff,
+    0 0 22px var(--primary),
+    0 0 48px var(--primarySoft);
+  filter:drop-shadow(0 8px 20px rgba(177,0,255,0.35));
 }
-.title span {
-  display:inline-block;
-  animation:waveY 2.5s ease-in-out infinite;
-}
-.title span:nth-child(1){animation-delay:0s;}
-.title span:nth-child(2){animation-delay:0.1s;}
-.title span:nth-child(3){animation-delay:0.2s;}
-.title span:nth-child(4){animation-delay:0.3s;}
-.title span:nth-child(5){animation-delay:0.4s;}
-.title span:nth-child(6){animation-delay:0.5s;}
-.title span:nth-child(7){animation-delay:0.6s;}
-.title span:nth-child(8){animation-delay:0.7s;}
 
-/* Discord button bottom-right */
-.discord-btn {
-  position:fixed;
-  bottom:20px; right:20px;
-  background:rgba(0,0,0,0.7);
+/* Hero card (subtle pulse under blur) */
+.intro-hero{
+  width:min(900px,85vw); height:min(55vh,500px);
   border:2px solid var(--primary);
-  border-radius:50%;
-  width:50px; height:50px;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--primary);
-  font-size:0.9rem;
-  text-decoration:none;
-  cursor:pointer;
-  transition:all 0.3s ease;
-  z-index:5;
-  box-shadow:0 0 15px var(--primary);
-}
-.discord-btn:hover {
-  box-shadow:0 0 25px var(--primary),0 0 40px var(--accent);
-  transform:scale(1.1);
+  border-radius:24px;
+  background:url('assets/intro.gif') center/cover no-repeat;
+  box-shadow:0 0 28px var(--primary), 0 0 64px var(--primarySoft), 0 20px 40px var(--shadow);
+  animation:glowPulse 3.2s ease-in-out infinite;
+  opacity:0.92;
 }
 
-/* Animations */
-@keyframes waveY {
-  0%,100%{transform:translateY(0);}
-  25%{transform:translateY(-10px);}
-  75%{transform:translateY(10px);}
+/* Wavy neon purple 3D title */
+.title{
+  position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:inline-flex; gap:0.06em; z-index:11;
+  font-size:clamp(3.2rem,8vw,5.6rem); color:#fff;
+  text-shadow:
+    0 0 6px #fff,
+    0 0 18px var(--primary),
+    0 0 42px var(--primarySoft),
+    2px 2px 0 rgba(255,255,255,0.08),
+    -2px -2px 0 rgba(255,255,255,0.06);
+  filter:drop-shadow(0 6px 16px rgba(177,0,255,0.25));
 }
-@keyframes introFadeOut {
-  to {opacity:0; visibility:hidden;}
+.title span{display:inline-block; animation:wavy 2.8s ease-in-out infinite}
+.title span:nth-child(odd){animation-delay:.1s}
+.title span:nth-child(even){animation-delay:.3s}
+
+/* Pinned logo (appears post-intro) */
+.pin-logo{
+  position:fixed; top:22px; right:22px; z-index:7;
+  font-size:1.8rem; color:#fff;
+  text-shadow:
+    0 0 6px #fff,
+    0 0 18px var(--primary),
+    0 0 36px var(--primarySoft);
+  opacity:0; transform:translateY(-8px);
+  animation:pinReveal .9s cubic-bezier(.2,.8,.2,1) 6.1s forwards;
 }
-@keyframes logoMove {
-  from {transform:translate(0,0);}
-  to {
-    position:fixed;
-    top:20px; right:20px;
-    font-size:2rem;
-    content:"@Ashihiro";
-  }
+
+/* Clean neon menu (pills) */
+.menu{
+  position:fixed; top:22px; left:22px; z-index:7;
+  display:flex; gap:12px; flex-wrap:wrap;
+  backdrop-filter:blur(8px);
 }
+.tab-btn{
+  background:linear-gradient(180deg, rgba(177,0,255,0.18), rgba(177,0,255,0.08));
+  border:1px solid rgba(177,0,255,0.55);
+  color:#fff; padding:10px 16px; border-radius:999px;
+  cursor:pointer;
+  transition:transform .18s ease, box-shadow .25s ease, background .25s ease, color .25s ease;
+  box-shadow:0 0 14px rgba(177,0,255,0.35), 0 6px 18px rgba(0,0,0,0.35) inset;
+}
+.tab-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 22px rgba(177,0,255,0.55), 0 0 34px rgba(210,106,255,0.45);
+  background:linear-gradient(180deg, rgba(177,0,255,0.28), rgba(177,0,255,0.14));
+}
+.tab-btn.active{
+  background:linear-gradient(180deg, rgba(177,0,255,0.36), rgba(177,0,255,0.22));
+  box-shadow:0 0 26px rgba(177,0,255,0.7), 0 0 42px rgba(210,106,255,0.55);
+}
+
+/* Tab container */
+.tabs{
+  position:fixed; top:78px; left:22px; right:22px; bottom:92px; z-index:5;
+  border:1px solid rgba(177,0,255,0.4);
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(15,15,24,0.75), rgba(12,12,20,0.65));
+  backdrop-filter:blur(10px) saturate(110%);
+  box-shadow:0 12px 32px rgba(0,0,0,0.45), 0 0 28px rgba(177,0,255,0.25);
+  overflow:auto;
+}
+.tab-content{display:none; padding:22px; animation:panelFade .45s ease-out forwards}
+.tab-content.active{display:block}
+.section-title{font-size:1.3rem; margin:4px 0 14px}
+
+/* Grids for programs/downloads/sources */
+.grid{
+  display:grid; gap:16px;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+}
+.card{
+  background:linear-gradient(180deg, rgba(177,0,255,0.12), rgba(177,0,255,0.06));
+  border:1px solid rgba(177,0,255,0.35);
+  border-radius:14px; padding:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  transition:transform .18s ease, box-shadow .25s ease, background .25s ease;
+}
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 0 20px rgba(177,0,255,0.5);
+  background:linear-gradient(180deg, rgba(177,0,255,0.18), rgba(177,0,255,0.1));
+}
+.card h3{margin:0 0 8px; font-size:1.05rem}
+.card p{margin:0 0 10px; opacity:.9}
+.card .meta{font-size:.9rem; opacity:.8}
+
+/* Socials (Instagram + Discord) */
+.socials{
+  position:fixed; bottom:22px; right:22px; z-index:7;
+  display:flex; gap:12px;
+}
+.icon-btn{
+  width:52px; height:52px; border-radius:50%;
+  display:grid; place-items:center;
+  background:radial-gradient(circle, rgba(177,0,255,0.32), rgba(15,15,24,0.7));
+  border:1px solid rgba(177,0,255,0.55);
+  box-shadow:0 0 18px rgba(177,0,255,0.55);
+  color:#fff;
+  transition:transform .18s ease, box-shadow .25s ease, background .25s ease;
+}
+.icon-btn:hover{
+  transform:translateY(-3px) scale(1.04);
+  box-shadow:0 0 28px rgba(177,0,255,0.8), 0 0 42px rgba(210,106,255,0.7);
+}
+.icon{width:26px; height:26px; display:block}
+.icon svg{
+  width:100%; height:100%;
+  filter:drop-shadow(0 0 6px rgba(177,0,255,0.6)) drop-shadow(0 0 14px rgba(210,106,255,0.45));
+  fill:#fff;
+}
+
+/* Keyframes */
+@keyframes introReveal{0%{opacity:1}100%{opacity:1}}
+@keyframes introFade{0%{opacity:1}100%{opacity:0; visibility:hidden}}
+@keyframes flashShow{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:1}}
+@keyframes flashHide{0%{opacity:1}100%{opacity:0}}
+@keyframes glowPulse{
+  0%,100%{box-shadow:0 0 26px var(--primary),0 0 64px var(--primarySoft),0 20px 40px var(--shadow)}
+  50%{box-shadow:0 0 42px var(--primarySoft),0 0 88px var(--primary),0 26px 52px var(--shadow)}
+}
+@keyframes wavy{
+  0%,100%{transform:translateY(0) rotate(0deg); opacity:.98}
+  25%{transform:translateY(-9px) rotate(-0.6deg); opacity:.92}
+  50%{transform:translateY(6px) rotate(0.6deg); opacity:.96}
+  75%{transform:translateY(-4px) rotate(-0.4deg); opacity:.94}
+}
+@keyframes pinReveal{0%{opacity:0; transform:translateY(-8px)}100%{opacity:1; transform:translateY(0)}}
+@keyframes panelFade{0%{opacity:0; transform:translateY(6px)}100%{opacity:1; transform:translateY(0)}}
 </style>
 </head>
 <body>
+
 <!-- Background video -->
 <div class="video-bg">
-  <video id="bgVideo" autoplay loop playsinline>
+  <video id="bgVideo" autoplay loop playsinline muted>
     <source src="assets/background.webm" type="video/webm">
     Your browser does not support WebM video.
   </video>
 </div>
 
-<!-- Discord button -->
-<a class="discord-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" id="discordBtn">D</a>
-
-<!-- Intro overlay -->
-<div class="intro">
+<!-- Intro overlay with blur + hero + flash -->
+<div class="intro" id="intro">
   <div class="intro-hero"></div>
   <div class="title" id="title"></div>
+  <div class="flash"><div class="flash-text">@Ashihiro</div></div>
+</div>
+
+<!-- Pinned logo appears post-intro -->
+<div class="pin-logo" id="pinLogo">@Ashihiro</div>
+
+<!-- Clean neon menu -->
+<nav class="menu" id="menu">
+  <button class="tab-btn active" data-tab="home">Home</button>
+  <button class="tab-btn" data-tab="about">About me</button>
+  <button class="tab-btn" data-tab="owners">Owners</button>
+  <button class="tab-btn" data-tab="programs">Programs</button>
+  <button class="tab-btn" data-tab="downloads">Downloads</button>
+  <button class="tab-btn" data-tab="sources">Sources</button>
+  <button class="tab-btn" data-tab="socials">Socials</button>
+  <button class="tab-btn" data-tab="contact">Contact</button>
+</nav>
+
+<!-- Tab container -->
+<section class="tabs">
+  <div id="home" class="tab-content active">
+    <h2 class="section-title">Home</h2>
+    <p>Welcome to the Ashihiro portal — neon, immersive, and tuned for a flawless vibe.</p>
+  </div>
+
+  <div id="about" class="tab-content">
+    <h2 class="section-title">About me</h2>
+    <p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot. We build fast, we build clean, and we keep it cyberpunk.</p>
+  </div>
+
+  <div id="owners" class="tab-content">
+    <h2 class="section-title">Owners</h2>
+    <ul>
+      <li>Shiro</li>
+      <li>Ashihiro</li>
+      <li>St4r</li>
+      <li>Starfire</li>
+      <li>Minix</li>
+    </ul>
+  </div>
+
+  <div id="programs" class="tab-content">
+    <h2 class="section-title">Programs</h2>
+    <div class="grid" id="programsGrid"></div>
+  </div>
+
+  <div id="downloads" class="tab-content">
+    <h2 class="section-title">Downloads</h2>
+    <div class="grid" id="downloadsGrid"></div>
+  </div>
+
+  <div id="sources" class="tab-content">
+    <h2 class="section-title">Sources</h2>
+    <div class="grid" id="sourcesGrid"></div>
+  </div>
+
+  <div id="socials" class="tab-content">
+    <h2 class="section-title">Socials</h2>
+    <p><strong>Discord:</strong> ghastly.m</p>
+    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/whatzthattea/" target="_blank" style="color:var(--accent)">@whatzthattea</a></p>
+  </div>
+
+  <div id="contact" class="tab-content">
+    <h2 class="section-title">Contact</h2>
+    <p>Professional inquiries welcome. Reach out via Discord: <strong>ghastly.m</strong>.</p>
+  </div>
+</section>
+
+<!-- Floating socials with logos -->
+<div class="socials">
+  <!-- Instagram -->
+  <a class="icon-btn" href="https://www.instagram.com/whatzthattea/" target="_blank" aria-label="Instagram">
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm6.75-2.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0z"/>
+      </svg>
+    </span>
+  </a>
+  <!-- Discord -->
+  <a class="icon-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" aria-label="Discord">
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.073.073 0 0 0-.078.036c-.211.375-.447.864-.612 1.249a18.06 18.06 0 0 0-5.48 0c-.165-.397-.401-.874-.612-1.249a.077.077 0 0 0-.078-.036 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.033.027C1.875 9.281 1.145 14.085 1.22 18.834a.079.079 0 0 0 .03.057 19.9 19.9 0 0 0 6.02 3.055.077.077 0 0 0 .084-.03c.463-.634.876-1.304 1.23-2.003a.076.076 0 0 0-.043-.104c-.662-.25-1.291-.558-1.882-.916a.076.076 0 0 1 .01-.132c.398-.3.794-.615 1.166-.938a.076.076 0 0 1 .08-.013c3.927 1.798 8.18 1.798 12.061 0a.076.076 0 0 1 .081.012c.372 .323 .767 .64 1.166 .94a.076 .076 0 0 1 .01 .131 10.381 10.381 0 0 1-1.883 .916 .076 .076 0 0 0-.042 .105c.36 .695 .774 1.365 1.23 2.002a.077 .077 0 0 0 .084 .03 19.9 19.9 0 0 0 6.02-3.055 .079 .079 0 0 0 .03-.057c.102-6.63-1.08-11.404-3.487-14.438a.07 .07 0 0 0-.033-.028zM8.7 15.325c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438zm6.622 0c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438z"/>
+      </svg>
+    </span>
+  </a>
 </div>
 
 <script>
+/* Build wavy title text for intro */
 function buildTitle(text){
   const el=document.getElementById('title');
   el.innerHTML='';
-  [...text].forEach((ch)=>{
+  [...text].forEach(ch=>{
     const span=document.createElement('span');
     span.textContent=ch;
     el.appendChild(span);
@@ -151,23 +316,63 @@ function buildTitle(text){
 }
 buildTitle('Ashihiro');
 
-// After intro fade, change logo to @Ashihiro smaller in corner
-setTimeout(()=>{
-  const el=document.getElementById('title');
-  el.style.fontSize='2rem';
-  el.textContent='@Ashihiro';
-  el.style.position='fixed';
-  el.style.top='20px';
-  el.style.right='20px';
-  el.style.textShadow='0 0 5px #fff,0 0 15px var(--primary),0 0 30px var(--accent),2px 2px 4px rgba(0,0,0,0.8)';
-},8000);
+/* After intro fade: pinned logo is revealed via CSS animation */
 
-// Enable sound after user gesture (browser policy)
-const bgVideo=document.getElementById('bgVideo');
-document.body.addEventListener('click',()=>{
-  bgVideo.muted=false;
-  bgVideo.play();
-},{once:true});
+/* Menu logic: clean tab switching */
+const buttons=document.querySelectorAll('.tab-btn');
+const panels=document.querySelectorAll('.tab-content');
+buttons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    buttons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const id=btn.getAttribute('data-tab');
+    panels.forEach(p=>p.classList.toggle('active', p.id===id));
+  });
+});
+
+/* Optional: unlock video audio on click (kept muted by default) */
+const video=document.getElementById('bgVideo');
+document.body.addEventListener('click',()=>{ video.play(); },{once:true});
+
+/* Data-driven sections: programs, downloads, sources
+   Place JSON files in /data and they’ll render automatically. */
+async function loadData(url){
+  const res=await fetch(url).catch(()=>null);
+  if(!res || !res.ok) return null;
+  return res.json();
+}
+function renderCards(targetId, items){
+  const grid=document.getElementById(targetId);
+  grid.innerHTML='';
+  if(!items || items.length===0){
+    grid.innerHTML='<p style="opacity:.8">No items yet. Add JSON entries and refresh.</p>';
+    return;
+  }
+  items.forEach(item=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.innerHTML=`
+      <h3>${item.name||'Untitled'}</h3>
+      <p>${item.description||''}</p>
+      ${item.version?`<p class="meta"><strong>Version:</strong> ${item.version}</p>`:''}
+      ${item.author?`<p class="meta"><strong>Author:</strong> ${item.author}</p>`:''}
+      ${item.tags?`<p class="meta"><strong>Tags:</strong> ${Array.isArray(item.tags)?item.tags.join(', '):item.tags}</p>`:''}
+      ${item.link?`<p><a href="${item.link}" target="_blank" style="color:var(--accent)">Open</a></p>`:''}
+      ${item.download?`<p><a href="${item.download}" target="_blank" style="color:var(--accent)">Download</a></p>`:''}
+    `;
+    grid.appendChild(div);
+  });
+}
+
+/* Load and render data */
+(async ()=>{
+  const programs=await loadData('data/programs.json');
+  const downloads=await loadData('data/downloads.json');
+  const sources=await loadData('data/sources.json');
+  renderCards('programsGrid', programs);
+  renderCards('downloadsGrid', downloads);
+  renderCards('sourcesGrid', sources);
+})();
 </script>
 </body>
 </html>
