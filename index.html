@@ -40,25 +40,8 @@ body{
   display:grid; place-items:center;
   backdrop-filter:blur(16px);
   background:radial-gradient(circle at center, rgba(177,0,255,0.22), rgba(15,15,24,0.75));
-  animation:introReveal 5s ease-in forwards, introFade 1.2s ease-in-out 5s forwards;
+  animation:introHold 5s ease-in forwards, introFade 1.2s ease-in-out 5s forwards;
 }
-.flash{
-  position:absolute;
-  inset:0; display:grid; place-items:center;
-  opacity:0; pointer-events:none;
-  animation:flashShow 1s ease-in 5s forwards, flashHide .9s ease-out 6s forwards;
-}
-.flash .flash-text{
-  font-size:clamp(2.6rem,6vw,5rem);
-  color:#fff;
-  text-shadow:
-    0 0 8px #fff,
-    0 0 22px var(--primary),
-    0 0 48px var(--primarySoft);
-  filter:drop-shadow(0 8px 20px rgba(177,0,255,0.35));
-}
-
-/* Hero card (subtle pulse under blur) */
 .intro-hero{
   width:min(900px,85vw); height:min(55vh,500px);
   border:2px solid var(--primary);
@@ -69,7 +52,7 @@ body{
   opacity:0.92;
 }
 
-/* Wavy neon purple 3D title */
+/* Wavy neon purple 3D title (center during intro) */
 .title{
   position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
   display:inline-flex; gap:0.06em; z-index:11;
@@ -86,6 +69,23 @@ body{
 .title span:nth-child(odd){animation-delay:.1s}
 .title span:nth-child(even){animation-delay:.3s}
 
+/* Flash @Ashihiro for 1s */
+.flash{
+  position:absolute;
+  inset:0; display:grid; place-items:center;
+  opacity:0; pointer-events:none;
+  animation:flashShow 1s ease-in 5s forwards, flashHide .9s ease-out 6s forwards;
+}
+.flash .flash-text{
+  font-size:clamp(2.6rem,6vw,5rem);
+  color:#fff;
+  text-shadow:
+    0 0 8px #fff,
+    0 0 22px var(--primary),
+    0 0 48px var(--primarySoft);
+  filter:drop-shadow(0 8px 20px rgba(177,0,255,0.35));
+}
+
 /* Pinned logo (appears post-intro) */
 .pin-logo{
   position:fixed; top:22px; right:22px; z-index:7;
@@ -97,6 +97,21 @@ body{
   opacity:0; transform:translateY(-8px);
   animation:pinReveal .9s cubic-bezier(.2,.8,.2,1) 6.1s forwards;
 }
+
+/* Sound gate (required for autoplay with audio) */
+.sound-gate{
+  position:fixed; inset:0; z-index:12; display:grid; place-items:center;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
+}
+.sound-btn{
+  background:linear-gradient(180deg, rgba(177,0,255,0.28), rgba(177,0,255,0.14));
+  border:1px solid rgba(177,0,255,0.6);
+  color:#fff; padding:12px 18px; border-radius:999px; cursor:pointer;
+  box-shadow:0 0 22px rgba(177,0,255,0.55), 0 0 34px rgba(210,106,255,0.45);
+  transition:transform .18s ease, box-shadow .25s ease;
+}
+.sound-btn:hover{transform:translateY(-2px); box-shadow:0 0 28px rgba(177,0,255,0.8), 0 0 42px rgba(210,106,255,0.7)}
 
 /* Clean neon menu (pills) */
 .menu{
@@ -157,7 +172,7 @@ body{
 .card p{margin:0 0 10px; opacity:.9}
 .card .meta{font-size:.9rem; opacity:.8}
 
-/* Socials (Instagram + Discord) */
+/* Floating socials with logos */
 .socials{
   position:fixed; bottom:22px; right:22px; z-index:7;
   display:flex; gap:12px;
@@ -183,7 +198,7 @@ body{
 }
 
 /* Keyframes */
-@keyframes introReveal{0%{opacity:1}100%{opacity:1}}
+@keyframes introHold{0%{opacity:1}100%{opacity:1}}
 @keyframes introFade{0%{opacity:1}100%{opacity:0; visibility:hidden}}
 @keyframes flashShow{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:1}}
 @keyframes flashHide{0%{opacity:1}100%{opacity:0}}
@@ -203,11 +218,13 @@ body{
 </head>
 <body>
 
-<!-- Background video -->
+<!-- Background video with audio -->
 <div class="video-bg">
-  <video id="bgVideo" autoplay loop playsinline muted>
+  <video id="bgVideo" autoplay loop playsinline>
     <source src="assets/background.webm" type="video/webm">
-    Your browser does not support WebM video.
+    <!-- Optional fallback -->
+    <!-- <source src="assets/background.mp4" type="video/mp4"> -->
+    Your browser does not support the video tag.
   </video>
 </div>
 
@@ -216,6 +233,11 @@ body{
   <div class="intro-hero"></div>
   <div class="title" id="title"></div>
   <div class="flash"><div class="flash-text">@Ashihiro</div></div>
+</div>
+
+<!-- Sound gate (tap to enable audio) -->
+<div class="sound-gate" id="soundGate">
+  <button class="sound-btn" id="enableSound">Enter with sound</button>
 </div>
 
 <!-- Pinned logo appears post-intro -->
@@ -242,7 +264,7 @@ body{
 
   <div id="about" class="tab-content">
     <h2 class="section-title">About me</h2>
-    <p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot. We build fast, we build clean, and we keep it cyberpunk.</p>
+    <p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot. We build fast, clean, and cyberpunk.</p>
   </div>
 
   <div id="owners" class="tab-content">
@@ -297,7 +319,7 @@ body{
   <a class="icon-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" aria-label="Discord">
     <span class="icon" aria-hidden="true">
       <svg viewBox="0 0 24 24">
-        <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.073.073 0 0 0-.078.036c-.211.375-.447.864-.612 1.249a18.06 18.06 0 0 0-5.48 0c-.165-.397-.401-.874-.612-1.249a.077.077 0 0 0-.078-.036 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.033.027C1.875 9.281 1.145 14.085 1.22 18.834a.079.079 0 0 0 .03.057 19.9 19.9 0 0 0 6.02 3.055.077.077 0 0 0 .084-.03c.463-.634.876-1.304 1.23-2.003a.076.076 0 0 0-.043-.104c-.662-.25-1.291-.558-1.882-.916a.076.076 0 0 1 .01-.132c.398-.3.794-.615 1.166-.938a.076.076 0 0 1 .08-.013c3.927 1.798 8.18 1.798 12.061 0a.076.076 0 0 1 .081.012c.372 .323 .767 .64 1.166 .94a.076 .076 0 0 1 .01 .131 10.381 10.381 0 0 1-1.883 .916 .076 .076 0 0 0-.042 .105c.36 .695 .774 1.365 1.23 2.002a.077 .077 0 0 0 .084 .03 19.9 19.9 0 0 0 6.02-3.055 .079 .079 0 0 0 .03-.057c.102-6.63-1.08-11.404-3.487-14.438a.07 .07 0 0 0-.033-.028zM8.7 15.325c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438zm6.622 0c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438z"/>
+        <path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515.073.073 0 0 0-.078.036c-.211.375-.447.864-.612 1.249a18.06 18.06 0 0 0-5.48 0c-.165-.397-.401-.874-.612-1.249a.077.077 0 0 0-.078-.036 19.736 19.736 0 0 0-4.885 1.515.07.07 0 0 0-.033 .027C1.875 9.281 1.145 14.085 1.22 18.834a.079.079 0 0 0 .03 .057 19.9 19.9 0 0 0 6.02 3.055.077.077 0 0 0 .084-.03c.463-.634.876-1.304 1.23-2.003a.076.076 0 0 0-.043-.104c-.662-.25-1.291-.558-1.882-.916a.076.076 0 0 1 .01-.132c.398-.3.794-.615 1.166-.938a.076.076 0 0 1 .08-.013c3.927 1.798 8.18 1.798 12.061 0a.076.076 0 0 1 .081.012c.372 .323 .767 .64 1.166 .94a .076 .076 0 0 1 .01 .131 10.381 10.381 0 0 1-1.883 .916 .076 .076 0 0 0-.042 .105c.36 .695 .774 1.365 1.23 2.002a .077 .077 0 0 0 .084 .03 19.9 19.9 0 0 0 6.02-3.055 .079 .079 0 0 0 .03-.057c.102-6.63-1.08-11.404-3.487-14.438a .07 .07 0 0 0-.033-.028zM8.7 15.325c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438zm6.622 0c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438z"/>
       </svg>
     </span>
   </a>
@@ -316,8 +338,6 @@ function buildTitle(text){
 }
 buildTitle('Ashihiro');
 
-/* After intro fade: pinned logo is revealed via CSS animation */
-
 /* Menu logic: clean tab switching */
 const buttons=document.querySelectorAll('.tab-btn');
 const panels=document.querySelectorAll('.tab-content');
@@ -330,16 +350,28 @@ buttons.forEach(btn=>{
   });
 });
 
-/* Optional: unlock video audio on click (kept muted by default) */
+/* Ensure background video has sound: unlock on user gesture */
 const video=document.getElementById('bgVideo');
-document.body.addEventListener('click',()=>{ video.play(); },{once:true});
+const gate=document.getElementById('soundGate');
+document.getElementById('enableSound').addEventListener('click', async ()=>{
+  try {
+    video.muted=false;           // unmute
+    await video.play();          // play with sound after gesture
+  } catch(e){
+    // fallback: keep muted if blocked; user can try again
+  } finally {
+    gate.style.display='none';   // remove gate
+  }
+});
 
 /* Data-driven sections: programs, downloads, sources
    Place JSON files in /data and they’ll render automatically. */
 async function loadData(url){
-  const res=await fetch(url).catch(()=>null);
-  if(!res || !res.ok) return null;
-  return res.json();
+  try{
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok) return null;
+    return res.json();
+  }catch(e){ return null; }
 }
 function renderCards(targetId, items){
   const grid=document.getElementById(targetId);
@@ -364,7 +396,7 @@ function renderCards(targetId, items){
   });
 }
 
-/* Load and render data */
+/* Load and render data after intro finishes */
 (async ()=>{
   const programs=await loadData('data/programs.json');
   const downloads=await loadData('data/downloads.json');
