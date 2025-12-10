@@ -7,8 +7,8 @@
 
 <!-- Open Graph / Link preview -->
 <meta property="og:title" content="Ashihiro Interactive Social Site">
-<meta property="og:description" content="We remake Hacking programs like luna grabber etc, downloads, sources, and socials. Owner: 9f2n">
-<meta property="og:type" content="Ashihiros Website">
+<meta property="og:description" content="An immersive interactive social site — programs, downloads, sources, and socials. Owner: 9f2n">
+<meta property="og:type" content="website">
 <meta property="og:url" content="https://shiroshome.vercel.app/">
 <meta property="og:image" content="https://shiroshome.vercel.app/assets/banner.gif">
 <meta property="og:image:type" content="image/gif">
@@ -30,7 +30,7 @@
   --text:#eae7ff; --muted:#cfc8ff;
 }
 
-/* Base reset */
+/* Reset / Base */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',sans-serif;overflow:hidden}
@@ -45,7 +45,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
   backdrop-filter:blur(16px);
   background:radial-gradient(circle at center, rgba(177,0,255,0.22), rgba(15,15,24,0.75));
   animation:introHold 5s ease-in forwards, introFade 1.2s ease-in-out 5s forwards;
-  pointer-events:none; /* never block clicks */
+  pointer-events:none;
 }
 .title{
   display:inline-flex;gap:.06em;font-size:clamp(3rem,7vw,5.4rem);color:#fff;
@@ -70,7 +70,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
   opacity:0;transform:translateY(-8px);animation:pinReveal .9s ease 6.1s forwards;
 }
 
-/* Sound gate (always clickable, topmost) */
+/* Sound gate (always clickable) */
 .sound-gate{
   position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,.55);backdrop-filter:blur(8px);
@@ -82,9 +82,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
   box-shadow:0 0 22px rgba(177,0,255,0.55);
   font-size:1rem;
 }
-.sound-btn:focus{outline:none;box-shadow:0 0 0 3px rgba(177,0,255,.35)}
 
-/* Centered, smaller menu */
+/* Menu (centered, smaller) */
 .menu{
   position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:7;
   display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;
@@ -102,7 +101,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
   box-shadow:0 0 22px rgba(177,0,255,0.7);
 }
 
-/* Panels: centered and smaller */
+/* Panels (centered, smaller) */
 .tabs{
   position:fixed;top:70px;left:50%;transform:translateX(-50%);
   width:min(900px,82vw);height:min(62vh,620px);z-index:5;
@@ -138,13 +137,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
 }
 .icon svg{width:24px;height:24px;fill:#fff}
 
-/* Tooltip */
-.tooltip{
-  position:fixed;z-index:20;padding:6px 10px;border-radius:10px;
-  background:rgba(20,10,40,.9);color:#fff;font-size:.85rem;border:1px solid rgba(177,0,255,.45);
-  box-shadow:0 0 14px rgba(177,0,255,.55);pointer-events:none;opacity:0;transition:opacity .15s ease;
-}
-
 /* Animations */
 @keyframes wavy{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes introHold{0%{opacity:1}100%{opacity:1}}
@@ -157,7 +149,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
 </head>
 <body>
 
-<!-- Background video (muted initially for autoplay) -->
+<!-- Background video (muted initially for reliable autoplay) -->
 <div class="video-bg">
   <video id="bgVideo" autoplay loop playsinline muted>
     <source src="assets/background.webm" type="video/webm">
@@ -182,15 +174,15 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
 
 <!-- Centered, smaller menu -->
 <nav class="menu" id="menu">
-  <button class="tab-btn active" data-tab="home" data-tip="Main page">Home</button>
-  <button class="tab-btn" data-tab="about" data-tip="Who we are">About me</button>
-  <button class="tab-btn" data-tab="owners" data-tip="Team leadership">Owners</button>
-  <button class="tab-btn" data-tab="programs" data-tip="Our tools">Programs</button>
-  <button class="tab-btn" data-tab="downloads" data-tip="Direct downloads">Downloads</button>
-  <button class="tab-btn" data-tab="sources" data-tip="References and repos">Sources</button>
-  <button class="tab-btn" data-tab="socials" data-tip="Social profiles">Socials</button>
-  <button class="tab-btn" data-tab="contact" data-tip="Reach out">Contact</button>
-  <button class="tab-btn" data-tab="audio" data-tip="Bass & treble EQ">Audio</button>
+  <button class="tab-btn active" data-tab="home">Home</button>
+  <button class="tab-btn" data-tab="about">About me</button>
+  <button class="tab-btn" data-tab="owners">Owners</button>
+  <button class="tab-btn" data-tab="programs">Programs</button>
+  <button class="tab-btn" data-tab="downloads">Downloads</button>
+  <button class="tab-btn" data-tab="sources">Sources</button>
+  <button class="tab-btn" data-tab="socials">Socials</button>
+  <button class="tab-btn" data-tab="contact">Contact</button>
+  <button class="tab-btn" data-tab="audio">Audio</button>
 </nav>
 
 <!-- Panels -->
@@ -247,11 +239,11 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
     <h2 class="section-title">Audio controls</h2>
     <div class="grid">
       <div class="card">
-        <h3>Make it thump</h3>
-        <p>Boost bass and treble to sculpt the vibe. Playback slowed slightly for feel.</p>
+        <h3>Clean thump EQ + reverb</h3>
+        <p>Moderate bass boost, crisp treble, and subtle room reverb. Playback slowed to 99.8% for feel.</p>
         <div class="control-row">
           <label for="bass">Bass</label>
-          <input type="range" id="bass" min="-30" max="30" value="16">
+          <input type="range" id="bass" min="-24" max="24" value="10">
         </div>
         <div class="control-row">
           <label for="mid">Mid</label>
@@ -259,7 +251,11 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
         </div>
         <div class="control-row">
           <label for="treble">Treble</label>
-          <input type="range" id="treble" min="-30" max="30" value="10">
+          <input type="range" id="treble" min="-24" max="24" value="6">
+        </div>
+        <div class="control-row">
+          <label for="reverbMix">Reverb mix</label>
+          <input type="range" id="reverbMix" min="0" max="1" step="0.01" value="0.2">
         </div>
       </div>
     </div>
@@ -268,25 +264,20 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
 
 <!-- Socials -->
 <div class="socials">
-  <!-- Instagram -->
-  <a class="icon-btn" href="https://www.instagram.com/whatzthattea/" target="_blank" aria-label="Instagram" data-tip="Instagram profile">
+  <a class="icon-btn" href="https://www.instagram.com/whatzthattea/" target="_blank" aria-label="Instagram">
     <span class="icon" aria-hidden="true">
       <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm6.75-2.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0z"/></svg>
     </span>
   </a>
-  <!-- Discord -->
-  <a class="icon-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" aria-label="Discord" data-tip="Discord server">
+  <a class="icon-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" aria-label="Discord">
     <span class="icon" aria-hidden="true">
       <svg viewBox="0 0 24 24"><path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515c-.211.375-.447.864-.612 1.249a18.06 18.06 0 0 0-5.48 0c-.165-.397-.401-.874-.612-1.249A19.736 19.736 0 0 0 3.13 4.396C1.875 9.281 1.145 14.085 1.22 18.834a19.9 19.9 0 0 0 6.02 3.055c.463-.634.876-1.304 1.23-2.003-.662-.25-1.291-.558-1.882-.916.398-.3.794-.615 1.166-.938 3.927 1.798 8.18 1.798 12.061 0 .372.323.767.64 1.166.94a10.381 10.381 0 0 1-1.883.916c.36.695.774 1.365 1.23 2.002a19.9 19.9 0 0 0 6.02-3.055c.102-6.63-1.08-11.404-3.487-14.438zM8.7 15.325c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438zm6.622 0c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438z"/></svg>
     </span>
   </a>
 </div>
 
-<!-- Tooltip element -->
-<div class="tooltip" id="tooltip"></div>
-
 <script>
-/* Wavy title */
+/* Build wavy title text */
 function buildTitle(text){
   const el=document.getElementById('title'); el.innerHTML='';
   [...text].forEach(ch=>{ const span=document.createElement('span'); span.textContent=ch; el.appendChild(span); });
@@ -305,77 +296,90 @@ buttons.forEach(btn=>{
   });
 });
 
-/* Tooltip */
-const tooltip=document.getElementById('tooltip');
-function showTip(e,text){
-  tooltip.textContent=text; tooltip.style.opacity='1';
-  const pad=12; let x=e.clientX+pad, y=e.clientY+pad;
-  const rect=tooltip.getBoundingClientRect();
-  if(x+rect.width>window.innerWidth-8) x=e.clientX-rect.width-pad;
-  if(y+rect.height>window.innerHeight-8) y=e.clientY-rect.height-pad;
-  tooltip.style.left=x+'px'; tooltip.style.top=y+'px';
-}
-function hideTip(){ tooltip.style.opacity='0'; }
-[...document.querySelectorAll('[data-tip]')].forEach(el=>{
-  el.addEventListener('mousemove',e=>showTip(e,el.getAttribute('data-tip')));
-  el.addEventListener('mouseleave',hideTip);
-});
-
-/* Video + EQ */
+/* Audio chain: clean thump with moderate bass, crisp treble, subtle reverb */
 const video=document.getElementById('bgVideo');
 const gate=document.getElementById('soundGate');
 const enableBtn=document.getElementById('enableSound');
 
-let audioCtx, source, bass, mid, treble;
-function setupEQ(){
+let audioCtx, source, bass, mid, treble, convolver, reverbGain, dryGain;
+
+async function loadImpulseResponse(){
+  // If you have a real IR file, place it at assets/impulse.wav and use fetch.
+  // This procedural IR creates a short, soft room reverb.
+  const length=audioCtx.sampleRate*1.2; // ~1.2s tail
+  const impulse=audioCtx.createBuffer(2, length, audioCtx.sampleRate);
+  for(let ch=0; ch<2; ch++){
+    const data=impulse.getChannelData(ch);
+    for(let i=0; i<length; i++){
+      // Exponential decay with subtle randomness (low amplitude)
+      data[i]=(Math.random()*2-1)*Math.pow(1 - i/length, 3) * 0.15;
+    }
+  }
+  return impulse;
+}
+
+async function setupAudioChain(){
   audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   source=audioCtx.createMediaElementSource(video);
 
-  bass=audioCtx.createBiquadFilter();
-  bass.type="lowshelf"; bass.frequency.value=110; bass.gain.value=16; // thump
+  // EQ
+  bass=audioCtx.createBiquadFilter(); bass.type="lowshelf"; bass.frequency.value=100; bass.gain.value=10; // moderate thump
+  mid=audioCtx.createBiquadFilter(); mid.type="peaking"; mid.frequency.value=1000; mid.Q.value=1; mid.gain.value=2; // gentle presence
+  treble=audioCtx.createBiquadFilter(); treble.type="highshelf"; treble.frequency.value=5000; treble.gain.value=6; // crisp but safe
 
-  mid=audioCtx.createBiquadFilter();
-  mid.type="peaking"; mid.frequency.value=1000; mid.Q.value=1; mid.gain.value=2;
+  // Reverb (convolver) with wet/dry mix
+  convolver=audioCtx.createConvolver();
+  convolver.buffer=await loadImpulseResponse();
 
-  treble=audioCtx.createBiquadFilter();
-  treble.type="highshelf"; treble.frequency.value=4500; treble.gain.value=10; // clarity
+  dryGain=audioCtx.createGain(); dryGain.gain.value=1.0; // dry path
+  reverbGain=audioCtx.createGain(); reverbGain.gain.value=0.2; // subtle wet
 
-  source.connect(bass); bass.connect(mid); mid.connect(treble); treble.connect(audioCtx.destination);
+  // Route: source -> EQ -> split -> dry + reverb -> mix -> destination
+  const eqOut=treble;
+  source.connect(bass); bass.connect(mid); mid.connect(treble);
 
-  // Sliders
+  const splitter=audioCtx.createGain(); // simple node to fan out
+  eqOut.connect(splitter);
+  splitter.connect(dryGain);
+  splitter.connect(convolver);
+  convolver.connect(reverbGain);
+
+  const master=audioCtx.createGain(); master.gain.value=1.0;
+  dryGain.connect(master);
+  reverbGain.connect(master);
+  master.connect(audioCtx.destination);
+
+  // Slider bindings
   document.getElementById('bass').addEventListener('input', e=> bass.gain.value=Number(e.target.value));
   document.getElementById('mid').addEventListener('input', e=> mid.gain.value=Number(e.target.value));
   document.getElementById('treble').addEventListener('input', e=> treble.gain.value=Number(e.target.value));
+  document.getElementById('reverbMix').addEventListener('input', e=> reverbGain.gain.value=Number(e.target.value));
 }
 
 async function enterWithSound(){
   try{
-    if(!audioCtx) setupEQ();
+    if(!audioCtx) await setupAudioChain();
     video.muted=false;
     video.playbackRate=0.998; // slow to 99.8%
     await video.play();
     await audioCtx.resume();
-    gate.style.display='none';
   }catch(e){
-    // Fallback: still hide gate to not block UI
+    // Even if blocked, hide the gate to restore UI; user can interact again
+  }finally{
     gate.style.display='none';
   }
 }
 
-/* Fixed: multiple ways to enable sound */
+/* Robust interactions to ensure it works */
 enableBtn.addEventListener('click', enterWithSound);
-gate.addEventListener('click', (e)=>{
-  if(e.target===gate) enterWithSound(); // click outside button also enables
-});
-window.addEventListener('keydown', (e)=>{
-  if(e.key==='Enter' || e.key===' ') enterWithSound();
-});
+gate.addEventListener('click', (e)=>{ if(e.target===gate) enterWithSound(); });
+window.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') enterWithSound(); });
 
-/* Data-driven sections */
+/* Data-driven sections: programs, downloads, sources (JSON in /data) */
 async function loadData(url){ try{ const r=await fetch(url,{cache:'no-store'}); return r.ok? r.json(): null; }catch(e){ return null; } }
 function renderCards(targetId, items){
   const grid=document.getElementById(targetId); grid.innerHTML='';
-  if(!items||items.length===0){ grid.innerHTML='<p style="opacity:.8">No items yet.</p>'; return; }
+  if(!items||items.length===0){ grid.innerHTML='<p style="opacity:.8">No items yet. Add JSON entries and refresh.</p>'; return; }
   items.forEach(item=>{
     const div=document.createElement('div'); div.className='card';
     div.innerHTML=`
