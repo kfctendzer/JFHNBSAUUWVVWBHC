@@ -7,7 +7,7 @@
 
 <!-- Open Graph / Link preview -->
 <meta property="og:title" content="Ashihiro Interactive Social Site">
-<meta property="og:description" content="We Remake hacking programs come join — programs, downloads, sources, socials. Owner: 9f2n">
+<meta property="og:description" content="We make remade hacking programs come join — programs, downloads, sources, socials. Owner: 9f2n">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://shiroshome.vercel.app/">
 <meta property="og:image" content="https://shiroshome.vercel.app/assets/banner.gif">
@@ -37,7 +37,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
 
 /* Background video */
 .video-bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
-.video-bg video{width:100%;height:100%;object-fit:cover;opacity:.9;filter:saturate(1.1) contrast(1.05)}
+.video-bg video{width:100%;height:100%;object-fit:cover;opacity:.9;filter:saturate(1.08) contrast(1.05)}
 
 /* Intro overlay */
 .intro{
@@ -70,7 +70,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
   opacity:0;transform:translateY(-8px);animation:pinReveal .9s ease 6.1s forwards;
 }
 
-/* Sound gate */
+/* Sound gate (fixed) */
 .sound-gate{
   position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,.55);backdrop-filter:blur(8px);
@@ -83,7 +83,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
   font-size:1rem;
 }
 
-/* Menu */
+/* Menu (centered, smaller) */
 .menu{
   position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:7;
   display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;
@@ -101,7 +101,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
   box-shadow:0 0 22px rgba(177,0,255,0.7);
 }
 
-/* Panels */
+/* Panels (centered, smaller) */
 .tabs{
   position:fixed;top:70px;left:50%;transform:translateX(-50%);
   width:min(900px,82vw);height:min(62vh,620px);z-index:5;
@@ -240,7 +240,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
     <div class="grid">
       <div class="card">
         <h3>Chill thump — full control</h3>
-        <p>Moderate bass boost, crisp treble, subtle reverb. Playback slowed to 99.8% for vibe.</p>
+        <p>Modest bass boost, crisp treble, subtle reverb. Playback slowed to 99.8% for vibe.</p>
 
         <div class="control-row">
           <label for="speed">Playback speed</label>
@@ -249,35 +249,35 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Audiowide',san
 
         <div class="control-row">
           <label for="bass">Bass</label>
-          <input type="range" id="bass" min="-18" max="18" step="1" value="8">
+          <input type="range" id="bass" min="-18" max="18" step="1" value="4">
         </div>
 
         <div class="control-row">
           <label for="mid">Mid</label>
-          <input type="range" id="mid" min="-12" max="12" step="1" value="2">
+          <input type="range" id="mid" min="-12" max="12" step="1" value="1">
         </div>
 
         <div class="control-row">
           <label for="treble">Treble</label>
-          <input type="range" id="treble" min="-18" max="18" step="1" value="6">
+          <input type="range" id="treble" min="-18" max="18" step="1" value="4">
         </div>
 
         <div class="control-row">
           <label for="reverbMix">Reverb mix</label>
-          <input type="range" id="reverbMix" min="0" max="0.6" step="0.01" value="0.18">
+          <input type="range" id="reverbMix" min="0" max="0.5" step="0.01" value="0.12">
         </div>
 
         <div class="control-row">
           <label for="stereo">Stereo width</label>
-          <input type="range" id="stereo" min="0" max="1" step="0.01" value="0.25">
+          <input type="range" id="stereo" min="0" max="1" step="0.01" value="0.2">
         </div>
 
         <div class="control-row">
           <label for="master">Master volume</label>
-          <input type="range" id="master" min="0" max="1" step="0.01" value="0.9">
+          <input type="range" id="master" min="0" max="1" step="0.01" value="0.85">
         </div>
 
-        <p style="opacity:.85">Tip: Click “Enter with sound” once — then tune speed, EQ, reverb, stereo, and volume live.</p>
+        <p style="opacity:.85">Tip: Click “Enter with sound” — then fine‑tune speed, EQ, reverb, stereo, and volume live.</p>
       </div>
     </div>
   </div>
@@ -331,7 +331,7 @@ async function buildImpulse(){
   for(let ch=0; ch<2; ch++){
     const data=buf.getChannelData(ch);
     for(let i=0;i<length;i++){
-      data[i]=(Math.random()*2-1)*Math.pow(1 - i/length, 3) * 0.12; // gentle tail
+      data[i]=(Math.random()*2-1)*Math.pow(1 - i/length, 3) * 0.1; // gentle tail
     }
   }
   return buf;
@@ -341,34 +341,33 @@ async function setupAudio(){
   audioCtx=new (window.AudioContext||window.webkitAudioContext)();
   source=audioCtx.createMediaElementSource(video);
 
-  bass=audioCtx.createBiquadFilter(); bass.type="lowshelf"; bass.frequency.value=95; bass.gain.value=8;   // chill thump
-  mid=audioCtx.createBiquadFilter();  mid.type="peaking";  mid.frequency.value=1000; mid.Q.value=1; mid.gain.value=2;
-  treble=audioCtx.createBiquadFilter(); treble.type="highshelf"; treble.frequency.value=5200; treble.gain.value=6;
+  bass=audioCtx.createBiquadFilter(); bass.type="lowshelf"; bass.frequency.value=90; bass.gain.value=4;   // chill bass
+  mid=audioCtx.createBiquadFilter();  mid.type="peaking";  mid.frequency.value=1000; mid.Q.value=1; mid.gain.value=1;
+  treble=audioCtx.createBiquadFilter(); treble.type="highshelf"; treble.frequency.value=5200; treble.gain.value=4; // crisp, not harsh
 
   convolver=audioCtx.createConvolver(); convolver.buffer=await buildImpulse();
   dryGain=audioCtx.createGain(); dryGain.gain.value=1.0;
-  reverbGain=audioCtx.createGain(); reverbGain.gain.value=0.18;
+  reverbGain=audioCtx.createGain(); reverbGain.gain.value=0.12;
 
-  // Stereo width: mid/side trick
+  // Stereo width
   stereoSplitter=audioCtx.createChannelSplitter(2);
   stereoMerger=audioCtx.createChannelMerger(2);
-  stereoWidth=audioCtx.createGain(); stereoWidth.gain.value=0.25; // subtle
+  stereoWidth=audioCtx.createGain(); stereoWidth.gain.value=0.2;
 
   // EQ chain
   source.connect(bass); bass.connect(mid); mid.connect(treble);
 
-  // Split to reverb and dry
+  // Split wet/dry
   const eqOut=treble;
   eqOut.connect(dryGain);
   eqOut.connect(convolver);
   convolver.connect(reverbGain);
 
-  // Mix wet/dry then stereo
+  // Mix and stereo
   const mix=audioCtx.createGain();
   dryGain.connect(mix);
   reverbGain.connect(mix);
 
-  // Stereo widening (simple: duplicate, adjust gain, merge)
   mix.connect(stereoSplitter);
   const leftGain=audioCtx.createGain(); const rightGain=audioCtx.createGain();
   leftGain.gain.value=1 + stereoWidth.gain.value;
@@ -378,7 +377,7 @@ async function setupAudio(){
   leftGain.connect(stereoMerger, 0, 0);
   rightGain.connect(stereoMerger, 0, 1);
 
-  master=audioCtx.createGain(); master.gain.value=0.9;
+  master=audioCtx.createGain(); master.gain.value=0.85;
   stereoMerger.connect(master);
   master.connect(audioCtx.destination);
 
@@ -404,13 +403,13 @@ async function enterWithSound(){
     await video.play();
     await audioCtx.resume();
   }catch(e){
-    // Even if blocked, hide gate so UI is accessible; user can interact again
+    // Even if blocked, hide gate so UI is accessible
   }finally{
     gate.style.display='none';
   }
 }
 
-/* Robust interactions to ensure enable works */
+/* Robust interactions */
 enableBtn.addEventListener('click', enterWithSound);
 gate.addEventListener('click', (e)=>{ if(e.target===gate) enterWithSound(); });
 window.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') enterWithSound(); });
@@ -439,8 +438,6 @@ function renderCards(targetId, items){
   renderCards('downloadsGrid', await loadData('data/downloads.json'));
   renderCards('sourcesGrid', await loadData('data/sources.json'));
 })();
-
-/* Build wavy title now */
 </script>
 </body>
 </html>
