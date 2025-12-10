@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Netrunner CLI",
+    "description": "Ultra-fast crawler suite with cyberpunk UI",
+    "version": "2.3.1",
+    "author": "Ashihiro",
+    "tags": ["Tool","CLI","Python"],
+    "link": "https://github.com/kfctendzer/New-world-order-"
+  },
+  {
+    "name": "Ashihiro Grabber",
+    "description": "New features New persitence/ locations",
+    "version": "1.0.0",
+    "tags": "generator, unicode",
+    "download": "assets/downloads/AshihiroGrabberv1.rar"
+  }
+]
