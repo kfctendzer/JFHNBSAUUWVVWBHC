@@ -3,7 +3,24 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Ashihiro</title>
+<title>Ashihiro Interactive Social Site</title>
+
+<!-- Open Graph / Link preview -->
+<meta property="og:title" content="Ashihiro Interactive Social Site">
+<meta property="og:description" content="An immersive interactive social site — connect, share programs, sources, and socials.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourwebsite.com">
+<meta property="og:image" content="https://yourwebsite.com/assets/banner.gif">
+<meta property="og:image:type" content="image/gif">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ashihiro Interactive Social Site">
+<meta name="twitter:description" content="An immersive interactive social site — connect, share programs, sources, and socials.">
+<meta name="twitter:image" content="https://yourwebsite.com/assets/banner.gif">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 
@@ -34,7 +51,7 @@ body{
   opacity:0.9;
 }
 
-/* Intro overlay: blur + veil, then flash @Ashihiro */
+/* Intro overlay: blurred veil + hero + wavy title + flash @Ashihiro */
 .intro{
   position:fixed; inset:0; z-index:10;
   display:grid; place-items:center;
@@ -50,6 +67,7 @@ body{
   box-shadow:0 0 28px var(--primary), 0 0 64px var(--primarySoft), 0 20px 40px var(--shadow);
   animation:glowPulse 3.2s ease-in-out infinite;
   opacity:0.92;
+  position:relative;
 }
 
 /* Wavy neon purple 3D title (center during intro) */
@@ -98,7 +116,7 @@ body{
   animation:pinReveal .9s cubic-bezier(.2,.8,.2,1) 6.1s forwards;
 }
 
-/* Sound gate (required for autoplay with audio) */
+/* Sound gate (autoplay with audio requires a gesture) */
 .sound-gate{
   position:fixed; inset:0; z-index:12; display:grid; place-items:center;
   background:rgba(0,0,0,0.6);
@@ -218,7 +236,7 @@ body{
 </head>
 <body>
 
-<!-- Background video with audio -->
+<!-- Background video with audio support -->
 <div class="video-bg">
   <video id="bgVideo" autoplay loop playsinline>
     <source src="assets/background.webm" type="video/webm">
@@ -228,7 +246,7 @@ body{
   </video>
 </div>
 
-<!-- Intro overlay with blur + hero + flash -->
+<!-- Intro overlay with blur + hero + wavy title + flash -->
 <div class="intro" id="intro">
   <div class="intro-hero"></div>
   <div class="title" id="title"></div>
@@ -253,6 +271,7 @@ body{
   <button class="tab-btn" data-tab="sources">Sources</button>
   <button class="tab-btn" data-tab="socials">Socials</button>
   <button class="tab-btn" data-tab="contact">Contact</button>
+  <button class="tab-btn" data-tab="audio">Audio</button>
 </nav>
 
 <!-- Tab container -->
@@ -264,7 +283,7 @@ body{
 
   <div id="about" class="tab-content">
     <h2 class="section-title">About me</h2>
-    <p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot. We build fast, clean, and cyberpunk.</p>
+    <p>We are a notorious group of programmers, coders, and gamers — chill, and we play a lot. We build fast, clean, and immersive experiences.</p>
   </div>
 
   <div id="owners" class="tab-content">
@@ -302,6 +321,29 @@ body{
   <div id="contact" class="tab-content">
     <h2 class="section-title">Contact</h2>
     <p>Professional inquiries welcome. Reach out via Discord: <strong>ghastly.m</strong>.</p>
+  </div>
+
+  <div id="audio" class="tab-content">
+    <h2 class="section-title">Audio controls</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Tune the vibe</h3>
+        <p>Bass, mid, and treble controls for immersive sound.</p>
+        <div class="control-row">
+          <label for="bass">Bass</label>
+          <input type="range" id="bass" min="-30" max="30" value="12">
+        </div>
+        <div class="control-row">
+          <label for="mid">Mid</label>
+          <input type="range" id="mid" min="-15" max="15" value="3">
+        </div>
+        <div class="control-row">
+          <label for="treble">Treble</label>
+          <input type="range" id="treble" min="-30" max="30" value="6">
+        </div>
+        <p style="opacity:.85">Tip: Tap “Enter with sound” to unlock audio, then fine‑tune.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -350,22 +392,32 @@ buttons.forEach(btn=>{
   });
 });
 
-/* Ensure background video has sound: unlock on user gesture */
+/* Background video audio: unlock on user gesture */
 const video=document.getElementById('bgVideo');
 const gate=document.getElementById('soundGate');
 document.getElementById('enableSound').addEventListener('click', async ()=>{
   try {
-    video.muted=false;           // unmute
-    await video.play();          // play with sound after gesture
+    video.muted=false;
+    await video.play();
   } catch(e){
-    // fallback: keep muted if blocked; user can try again
+    // If playback fails, user can try again
   } finally {
-    gate.style.display='none';   // remove gate
+    gate.style.display='none';
   }
 });
 
-/* Data-driven sections: programs, downloads, sources
-   Place JSON files in /data and they’ll render automatically. */
+/* Web Audio API EQ (Audio tab) */
+const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+const source=audioCtx.createMediaElementSource(video);
+const bass=audioCtx.createBiquadFilter(); bass.type="lowshelf"; bass.frequency.value=120; bass.gain.value=12;
+const mid=audioCtx.createBiquadFilter(); mid.type="peaking"; mid.frequency.value=1000; mid.Q.value=1; mid.gain.value=3;
+const treble=audioCtx.createBiquadFilter(); treble.type="highshelf"; treble.frequency.value=4000; treble.gain.value=6;
+source.connect(bass); bass.connect(mid); mid.connect(treble); treble.connect(audioCtx.destination);
+document.getElementById('bass').addEventListener('input', e=> bass.gain.value=Number(e.target.value));
+document.getElementById('mid').addEventListener('input', e=> mid.gain.value=Number(e.target.value));
+document.getElementById('treble').addEventListener('input', e=> treble.gain.value=Number(e.target.value));
+
+/* Data-driven sections: programs, downloads, sources (JSON in /data) */
 async function loadData(url){
   try{
     const res=await fetch(url,{cache:'no-store'});
@@ -395,8 +447,6 @@ function renderCards(targetId, items){
     grid.appendChild(div);
   });
 }
-
-/* Load and render data after intro finishes */
 (async ()=>{
   const programs=await loadData('data/programs.json');
   const downloads=await loadData('data/downloads.json');
