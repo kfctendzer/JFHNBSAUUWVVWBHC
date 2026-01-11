@@ -31,7 +31,6 @@
   --accent:#00ffff;
   --text:#f5efff;
   --muted:#cfc8ff;
-  --panel:rgba(10,10,20,0.9);
   --borderSoft:rgba(177,0,255,0.4);
 }
 
@@ -90,8 +89,8 @@ body{
   height:100%;
   border-radius:18px;
 
-  background:rgba(5,5,15,0.32);
-  backdrop-filter:blur(22px) saturate(1.4);
+  background:rgba(5,5,15,0.26);
+  backdrop-filter:blur(24px) saturate(1.5);
 
   border:1px solid rgba(255,255,255,0.04);
   box-shadow:
@@ -106,7 +105,7 @@ body{
 /* Sidebar header logo */
 .sidebar-header{
   padding:4px 6px 10px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
+  border-bottom:1px solid rgba(255,255,255,0.10);
   margin-bottom:10px;
 }
 .sidebar-title{
@@ -124,7 +123,7 @@ body{
   margin-top:12px;
 }
 
-/* TABS – ULTRA GLASS, ALMOST INVISIBLE */
+/* TABS – ULTRA GLASS, WHOLE PAGE TRANSPARENT VIBE */
 .tab-btn{
   width:100%;
   text-align:left;
@@ -136,12 +135,10 @@ body{
   border:none;
   outline:none;
 
-  /* almost invisible background */
-  background:rgba(255,255,255,0.02);
-  backdrop-filter:blur(14px) saturate(1.4);
+  background:rgba(5,5,15,0.14);
+  backdrop-filter:blur(16px) saturate(1.5);
 
-  /* thin neon outline */
-  border:1px solid rgba(177,0,255,0.18);
+  border:1px solid rgba(177,0,255,0.22);
 
   transition:
     transform .18s ease,
@@ -151,19 +148,19 @@ body{
     opacity .25s ease,
     color .25s ease;
 
-  opacity:.82;
+  opacity:.84;
 }
 .tab-btn:hover{
   transform:translateY(-2px);
-  background:rgba(255,255,255,0.06);
+  background:rgba(10,10,25,0.22);
   border-color:rgba(177,0,255,0.45);
   box-shadow:0 0 26px rgba(177,0,255,0.65);
   opacity:1;
 }
 .tab-btn.active{
   color:#fff;
-  background:rgba(255,255,255,0.10);
-  border-color:rgba(177,0,255,0.9);
+  background:rgba(15,15,35,0.32);
+  border-color:rgba(177,0,255,0.95);
   box-shadow:
     0 0 30px rgba(177,0,255,0.95),
     0 10px 26px rgba(0,0,0,0.9);
@@ -173,7 +170,7 @@ body{
 /* Sidebar footer */
 .sidebar-footer{
   padding-top:8px;
-  border-top:1px solid rgba(255,255,255,0.06);
+  border-top:1px solid rgba(255,255,255,0.10);
   font-size:.76rem;
   color:var(--muted);
   opacity:.85;
@@ -196,8 +193,8 @@ body{
   font-size:1.2rem;
   padding:6px 14px;
   border-radius:999px;
-  background:rgba(10,10,24,0.9);
-  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(6,6,18,0.75);
+  border:1px solid rgba(255,255,255,0.08);
   box-shadow:
     0 0 16px rgba(0,0,0,0.8),
     0 0 26px rgba(177,0,255,0.35);
@@ -208,17 +205,17 @@ body{
   animation:pinReveal .9s ease forwards;
 }
 
-/* Panel shell */
+/* Panel shell – more transparent glass */
 .panel-shell{
   position:absolute;
   inset:24px 4px 4px 4px;
   border-radius:18px;
-  border:1px solid rgba(255,255,255,0.06);
-  background:linear-gradient(180deg, rgba(15,15,24,0.88), rgba(8,8,18,0.92));
-  backdrop-filter:blur(14px) saturate(1.15);
+  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(4,4,12,0.50);
+  backdrop-filter:blur(22px) saturate(1.4);
   box-shadow:
     0 18px 40px rgba(0,0,0,0.9),
-    0 0 24px rgba(177,0,255,0.38);
+    0 0 26px rgba(177,0,255,0.35);
   overflow:hidden;
 }
 .tab-content{
@@ -236,7 +233,7 @@ body{
   margin:2px 0 10px;
 }
 
-/* HOME as intro: bordered center box */
+/* HOME as intro: glassy bordered center box */
 .home-intro{
   display:flex;
   align-items:center;
@@ -248,10 +245,10 @@ body{
   max-width:460px;
   padding:20px 24px;
   border-radius:18px;
-  background:rgba(8,8,18,0.9);
+  background:rgba(5,5,15,0.70);
   border:1px solid var(--borderSoft);
   box-shadow:
-    0 0 26px rgba(177,0,255,0.6),
+    0 0 26px rgba(177,0,255,0.7),
     0 18px 34px rgba(0,0,0,0.95);
   text-align:center;
   overflow:hidden;
@@ -300,7 +297,7 @@ body{
   margin-bottom:4px;
 }
 
-/* Grids & cards */
+/* Grids & cards (slightly glassy) */
 .grid{
   display:grid;
   gap:14px;
@@ -309,14 +306,15 @@ body{
 .card{
   padding:12px;
   border-radius:12px;
-  background:linear-gradient(180deg, rgba(177,0,255,0.12), rgba(177,0,255,0.06));
+  background:rgba(8,8,22,0.78);
   border:1px solid rgba(177,0,255,0.35);
-  box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  box-shadow:0 6px 18px rgba(0,0,0,0.45);
   transition:transform .16s ease, box-shadow .22s ease, background .22s ease;
 }
 .card:hover{
   transform:translateY(-2px);
-  box-shadow:0 0 18px rgba(177,0,255,0.55);
+  background:rgba(10,10,26,0.92);
+  box-shadow:0 0 18px rgba(177,0,255,0.65);
 }
 .card h3{
   margin:0 0 8px;
