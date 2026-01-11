@@ -81,7 +81,7 @@ body{
   padding:18px;
 }
 
-/* Sidebar (tabs) */
+/* Sidebar (more transparent glass) */
 .sidebar{
   position:relative;
   z-index:4;
@@ -89,15 +89,18 @@ body{
   max-width:46vw;
   height:100%;
   border-radius:18px;
-  background:linear-gradient(180deg, rgba(5,5,14,0.96), rgba(8,8,20,0.9));
-  border:1px solid rgba(255,255,255,0.06);
+
+  background:rgba(10,10,20,0.45);
+  backdrop-filter:blur(18px) saturate(1.3);
+
+  border:1px solid rgba(255,255,255,0.05);
   box-shadow:
-    0 18px 40px rgba(0,0,0,0.9),
-    0 0 24px rgba(177,0,255,0.32);
-  backdrop-filter:blur(14px);
+    0 18px 40px rgba(0,0,0,0.85),
+    0 0 24px rgba(177,0,255,0.25);
+
   display:flex;
   flex-direction:column;
-  padding:14px 12px 14px 12px;
+  padding:14px 12px;
 }
 
 /* Sidebar header logo */
@@ -120,40 +123,46 @@ body{
   gap:10px;
   margin-top:12px;
 }
+
+/* Tabs: super transparent, glassy */
 .tab-btn{
   width:100%;
   text-align:left;
   padding:10px 16px;
   border-radius:18px;
   font-size:.92rem;
-  color:var(--muted);
+  color:var(--text);
   cursor:pointer;
   border:none;
   outline:none;
 
-  background:linear-gradient(180deg, rgba(177,0,255,0.22), rgba(177,0,255,0.10));
-  border:1px solid rgba(177,0,255,0.45);
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(12px) saturate(1.2);
+
+  border:1px solid rgba(177,0,255,0.25);
 
   transition:
-    transform .16s ease,
-    box-shadow .22s ease,
-    background .22s ease,
-    color .22s ease,
-    opacity .22s ease;
+    transform .18s ease,
+    box-shadow .25s ease,
+    background .25s ease,
+    border-color .25s ease,
+    opacity .25s ease;
 
-  opacity:.9;
+  opacity:.85;
 }
 .tab-btn:hover{
   transform:translateY(-2px);
+  background:rgba(255,255,255,0.12);
+  border-color:rgba(177,0,255,0.45);
   box-shadow:0 0 22px rgba(177,0,255,0.55);
   opacity:1;
 }
 .tab-btn.active{
   color:#fff;
-  background:linear-gradient(180deg, rgba(177,0,255,0.45), rgba(177,0,255,0.25));
-  border-color:rgba(177,0,255,0.9);
+  background:rgba(255,255,255,0.18);
+  border-color:rgba(177,0,255,0.85);
   box-shadow:
-    0 0 24px rgba(177,0,255,0.85),
+    0 0 26px rgba(177,0,255,0.85),
     0 10px 26px rgba(0,0,0,0.9);
   opacity:1;
 }
@@ -236,7 +245,7 @@ body{
   max-width:460px;
   padding:20px 24px;
   border-radius:18px;
-  background:rgba(8,8,18,0.94);
+  background:rgba(8,8,18,0.9);
   border:1px solid var(--borderSoft);
   box-shadow:
     0 0 26px rgba(177,0,255,0.6),
