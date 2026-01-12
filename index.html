@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>PROJECT 0</title>
 
-<!-- Open Graph / Link preview -->
 <meta property="og:title" content="Ashihiros Hacking Arsenal :D">
 <meta property="og:description" content="We Remake Progams and hacking tools, remodeled Luna and more. Come grab some, check the socials, and join up! Owner: 9ukx">
 <meta property="og:type" content="website">
@@ -15,7 +14,6 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ashihiro's Playground">
 <meta name="twitter:description" content="We Remake Progams and hacking tools, remodeled Luna and more. Come grab some, check the socials, and join up! Owner: 9ukx">
@@ -35,7 +33,6 @@
   --glowPurple:rgba(177,0,255,1);
 }
 
-/* Base reset */
 *{
   box-sizing:border-box;
   margin:0;
@@ -51,7 +48,7 @@ body{
   overflow:hidden;
 }
 
-/* Performance hint for animated elements */
+/* performance hints */
 .tab-btn,
 .tab-content,
 .home-box,
@@ -61,12 +58,13 @@ body{
 .card,
 .panel-shell,
 .sidebar,
-.wavy-intro{
+.wavy-intro,
+.intro-overlay{
   will-change:transform,opacity;
   transform:translateZ(0);
 }
 
-/* Background video */
+/* background video */
 .video-bg{
   position:fixed;
   inset:0;
@@ -77,11 +75,11 @@ body{
   width:100%;
   height:100%;
   object-fit:cover;
-  opacity:.9;
-  filter:saturate(1.08) contrast(1.06) brightness(.95);
+  opacity:.85;
+  filter:saturate(1.06) contrast(1.04) brightness(.96);
 }
 
-/* Subtle overlay grid for depth */
+/* subtle grid overlay */
 .bg-overlay{
   position:fixed;
   inset:0;
@@ -94,16 +92,23 @@ body{
   opacity:.22;
 }
 
-/* Layout */
+/* app layout */
 .app-shell{
   position:relative;
   display:flex;
   height:100vh;
   padding:18px;
-  perspective:1200px;
+  perspective:1100px;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .45s ease-out, transform .45s ease-out;
+}
+.app-shell.ready{
+  opacity:1;
+  transform:translateY(0);
 }
 
-/* Sidebar (ultra-glass) */
+/* sidebar glass */
 .sidebar{
   position:relative;
   z-index:4;
@@ -111,21 +116,17 @@ body{
   max-width:46vw;
   height:100%;
   border-radius:18px;
-
-  background:rgba(5,5,15,0.36);
-  backdrop-filter:blur(24px) saturate(1.7);
-
+  background:rgba(5,5,15,0.34);
+  backdrop-filter:blur(22px) saturate(1.6);
   border:1px solid rgba(255,255,255,0.06);
   box-shadow:
-    0 14px 30px rgba(0,0,0,0.85),
-    0 0 24px rgba(177,0,255,0.35);
-
+    0 10px 24px rgba(0,0,0,0.75),
+    0 0 18px rgba(177,0,255,0.28);
   display:flex;
   flex-direction:column;
   padding:14px 12px;
 }
 
-/* Sidebar header logo */
 .sidebar-header{
   padding:4px 6px 10px;
   border-bottom:1px solid rgba(255,255,255,0.10);
@@ -137,10 +138,9 @@ body{
   text-shadow:
     0 0 4px #fff,
     0 0 12px var(--primary),
-    0 0 26px var(--primarySoft);
+    0 0 22px var(--primarySoft);
 }
 
-/* Sidebar nav */
 .nav{
   flex:1;
   display:flex;
@@ -149,7 +149,7 @@ body{
   margin-top:12px;
 }
 
-/* TABS – glass, detailed, smoother */
+/* tab buttons */
 .tab-btn{
   width:100%;
   text-align:left;
@@ -160,25 +160,21 @@ body{
   cursor:pointer;
   border:none;
   outline:none;
-
-  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.08), transparent 55%) border-box,
+  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.07), transparent 55%) border-box,
              rgba(5,5,15,0.2);
-  backdrop-filter:blur(18px) saturate(1.5);
-
-  border:1px solid rgba(177,0,255,0.24);
-
+  backdrop-filter:blur(16px) saturate(1.4);
+  border:1px solid rgba(177,0,255,0.22);
   display:flex;
   align-items:center;
   justify-content:flex-start;
   gap:8px;
-
   transition:
-    transform .16s ease-out,
-    box-shadow .24s ease-out,
-    background .24s ease-out,
-    border-color .24s ease-out,
-    opacity .24s ease-out,
-    color .24s ease-out;
+    transform .14s ease-out,
+    box-shadow .2s ease-out,
+    background .2s ease-out,
+    border-color .2s ease-out,
+    opacity .2s ease-out,
+    color .2s ease-out;
   opacity:.84;
 }
 .tab-btn::before{
@@ -188,32 +184,31 @@ body{
   border-radius:50%;
   background:radial-gradient(circle, var(--accent), transparent 60%);
   opacity:.45;
-  transition:opacity .24s ease-out, transform .24s ease-out;
+  transition:opacity .2s ease-out, transform .2s ease-out;
 }
 .tab-btn:hover{
-  transform:translateY(-2px);
-  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.16), transparent 55%) border-box,
-             rgba(10,10,25,0.26);
-  border-color:rgba(177,0,255,0.55);
-  box-shadow:0 0 20px rgba(177,0,255,0.75);
+  transform:translateY(-1px);
+  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.14), transparent 55%) border-box,
+             rgba(10,10,25,0.25);
+  border-color:rgba(177,0,255,0.5);
+  box-shadow:0 0 16px rgba(177,0,255,0.6);
   opacity:1;
 }
 .tab-btn.active{
   color:#fff;
-  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.22), transparent 55%) border-box,
+  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.2), transparent 55%) border-box,
              rgba(15,15,35,0.34);
-  border-color:rgba(177,0,255,1);
+  border-color:rgba(177,0,255,0.95);
   box-shadow:
-    0 0 30px rgba(177,0,255,0.98),
-    0 10px 26px rgba(0,0,0,0.92);
+    0 0 22px rgba(177,0,255,0.85),
+    0 8px 20px rgba(0,0,0,0.85);
   opacity:1;
 }
 .tab-btn.active::before{
   opacity:1;
-  transform:scale(1.35);
+  transform:scale(1.25);
 }
 
-/* Sidebar footer */
 .sidebar-footer{
   padding-top:8px;
   border-top:1px solid rgba(255,255,255,0.10);
@@ -222,7 +217,7 @@ body{
   opacity:.85;
 }
 
-/* Main area */
+/* main */
 .main{
   flex:1;
   margin-left:16px;
@@ -230,7 +225,7 @@ body{
   position:relative;
 }
 
-/* Pinned logo top-right */
+/* pinned logo */
 .pin-logo{
   position:absolute;
   top:4px;
@@ -242,33 +237,33 @@ body{
   background:rgba(6,6,18,0.78);
   border:1px solid rgba(255,255,255,0.09);
   box-shadow:
-    0 0 16px rgba(0,0,0,0.8),
-    0 0 26px rgba(177,0,255,0.35);
-  text-shadow:0 0 5px #fff,0 0 18px var(--primary),0 0 32px var(--primarySoft);
+    0 0 12px rgba(0,0,0,0.8),
+    0 0 18px rgba(177,0,255,0.3);
+  text-shadow:0 0 5px #fff,0 0 16px var(--primary),0 0 26px var(--primarySoft);
   opacity:0;
-  transform:translateY(-8px);
+  transform:translateY(-6px);
 }
 .pin-logo.show{
-  animation:pinReveal .9s cubic-bezier(.22,.61,.36,1) forwards;
+  animation:pinReveal .7s cubic-bezier(.22,.61,.36,1) forwards;
 }
 
-/* Panel shell – main glass card that will tilt */
+/* main glass panel */
 .panel-shell{
   position:absolute;
   inset:24px 4px 4px 4px;
   border-radius:18px;
   border:1px solid rgba(255,255,255,0.08);
-  background:rgba(4,4,12,0.52);
-  backdrop-filter:blur(22px) saturate(1.5);
+  background:rgba(4,4,12,0.5);
+  backdrop-filter:blur(20px) saturate(1.4);
   box-shadow:
-    0 18px 40px rgba(0,0,0,0.9),
-    0 0 26px rgba(177,0,255,0.35);
+    0 14px 30px rgba(0,0,0,0.85),
+    0 0 18px rgba(177,0,255,0.3);
   overflow:hidden;
   transform-style:preserve-3d;
-  transition:transform .16s ease-out;
+  transition:transform .14s ease-out;
 }
 
-/* Tab content base */
+/* tab content */
 .tab-content{
   position:absolute;
   inset:0;
@@ -277,25 +272,21 @@ body{
   opacity:0;
   pointer-events:none;
   transform-origin:top center;
-  transform:rotateX(-10deg) translateY(10px);
+  transform:rotateX(-8deg) translateY(8px);
   backface-visibility:hidden;
 }
-
-/* Active tab visible state */
 .tab-content.active{
   opacity:1;
   pointer-events:auto;
 }
-
-/* Fold-out animation states */
 .tab-content.entering{
-  animation:tabFoldIn .5s cubic-bezier(.22,.61,.36,1) forwards;
+  animation:tabFoldIn .42s cubic-bezier(.25,.8,.25,1) forwards;
 }
 .tab-content.leaving{
-  animation:tabFoldOut .38s cubic-bezier(.4,0,.6,1) forwards;
+  animation:tabFoldOut .3s cubic-bezier(.4,0,.6,1) forwards;
 }
 
-/* Section titles + descriptions */
+/* titles */
 .section-title-wrap{
   margin-bottom:10px;
 }
@@ -309,7 +300,7 @@ body{
   opacity:.85;
 }
 
-/* HOME as intro: glassy bordered center box */
+/* home intro box */
 .home-intro{
   display:flex;
   align-items:center;
@@ -321,12 +312,12 @@ body{
   max-width:460px;
   padding:20px 24px;
   border-radius:18px;
-  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.12), transparent 55%) border-box,
-             rgba(5,5,15,0.72);
+  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.1), transparent 55%) border-box,
+             rgba(5,5,15,0.7);
   border:1px solid var(--borderSoft);
   box-shadow:
-    0 0 26px rgba(177,0,255,0.7),
-    0 18px 34px rgba(0,0,0,0.95);
+    0 0 20px rgba(177,0,255,0.55),
+    0 14px 28px rgba(0,0,0,0.9);
   text-align:center;
   overflow:hidden;
 }
@@ -335,13 +326,13 @@ body{
   position:absolute;
   inset:-30%;
   background:
-    radial-gradient(circle at 10% -10%, rgba(255,255,255,0.22), transparent 55%),
-    radial-gradient(circle at 90% 110%, rgba(177,0,255,0.32), transparent 62%);
+    radial-gradient(circle at 10% -10%, rgba(255,255,255,0.18), transparent 55%),
+    radial-gradient(circle at 90% 110%, rgba(177,0,255,0.26), transparent 62%);
   opacity:0;
   mix-blend-mode:screen;
 }
 .home-box.intro-active::before{
-  animation:particleDrift 2s ease-out 0.8s forwards;
+  animation:particleDrift 1.6s ease-out .6s forwards;
 }
 .home-title{
   font-size:1.45rem;
@@ -358,44 +349,53 @@ body{
   opacity:.9;
 }
 
-/* Wavy neon intro text */
-.wavy-intro{
-  position:absolute;
+/* full-screen intro overlay */
+.intro-overlay{
+  position:fixed;
   inset:0;
+  z-index:1000;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(14px) saturate(1.2);
   display:flex;
   align-items:center;
   justify-content:center;
-  pointer-events:none;
   opacity:0;
+  pointer-events:none;
 }
+.intro-overlay.show{
+  opacity:1;
+  pointer-events:auto;
+  transition:opacity .4s ease-out;
+}
+.intro-overlay.hide{
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .5s ease-in;
+}
+
+/* wavy neon text inside intro overlay */
 .wavy-inner{
   padding:16px 30px;
   border-radius:999px;
-  background:rgba(10,4,24,0.72);
-  border:1px solid rgba(177,0,255,0.9);
+  background:rgba(10,4,24,0.8);
+  border:1px solid rgba(177,0,255,0.95);
   box-shadow:
-    0 0 35px rgba(177,0,255,1),
-    0 0 80px rgba(177,0,255,0.9);
+    0 0 30px rgba(177,0,255,0.95),
+    0 0 70px rgba(177,0,255,0.85);
   display:flex;
   gap:4px;
 }
 .wavy-letter{
-  font-size:2.3rem;
+  font-size:2.4rem;
   color:#fff;
   text-shadow:
     0 0 10px var(--glowPurple),
-    0 0 25px var(--glowPurple),
-    0 0 40px var(--glowPurple);
-  animation:wavyLetter 1.6s ease-in-out infinite;
-}
-.wavy-intro.show{
-  animation:wavyIntroFade 1.1s cubic-bezier(.22,.61,.36,1) forwards;
-}
-.wavy-intro.hide{
-  animation:wavyIntroOut .7s cubic-bezier(.4,0,.6,1) forwards;
+    0 0 24px var(--glowPurple),
+    0 0 36px var(--glowPurple);
+  animation:wavyLetter 1.5s ease-in-out infinite;
 }
 
-/* Other content styling */
+/* info & lists */
 .tab-content p{
   font-size:.9rem;
   color:var(--muted);
@@ -411,7 +411,6 @@ body{
   margin-bottom:4px;
 }
 
-/* Definition style lists */
 .info-list{
   list-style:none;
   padding-left:0;
@@ -430,7 +429,7 @@ body{
   font-size:.9rem;
 }
 
-/* Grids & cards */
+/* cards & grids */
 .grid{
   display:grid;
   gap:14px;
@@ -439,16 +438,16 @@ body{
 .card{
   padding:12px;
   border-radius:12px;
-  background:rgba(8,8,22,0.88);
-  border:1px solid rgba(177,0,255,0.35);
-  box-shadow:0 10px 24px rgba(0,0,0,0.55);
-  transition:transform .18s ease-out, box-shadow .24s ease-out, background .24s ease-out, border-color .24s ease-out;
+  background:rgba(8,8,22,0.86);
+  border:1px solid rgba(177,0,255,0.3);
+  box-shadow:0 8px 20px rgba(0,0,0,0.55);
+  transition:transform .14s ease-out, box-shadow .18s ease-out, background .18s ease-out, border-color .18s ease-out;
 }
 .card:hover{
-  transform:translateY(-3px);
-  background:rgba(10,10,26,0.98);
-  border-color:rgba(177,0,255,0.9);
-  box-shadow:0 0 22px rgba(177,0,255,0.75);
+  transform:translateY(-2px);
+  background:rgba(10,10,26,0.96);
+  border-color:rgba(177,0,255,0.8);
+  box-shadow:0 0 18px rgba(177,0,255,0.65);
 }
 .card h3{
   margin:0 0 8px;
@@ -463,7 +462,7 @@ body{
   opacity:.82;
 }
 
-/* Socials bottom-right */
+/* socials */
 .socials{
   position:fixed;
   bottom:16px;
@@ -478,14 +477,14 @@ body{
   border-radius:50%;
   display:grid;
   place-items:center;
-  background:radial-gradient(circle, rgba(177,0,255,0.32), rgba(15,15,24,0.7));
-  border:1px solid rgba(177,0,255,0.55);
-  box-shadow:0 0 18px rgba(177,0,255,0.58);
-  transition:transform .16s ease-out, box-shadow .24s ease-out;
+  background:radial-gradient(circle, rgba(177,0,255,0.28), rgba(15,15,24,0.7));
+  border:1px solid rgba(177,0,255,0.5);
+  box-shadow:0 0 14px rgba(177,0,255,0.5);
+  transition:transform .14s ease-out, box-shadow .18s ease-out;
 }
 .icon-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 24px rgba(177,0,255,0.9);
+  transform:translateY(-1px);
+  box-shadow:0 0 20px rgba(177,0,255,0.8);
 }
 .icon svg{
   width:24px;
@@ -493,7 +492,7 @@ body{
   fill:#fff;
 }
 
-/* Sound gate (transparent, clean, smooth) */
+/* sound gate */
 .sound-gate{
   position:fixed;
   inset:0;
@@ -502,17 +501,17 @@ body{
   align-items:center;
   justify-content:center;
   background:rgba(0,0,0,0.45);
-  backdrop-filter:blur(12px) saturate(1.1);
-  animation:fadeInGate .4s ease-out forwards;
+  backdrop-filter:blur(10px) saturate(1.1);
+  animation:fadeInGate .35s ease-out forwards;
 }
 .sound-inner{
   padding:18px 24px;
   border-radius:18px;
-  background:rgba(10,10,24,0.85);
+  background:rgba(10,10,24,0.84);
   border:1px solid rgba(177,0,255,0.55);
   box-shadow:
-    0 0 26px rgba(177,0,255,0.65),
-    0 14px 30px rgba(0,0,0,0.9);
+    0 0 20px rgba(177,0,255,0.6),
+    0 12px 26px rgba(0,0,0,0.9);
   text-align:center;
   animation:gateFloat 1.4s ease-in-out infinite alternate;
 }
@@ -520,33 +519,31 @@ body{
   font-size:.92rem;
   color:var(--muted);
   margin-bottom:10px;
-  text-decoration:none;
 }
 .sound-btn{
   padding:12px 22px;
   border-radius:999px;
   color:#fff;
   cursor:pointer;
-  background:linear-gradient(180deg, rgba(177,0,255,0.42), rgba(177,0,255,0.2));
+  background:linear-gradient(180deg, rgba(177,0,255,0.38), rgba(177,0,255,0.18));
   border:1px solid rgba(177,0,255,0.9);
   box-shadow:
-    0 0 22px rgba(177,0,255,0.9),
-    0 10px 26px rgba(0,0,0,0.95);
+    0 0 20px rgba(177,0,255,0.85),
+    0 10px 22px rgba(0,0,0,0.95);
   font-size:1rem;
   transition:
-    transform .18s ease-out,
-    box-shadow .24s ease-out,
-    background .24s ease-out;
-  text-decoration:none;
+    transform .16s ease-out,
+    box-shadow .18s ease-out,
+    background .18s ease-out;
 }
 .sound-btn:hover{
-  transform:translateY(-2px) scale(1.03);
+  transform:translateY(-1px) scale(1.02);
   box-shadow:
-    0 0 30px rgba(177,0,255,1),
-    0 14px 32px rgba(0,0,0,1);
+    0 0 26px rgba(177,0,255,0.95),
+    0 12px 26px rgba(0,0,0,1);
 }
 
-/* Audio controls layout */
+/* audio controls */
 .control-row{
   display:flex;
   align-items:center;
@@ -562,8 +559,6 @@ body{
 .control-row input[type="range"]{
   flex:1;
 }
-
-/* RANGE INPUT STYLING */
 input[type="range"]{
   -webkit-appearance:none;
   height:4px;
@@ -577,7 +572,7 @@ input[type="range"]::-webkit-slider-thumb{
   height:14px;
   border-radius:50%;
   background:var(--primary);
-  box-shadow:0 0 12px rgba(177,0,255,0.8);
+  box-shadow:0 0 10px rgba(177,0,255,0.75);
   border:1px solid rgba(255,255,255,0.7);
   cursor:pointer;
 }
@@ -586,20 +581,20 @@ input[type="range"]::-moz-range-thumb{
   height:14px;
   border-radius:50%;
   background:var(--primary);
-  box-shadow:0 0 12px rgba(177,0,255,0.8);
+  box-shadow:0 0 10px rgba(177,0,255,0.75);
   border:1px solid rgba(255,255,255,0.7);
   cursor:pointer;
 }
 
-/* Animations */
+/* animations */
 @keyframes pinReveal{
-  0%{opacity:0;transform:translateY(-8px)}
+  0%{opacity:0;transform:translateY(-6px)}
   100%{opacity:1;transform:translateY(0)}
 }
 @keyframes particleDrift{
   0%{opacity:0;transform:translate3d(0,0,0) scale(1);}
-  40%{opacity:.95;transform:translate3d(10px,-8px,0) scale(1.05);}
-  100%{opacity:0;transform:translate3d(22px,-16px,0) scale(1.12);}
+  40%{opacity:.9;transform:translate3d(8px,-6px,0) scale(1.04);}
+  100%{opacity:0;transform:translate3d(18px,-12px,0) scale(1.08);}
 }
 @keyframes fadeInGate{
   0%{opacity:0}
@@ -607,18 +602,16 @@ input[type="range"]::-moz-range-thumb{
 }
 @keyframes gateFloat{
   0%{transform:translateY(0)}
-  100%{transform:translateY(-4px)}
+  100%{transform:translateY(-3px)}
 }
-
-/* Fold-out keyframes */
 @keyframes tabFoldIn{
   0%{
     opacity:0;
-    transform:rotateX(-14deg) translateY(18px);
+    transform:rotateX(-10deg) translateY(12px);
   }
   60%{
     opacity:1;
-    transform:rotateX(3deg) translateY(3px);
+    transform:rotateX(2deg) translateY(2px);
   }
   100%{
     opacity:1;
@@ -632,26 +625,16 @@ input[type="range"]::-moz-range-thumb{
   }
   100%{
     opacity:0;
-    transform:rotateX(10deg) translateY(16px);
+    transform:rotateX(8deg) translateY(12px);
   }
 }
-
-/* Wavy intro animations */
 @keyframes wavyLetter{
   0%{transform:translateY(0);}
-  50%{transform:translateY(-6px);}
+  50%{transform:translateY(-5px);}
   100%{transform:translateY(0);}
 }
-@keyframes wavyIntroFade{
-  0%{opacity:0;transform:translateY(12px);}
-  100%{opacity:1;transform:translateY(0);}
-}
-@keyframes wavyIntroOut{
-  0%{opacity:1;transform:translateY(0);}
-  100%{opacity:0;transform:translateY(-12px);}
-}
 
-/* Scrollbar subtle styling */
+/* scrollbars */
 .tab-content::-webkit-scrollbar{
   width:6px;
 }
@@ -662,11 +645,18 @@ input[type="range"]::-moz-range-thumb{
   background:rgba(177,0,255,0.55);
   border-radius:999px;
 }
+
+/* disable parallax on small screens */
+@media (max-width:900px){
+  .panel-shell,
+  .sidebar{
+    transform:none !important;
+  }
+}
 </style>
 </head>
 <body>
 
-<!-- Background video -->
 <div class="video-bg">
   <video id="bgVideo" autoplay loop playsinline muted preload="metadata">
     <source src="assets/background.webm" type="video/webm">
@@ -676,7 +666,7 @@ input[type="range"]::-moz-range-thumb{
 </div>
 <div class="bg-overlay" aria-hidden="true"></div>
 
-<!-- Sound gate -->
+<!-- sound gate -->
 <div class="sound-gate" id="soundGate" aria-modal="true" role="dialog">
   <div class="sound-inner">
     <div class="sound-label">Enter with tuned background audio</div>
@@ -686,10 +676,21 @@ input[type="range"]::-moz-range-thumb{
   </div>
 </div>
 
-<!-- App shell -->
-<div class="app-shell">
+<!-- full-screen intro overlay (blur + neon name) -->
+<div class="intro-overlay" id="introOverlay">
+  <div class="wavy-inner">
+    <span class="wavy-letter" style="animation-delay:0s;">A</span>
+    <span class="wavy-letter" style="animation-delay:.06s;">s</span>
+    <span class="wavy-letter" style="animation-delay:.12s;">h</span>
+    <span class="wavy-letter" style="animation-delay:.18s;">i</span>
+    <span class="wavy-letter" style="animation-delay:.24s;">h</span>
+    <span class="wavy-letter" style="animation-delay:.30s;">i</span>
+    <span class="wavy-letter" style="animation-delay:.36s;">r</span>
+    <span class="wavy-letter" style="animation-delay:.42s;">o</span>
+  </div>
+</div>
 
-  <!-- Sidebar -->
+<div class="app-shell" id="appShell">
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">@Ashihiro</div>
@@ -712,27 +713,10 @@ input[type="range"]::-moz-range-thumb{
     </div>
   </aside>
 
-  <!-- Main area -->
   <main class="main">
     <div class="pin-logo" id="pinLogo">@Ashihiro</div>
 
     <section class="panel-shell" id="panelShell">
-
-      <!-- Wavy neon intro overlay -->
-      <div class="wavy-intro" id="wavyIntro">
-        <div class="wavy-inner">
-          <span class="wavy-letter" style="animation-delay:0s;">A</span>
-          <span class="wavy-letter" style="animation-delay:.06s;">s</span>
-          <span class="wavy-letter" style="animation-delay:.12s;">h</span>
-          <span class="wavy-letter" style="animation-delay:.18s;">i</span>
-          <span class="wavy-letter" style="animation-delay:.24s;">h</span>
-          <span class="wavy-letter" style="animation-delay:.30s;">i</span>
-          <span class="wavy-letter" style="animation-delay:.36s;">r</span>
-          <span class="wavy-letter" style="animation-delay:.42s;">o</span>
-        </div>
-      </div>
-
-      <!-- HOME / INTRO PAGE -->
       <div id="home" class="tab-content active entering">
         <div class="home-intro">
           <div class="home-box" id="homeBox">
@@ -741,13 +725,12 @@ input[type="range"]::-moz-range-thumb{
               Projects brought to light. Remade programs, hacking tools, remodeled Luna and more.
             </div>
             <div class="home-note">
-              Enter with sound to feel the tuned background, then slide through Programs, Sources, and more from the sidebar.
+              Tabs load in after the intro. Once you’re in, bounce through Programs, Sources, and more from the sidebar.
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ABOUT -->
       <div id="about" class="tab-content">
         <div class="section-title-wrap">
           <h2 class="section-title">About me</h2>
@@ -773,7 +756,6 @@ input[type="range"]::-moz-range-thumb{
         </ul>
       </div>
 
-      <!-- OWNERS -->
       <div id="owners" class="tab-content">
         <div class="section-title-wrap">
           <h2 class="section-title">Owners</h2>
@@ -791,7 +773,6 @@ input[type="range"]::-moz-range-thumb{
         </ul>
       </div>
 
-      <!-- PROGRAMS -->
       <div id="programs" class="tab-content">
         <div class="section-title-wrap">
           <h2 class="section-title">Programs</h2>
@@ -801,7 +782,6 @@ input[type="range"]::-moz-range-thumb{
         <div class="grid" id="programsGrid"></div>
       </div>
 
-      <!-- DOWNLOADS -->
       <div id="downloads" class="tab-content">
         <div class="section-title-wrap">
           <h2 class="section-title">Downloads</h2>
@@ -811,7 +791,6 @@ input[type="range"]::-moz-range-thumb{
         <div class="grid" id="downloadsGrid"></div>
       </div>
 
-      <!-- SOURCES -->
       <div id="sources" class="tab-content">
         <div class="section-title-wrap">
           <h2 class="section-title">Sources</h2>
@@ -821,7 +800,6 @@ input[type="range"]::-moz-range-thumb{
         <div class="grid" id="sourcesGrid"></div>
       </div>
 
-      <!-- SOCIALS -->
       <div id="socials" class="tab-content">
         <div class="section-title-wrap">
           <h2 class="section-title">Socials</h2>
@@ -832,7 +810,6 @@ input[type="range"]::-moz-range-thumb{
         <p style="margin-top:10px;">Discord is where I’m most active. Insta is more for visuals, previews, and random posts.</p>
       </div>
 
-      <!-- CONTACT -->
       <div id="contact" class="tab-content">
         <div class="section-title-wrap">
           <h2 class="section-title">Contact</h2>
@@ -851,7 +828,6 @@ input[type="range"]::-moz-range-thumb{
         </ul>
       </div>
 
-      <!-- AUDIO -->
       <div id="audio" class="tab-content">
         <div class="section-title-wrap">
           <h2 class="section-title">Audio controls</h2>
@@ -906,7 +882,6 @@ input[type="range"]::-moz-range-thumb{
   </main>
 </div>
 
-<!-- Socials -->
 <div class="socials">
   <a class="icon-btn" href="https://www.instagram.com/whatzthattea/" target="_blank" aria-label="Instagram">
     <span class="icon" aria-hidden="true">
@@ -921,10 +896,8 @@ input[type="range"]::-moz-range-thumb{
 </div>
 
 <script>
-/* Tabs with fold-out animation */
+/* tabs */
 const buttons=[...document.querySelectorAll('.tab-btn')];
-const panels=[...document.querySelectorAll('.tab-content')];
-
 let activePanel=document.querySelector('.tab-content.active');
 
 buttons.forEach(btn=>{
@@ -958,13 +931,14 @@ buttons.forEach(btn=>{
   });
 });
 
-/* Audio + intro behavior */
+/* audio + intro */
 const video=document.getElementById('bgVideo');
 const gate=document.getElementById('soundGate');
 const enableBtn=document.getElementById('enableSound');
 const pinLogo=document.getElementById('pinLogo');
 const homeBox=document.getElementById('homeBox');
-const wavyIntro=document.getElementById('wavyIntro');
+const introOverlay=document.getElementById('introOverlay');
+const appShell=document.getElementById('appShell');
 
 let audioCtx, source, bass, mid, treble, convolver, reverbGain, dryGain, stereoSplitter, stereoMerger, stereoWidth, master;
 
@@ -1042,24 +1016,26 @@ async function enterWithSound(){
     await video.play();
     await audioCtx.resume();
   }catch(e){
-    // ignore, still close gate
   }finally{
     gate.style.display='none';
 
-    // Activate subtle particle glow on home box
+    // show full-screen intro overlay first
+    introOverlay.classList.remove('hide');
+    introOverlay.classList.add('show');
+
+    // subtle effect inside home box behind intro
     homeBox.classList.add('intro-active');
 
-    // Show wavy neon intro
-    wavyIntro.classList.remove('hide');
-    wavyIntro.classList.add('show');
-
-    // After wavy intro, fade it out and then reveal pin logo
+    // after intro duration, fade overlay out and then reveal app shell + pin logo
     setTimeout(()=>{
-      wavyIntro.classList.remove('show');
-      wavyIntro.classList.add('hide');
+      introOverlay.classList.remove('show');
+      introOverlay.classList.add('hide');
     }, 2000);
 
-    setTimeout(()=> pinLogo.classList.add('show'), 2600);
+    setTimeout(()=>{
+      appShell.classList.add('ready');
+      pinLogo.classList.add('show');
+    }, 2400);
   }
 }
 
@@ -1067,7 +1043,7 @@ enableBtn.addEventListener('click', enterWithSound);
 gate.addEventListener('click', (e)=>{ if(e.target===gate) enterWithSound(); });
 window.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') enterWithSound(); });
 
-/* Data-driven sections */
+/* data-driven cards */
 async function loadData(url){
   try{
     const r=await fetch(url,{cache:'no-store'});
@@ -1104,7 +1080,7 @@ function renderCards(targetId, items){
   renderCards('sourcesGrid', await loadData('data/sources.json'));
 })();
 
-/* Subtle parallax / tilt that follows mouse (optimized) */
+/* softened parallax / tilt with throttling */
 const panelShell=document.getElementById('panelShell');
 const sidebar=document.querySelector('.sidebar');
 let mouseX=0, mouseY=0;
@@ -1118,17 +1094,22 @@ function updateTilt(){
   const dx=(mouseX - centerX)/rect.width;
   const dy=(mouseY - centerY)/rect.height;
 
-  const maxTilt=5;
+  const maxTilt=3;
   const rotateX=dy * -maxTilt;
   const rotateY=dx * maxTilt;
 
   panelShell.style.transform=`rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
-  sidebar.style.transform=`translateZ(0) translateY(${dy*4}px)`;
+  sidebar.style.transform=`translateZ(0) translateY(${dy*3}px)`;
 
   ticking=false;
 }
 
+let lastMove=0;
 window.addEventListener('mousemove',(e)=>{
+  const now=performance.now();
+  if(now - lastMove < 20) return;
+  lastMove=now;
+
   mouseX=e.clientX;
   mouseY=e.clientY;
   if(!ticking){
