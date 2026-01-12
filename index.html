@@ -32,16 +32,38 @@
   --text:#f5efff;
   --muted:#cfc8ff;
   --borderSoft:rgba(177,0,255,0.4);
+  --glowPurple:rgba(177,0,255,1);
 }
 
-/* Base */
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
+/* Base reset */
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+html,body{
+  height:100%;
+}
 body{
   background:radial-gradient(circle at top, #13091f 0, #05050a 55%);
   color:var(--text);
   font-family:'Audiowide',sans-serif;
   overflow:hidden;
+}
+
+/* Performance hint for animated elements */
+.tab-btn,
+.tab-content,
+.home-box,
+.pin-logo,
+.sound-gate,
+.sound-inner,
+.card,
+.panel-shell,
+.sidebar,
+.wavy-intro{
+  will-change:transform,opacity;
+  transform:translateZ(0);
 }
 
 /* Background video */
@@ -78,6 +100,7 @@ body{
   display:flex;
   height:100vh;
   padding:18px;
+  perspective:1200px;
 }
 
 /* Sidebar (ultra-glass) */
@@ -89,13 +112,13 @@ body{
   height:100%;
   border-radius:18px;
 
-  background:rgba(5,5,15,0.26);
-  backdrop-filter:blur(24px) saturate(1.5);
+  background:rgba(5,5,15,0.36);
+  backdrop-filter:blur(24px) saturate(1.7);
 
-  border:1px solid rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
   box-shadow:
-    0 18px 40px rgba(0,0,0,0.8),
-    0 0 26px rgba(177,0,255,0.22);
+    0 14px 30px rgba(0,0,0,0.85),
+    0 0 24px rgba(177,0,255,0.35);
 
   display:flex;
   flex-direction:column;
@@ -110,8 +133,11 @@ body{
 }
 .sidebar-title{
   font-size:1.2rem;
-  letter-spacing:.04em;
-  text-shadow:0 0 6px #fff,0 0 18px var(--primary),0 0 36px var(--primarySoft);
+  letter-spacing:.08em;
+  text-shadow:
+    0 0 4px #fff,
+    0 0 12px var(--primary),
+    0 0 26px var(--primarySoft);
 }
 
 /* Sidebar nav */
@@ -123,48 +149,68 @@ body{
   margin-top:12px;
 }
 
-/* TABS – ULTRA GLASS, WHOLE PAGE TRANSPARENT VIBE */
+/* TABS – glass, detailed, smoother */
 .tab-btn{
   width:100%;
   text-align:left;
-  padding:10px 16px;
+  padding:10px 18px;
   border-radius:999px;
-  font-size:.92rem;
+  font-size:.88rem;
   color:var(--text);
   cursor:pointer;
   border:none;
   outline:none;
 
-  background:rgba(5,5,15,0.14);
-  backdrop-filter:blur(16px) saturate(1.5);
+  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.08), transparent 55%) border-box,
+             rgba(5,5,15,0.2);
+  backdrop-filter:blur(18px) saturate(1.5);
 
-  border:1px solid rgba(177,0,255,0.22);
+  border:1px solid rgba(177,0,255,0.24);
+
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:8px;
 
   transition:
-    transform .18s ease,
-    box-shadow .25s ease,
-    background .25s ease,
-    border-color .25s ease,
-    opacity .25s ease,
-    color .25s ease;
-
+    transform .16s ease-out,
+    box-shadow .24s ease-out,
+    background .24s ease-out,
+    border-color .24s ease-out,
+    opacity .24s ease-out,
+    color .24s ease-out;
   opacity:.84;
+}
+.tab-btn::before{
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:radial-gradient(circle, var(--accent), transparent 60%);
+  opacity:.45;
+  transition:opacity .24s ease-out, transform .24s ease-out;
 }
 .tab-btn:hover{
   transform:translateY(-2px);
-  background:rgba(10,10,25,0.22);
-  border-color:rgba(177,0,255,0.45);
-  box-shadow:0 0 26px rgba(177,0,255,0.65);
+  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.16), transparent 55%) border-box,
+             rgba(10,10,25,0.26);
+  border-color:rgba(177,0,255,0.55);
+  box-shadow:0 0 20px rgba(177,0,255,0.75);
   opacity:1;
 }
 .tab-btn.active{
   color:#fff;
-  background:rgba(15,15,35,0.32);
-  border-color:rgba(177,0,255,0.95);
+  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.22), transparent 55%) border-box,
+             rgba(15,15,35,0.34);
+  border-color:rgba(177,0,255,1);
   box-shadow:
-    0 0 30px rgba(177,0,255,0.95),
-    0 10px 26px rgba(0,0,0,0.9);
+    0 0 30px rgba(177,0,255,0.98),
+    0 10px 26px rgba(0,0,0,0.92);
   opacity:1;
+}
+.tab-btn.active::before{
+  opacity:1;
+  transform:scale(1.35);
 }
 
 /* Sidebar footer */
@@ -190,47 +236,77 @@ body{
   top:4px;
   right:4px;
   z-index:4;
-  font-size:1.2rem;
+  font-size:1.1rem;
   padding:6px 14px;
   border-radius:999px;
-  background:rgba(6,6,18,0.75);
-  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(6,6,18,0.78);
+  border:1px solid rgba(255,255,255,0.09);
   box-shadow:
     0 0 16px rgba(0,0,0,0.8),
     0 0 26px rgba(177,0,255,0.35);
-  text-shadow:0 0 6px #fff,0 0 18px var(--primary),0 0 36px var(--primarySoft);
-  opacity:0;transform:translateY(-8px);
+  text-shadow:0 0 5px #fff,0 0 18px var(--primary),0 0 32px var(--primarySoft);
+  opacity:0;
+  transform:translateY(-8px);
 }
 .pin-logo.show{
-  animation:pinReveal .9s ease forwards;
+  animation:pinReveal .9s cubic-bezier(.22,.61,.36,1) forwards;
 }
 
-/* Panel shell – more transparent glass */
+/* Panel shell – main glass card that will tilt */
 .panel-shell{
   position:absolute;
   inset:24px 4px 4px 4px;
   border-radius:18px;
   border:1px solid rgba(255,255,255,0.08);
-  background:rgba(4,4,12,0.50);
-  backdrop-filter:blur(22px) saturate(1.4);
+  background:rgba(4,4,12,0.52);
+  backdrop-filter:blur(22px) saturate(1.5);
   box-shadow:
     0 18px 40px rgba(0,0,0,0.9),
     0 0 26px rgba(177,0,255,0.35);
   overflow:hidden;
+  transform-style:preserve-3d;
+  transition:transform .16s ease-out;
 }
+
+/* Tab content base */
 .tab-content{
-  display:none;
+  position:absolute;
+  inset:0;
   padding:18px 20px 16px;
-  height:100%;
   overflow:auto;
-  animation:panelFade .4s ease-out forwards;
+  opacity:0;
+  pointer-events:none;
+  transform-origin:top center;
+  transform:rotateX(-10deg) translateY(10px);
+  backface-visibility:hidden;
 }
+
+/* Active tab visible state */
 .tab-content.active{
-  display:block;
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* Fold-out animation states */
+.tab-content.entering{
+  animation:tabFoldIn .5s cubic-bezier(.22,.61,.36,1) forwards;
+}
+.tab-content.leaving{
+  animation:tabFoldOut .38s cubic-bezier(.4,0,.6,1) forwards;
+}
+
+/* Section titles + descriptions */
+.section-title-wrap{
+  margin-bottom:10px;
 }
 .section-title{
   font-size:1.1rem;
-  margin:2px 0 10px;
+  margin-bottom:4px;
+}
+.section-desc{
+  font-size:.78rem;
+  color:var(--muted);
+  opacity:.85;
 }
 
 /* HOME as intro: glassy bordered center box */
@@ -245,7 +321,8 @@ body{
   max-width:460px;
   padding:20px 24px;
   border-radius:18px;
-  background:rgba(5,5,15,0.70);
+  background:radial-gradient(circle at 0 0, rgba(255,255,255,0.12), transparent 55%) border-box,
+             rgba(5,5,15,0.72);
   border:1px solid var(--borderSoft);
   box-shadow:
     0 0 26px rgba(177,0,255,0.7),
@@ -264,7 +341,7 @@ body{
   mix-blend-mode:screen;
 }
 .home-box.intro-active::before{
-  animation:particleDrift 1.9s ease-out 1.9s forwards;
+  animation:particleDrift 2s ease-out 0.8s forwards;
 }
 .home-title{
   font-size:1.45rem;
@@ -279,6 +356,43 @@ body{
   font-size:.8rem;
   color:var(--muted);
   opacity:.9;
+}
+
+/* Wavy neon intro text */
+.wavy-intro{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:0;
+}
+.wavy-inner{
+  padding:16px 30px;
+  border-radius:999px;
+  background:rgba(10,4,24,0.72);
+  border:1px solid rgba(177,0,255,0.9);
+  box-shadow:
+    0 0 35px rgba(177,0,255,1),
+    0 0 80px rgba(177,0,255,0.9);
+  display:flex;
+  gap:4px;
+}
+.wavy-letter{
+  font-size:2.3rem;
+  color:#fff;
+  text-shadow:
+    0 0 10px var(--glowPurple),
+    0 0 25px var(--glowPurple),
+    0 0 40px var(--glowPurple);
+  animation:wavyLetter 1.6s ease-in-out infinite;
+}
+.wavy-intro.show{
+  animation:wavyIntroFade 1.1s cubic-bezier(.22,.61,.36,1) forwards;
+}
+.wavy-intro.hide{
+  animation:wavyIntroOut .7s cubic-bezier(.4,0,.6,1) forwards;
 }
 
 /* Other content styling */
@@ -297,7 +411,26 @@ body{
   margin-bottom:4px;
 }
 
-/* Grids & cards (slightly glassy) */
+/* Definition style lists */
+.info-list{
+  list-style:none;
+  padding-left:0;
+}
+.info-list li{
+  margin-bottom:6px;
+}
+.info-label{
+  font-size:.8rem;
+  color:var(--accent);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  display:block;
+}
+.info-text{
+  font-size:.9rem;
+}
+
+/* Grids & cards */
 .grid{
   display:grid;
   gap:14px;
@@ -306,15 +439,16 @@ body{
 .card{
   padding:12px;
   border-radius:12px;
-  background:rgba(8,8,22,0.78);
+  background:rgba(8,8,22,0.88);
   border:1px solid rgba(177,0,255,0.35);
-  box-shadow:0 6px 18px rgba(0,0,0,0.45);
-  transition:transform .16s ease, box-shadow .22s ease, background .22s ease;
+  box-shadow:0 10px 24px rgba(0,0,0,0.55);
+  transition:transform .18s ease-out, box-shadow .24s ease-out, background .24s ease-out, border-color .24s ease-out;
 }
 .card:hover{
-  transform:translateY(-2px);
-  background:rgba(10,10,26,0.92);
-  box-shadow:0 0 18px rgba(177,0,255,0.65);
+  transform:translateY(-3px);
+  background:rgba(10,10,26,0.98);
+  border-color:rgba(177,0,255,0.9);
+  box-shadow:0 0 22px rgba(177,0,255,0.75);
 }
 .card h3{
   margin:0 0 8px;
@@ -347,7 +481,7 @@ body{
   background:radial-gradient(circle, rgba(177,0,255,0.32), rgba(15,15,24,0.7));
   border:1px solid rgba(177,0,255,0.55);
   box-shadow:0 0 18px rgba(177,0,255,0.58);
-  transition:transform .14s ease, box-shadow .22s ease;
+  transition:transform .16s ease-out, box-shadow .24s ease-out;
 }
 .icon-btn:hover{
   transform:translateY(-2px);
@@ -374,10 +508,10 @@ body{
 .sound-inner{
   padding:18px 24px;
   border-radius:18px;
-  background:rgba(10,10,24,0.75);
-  border:1px solid rgba(177,0,255,0.45);
+  background:rgba(10,10,24,0.85);
+  border:1px solid rgba(177,0,255,0.55);
   box-shadow:
-    0 0 26px rgba(177,0,255,0.55),
+    0 0 26px rgba(177,0,255,0.65),
     0 14px 30px rgba(0,0,0,0.9);
   text-align:center;
   animation:gateFloat 1.4s ease-in-out infinite alternate;
@@ -393,16 +527,16 @@ body{
   border-radius:999px;
   color:#fff;
   cursor:pointer;
-  background:linear-gradient(180deg, rgba(177,0,255,0.32), rgba(177,0,255,0.18));
-  border:1px solid rgba(177,0,255,0.7);
+  background:linear-gradient(180deg, rgba(177,0,255,0.42), rgba(177,0,255,0.2));
+  border:1px solid rgba(177,0,255,0.9);
   box-shadow:
-    0 0 22px rgba(177,0,255,0.8),
-    0 10px 26px rgba(0,0,0,0.9);
+    0 0 22px rgba(177,0,255,0.9),
+    0 10px 26px rgba(0,0,0,0.95);
   font-size:1rem;
   transition:
-    transform .18s ease,
-    box-shadow .22s ease,
-    background .22s ease;
+    transform .18s ease-out,
+    box-shadow .24s ease-out,
+    background .24s ease-out;
   text-decoration:none;
 }
 .sound-btn:hover{
@@ -412,13 +546,54 @@ body{
     0 14px 32px rgba(0,0,0,1);
 }
 
+/* Audio controls layout */
+.control-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+  font-size:.85rem;
+}
+.control-row label{
+  flex:0 0 110px;
+  color:var(--muted);
+}
+.control-row input[type="range"]{
+  flex:1;
+}
+
+/* RANGE INPUT STYLING */
+input[type="range"]{
+  -webkit-appearance:none;
+  height:4px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.12);
+  outline:none;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:var(--primary);
+  box-shadow:0 0 12px rgba(177,0,255,0.8);
+  border:1px solid rgba(255,255,255,0.7);
+  cursor:pointer;
+}
+input[type="range"]::-moz-range-thumb{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:var(--primary);
+  box-shadow:0 0 12px rgba(177,0,255,0.8);
+  border:1px solid rgba(255,255,255,0.7);
+  cursor:pointer;
+}
+
 /* Animations */
 @keyframes pinReveal{
   0%{opacity:0;transform:translateY(-8px)}
-  100%{opacity:1;transform:translateY(0)}
-}
-@keyframes panelFade{
-  0%{opacity:0;transform:translateY(6px)}
   100%{opacity:1;transform:translateY(0)}
 }
 @keyframes particleDrift{
@@ -434,13 +609,66 @@ body{
   0%{transform:translateY(0)}
   100%{transform:translateY(-4px)}
 }
+
+/* Fold-out keyframes */
+@keyframes tabFoldIn{
+  0%{
+    opacity:0;
+    transform:rotateX(-14deg) translateY(18px);
+  }
+  60%{
+    opacity:1;
+    transform:rotateX(3deg) translateY(3px);
+  }
+  100%{
+    opacity:1;
+    transform:rotateX(0deg) translateY(0);
+  }
+}
+@keyframes tabFoldOut{
+  0%{
+    opacity:1;
+    transform:rotateX(0deg) translateY(0);
+  }
+  100%{
+    opacity:0;
+    transform:rotateX(10deg) translateY(16px);
+  }
+}
+
+/* Wavy intro animations */
+@keyframes wavyLetter{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+  100%{transform:translateY(0);}
+}
+@keyframes wavyIntroFade{
+  0%{opacity:0;transform:translateY(12px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+@keyframes wavyIntroOut{
+  0%{opacity:1;transform:translateY(0);}
+  100%{opacity:0;transform:translateY(-12px);}
+}
+
+/* Scrollbar subtle styling */
+.tab-content::-webkit-scrollbar{
+  width:6px;
+}
+.tab-content::-webkit-scrollbar-track{
+  background:transparent;
+}
+.tab-content::-webkit-scrollbar-thumb{
+  background:rgba(177,0,255,0.55);
+  border-radius:999px;
+}
 </style>
 </head>
 <body>
 
 <!-- Background video -->
 <div class="video-bg">
-  <video id="bgVideo" autoplay loop playsinline muted>
+  <video id="bgVideo" autoplay loop playsinline muted preload="metadata">
     <source src="assets/background.webm" type="video/webm">
     <source src="assets/background.mp4" type="video/mp4">
     Your browser does not support the video tag.
@@ -488,10 +716,24 @@ body{
   <main class="main">
     <div class="pin-logo" id="pinLogo">@Ashihiro</div>
 
-    <section class="panel-shell">
+    <section class="panel-shell" id="panelShell">
+
+      <!-- Wavy neon intro overlay -->
+      <div class="wavy-intro" id="wavyIntro">
+        <div class="wavy-inner">
+          <span class="wavy-letter" style="animation-delay:0s;">A</span>
+          <span class="wavy-letter" style="animation-delay:.06s;">s</span>
+          <span class="wavy-letter" style="animation-delay:.12s;">h</span>
+          <span class="wavy-letter" style="animation-delay:.18s;">i</span>
+          <span class="wavy-letter" style="animation-delay:.24s;">h</span>
+          <span class="wavy-letter" style="animation-delay:.30s;">i</span>
+          <span class="wavy-letter" style="animation-delay:.36s;">r</span>
+          <span class="wavy-letter" style="animation-delay:.42s;">o</span>
+        </div>
+      </div>
 
       <!-- HOME / INTRO PAGE -->
-      <div id="home" class="tab-content active">
+      <div id="home" class="tab-content active entering">
         <div class="home-intro">
           <div class="home-box" id="homeBox">
             <div class="home-title">Ashihiros man cave</div>
@@ -499,53 +741,122 @@ body{
               Projects brought to light. Remade programs, hacking tools, remodeled Luna and more.
             </div>
             <div class="home-note">
-              Enter with sound to feel the tuned background, then explore Programs, Sources, and more from the sidebar.
+              Enter with sound to feel the tuned background, then slide through Programs, Sources, and more from the sidebar.
             </div>
           </div>
         </div>
       </div>
 
-      <!-- OTHER TABS -->
+      <!-- ABOUT -->
       <div id="about" class="tab-content">
-        <h2 class="section-title">About me</h2>
-        <p>Im a solo man as off right now...... but its okay ASHIHIRO IS HERE MAKING BANGERS lol !!! we make remade stuff remade luna grabber its a open source project anyones free to tamper with it but owner got account deleted so</p>
-      </div>
-
-      <div id="owners" class="tab-content">
-        <h2 class="section-title">Owners</h2>
-        <ul>
-          <li><strong>9ukx (Owner)</strong></li>
+        <div class="section-title-wrap">
+          <h2 class="section-title">About me</h2>
+          <p class="section-desc">Who’s behind the projects, the ideas, and the chaos.</p>
+        </div>
+        <ul class="info-list">
+          <li>
+            <span class="info-label">Core</span>
+            <span class="info-text">Im a solo man as off right now... but its okay, ASHIHIRO IS HERE MAKING BANGERS lol.</span>
+          </li>
+          <li>
+            <span class="info-label">What I do</span>
+            <span class="info-text">Remade tools, experiments, custom tweaks, and remodeled versions of stuff like Luna — all with my own spin.</span>
+          </li>
+          <li>
+            <span class="info-label">Open source vibe</span>
+            <span class="info-text">A lot of this is open and remixable. Break it, rebuild it, learn from it.</span>
+          </li>
+          <li>
+            <span class="info-label">Current focus</span>
+            <span class="info-text">Clean UI, hard‑hitting audio, and making everything feel like a personal hacking lounge.</span>
+          </li>
         </ul>
       </div>
 
+      <!-- OWNERS -->
+      <div id="owners" class="tab-content">
+        <div class="section-title-wrap">
+          <h2 class="section-title">Owners</h2>
+          <p class="section-desc">Who actually holds the keys.</p>
+        </div>
+        <ul class="info-list">
+          <li>
+            <span class="info-label">Main owner</span>
+            <span class="info-text"><strong>9ukx</strong> – runs the cave, pulls the strings, and organizes the drops.</span>
+          </li>
+          <li>
+            <span class="info-label">Support</span>
+            <span class="info-text">Friends, testers, and randoms who break stuff and help shape future versions.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- PROGRAMS -->
       <div id="programs" class="tab-content">
-        <h2 class="section-title">Programs</h2>
+        <div class="section-title-wrap">
+          <h2 class="section-title">Programs</h2>
+          <p class="section-desc">Active projects, remade tools, and weird experiments.</p>
+        </div>
+        <p>These are tools and experiments currently live or in rotation. JSON-powered, so new drops appear here automatically.</p>
         <div class="grid" id="programsGrid"></div>
       </div>
 
+      <!-- DOWNLOADS -->
       <div id="downloads" class="tab-content">
-        <h2 class="section-title">Downloads</h2>
+        <div class="section-title-wrap">
+          <h2 class="section-title">Downloads</h2>
+          <p class="section-desc">Ready-to-grab builds, archives, and packs.</p>
+        </div>
+        <p>Everything here is meant to grab and go. Keep an eye on versions and tags to know what you’re pulling.</p>
         <div class="grid" id="downloadsGrid"></div>
       </div>
 
+      <!-- SOURCES -->
       <div id="sources" class="tab-content">
-        <h2 class="section-title">Sources</h2>
+        <div class="section-title-wrap">
+          <h2 class="section-title">Sources</h2>
+          <p class="section-desc">Code, bases, inspirations, and building blocks.</p>
+        </div>
+        <p>Source repos, base projects, and references that power the tools in the other tabs.</p>
         <div class="grid" id="sourcesGrid"></div>
       </div>
 
+      <!-- SOCIALS -->
       <div id="socials" class="tab-content">
-        <h2 class="section-title">Socials</h2>
+        <div class="section-title-wrap">
+          <h2 class="section-title">Socials</h2>
+          <p class="section-desc">Places to actually reach me or watch from a distance.</p>
+        </div>
         <p><strong>Discord:</strong> 9ukx</p>
         <p><strong>Instagram:</strong> <a href="https://www.instagram.com/whatzthattea/" target="_blank" style="color:var(--accent);text-decoration:none;">@whatzthattea</a></p>
+        <p style="margin-top:10px;">Discord is where I’m most active. Insta is more for visuals, previews, and random posts.</p>
       </div>
 
+      <!-- CONTACT -->
       <div id="contact" class="tab-content">
-        <h2 class="section-title">Contact</h2>
-        <p>Asking For help or other sources contact my discord: <strong>9ukx</strong>.</p>
+        <div class="section-title-wrap">
+          <h2 class="section-title">Contact</h2>
+          <p class="section-desc">Need help, want info, or got ideas.</p>
+        </div>
+        <p>Asking for help, ideas, or other sources? Best way is:</p>
+        <ul class="info-list">
+          <li>
+            <span class="info-label">Discord</span>
+            <span class="info-text"><strong>9ukx</strong> – send a DM, ping for help, or talk projects.</span>
+          </li>
+          <li>
+            <span class="info-label">Server</span>
+            <span class="info-text">Join the Discord server from the icon below for wider updates and drops.</span>
+          </li>
+        </ul>
       </div>
 
+      <!-- AUDIO -->
       <div id="audio" class="tab-content">
-        <h2 class="section-title">Audio controls</h2>
+        <div class="section-title-wrap">
+          <h2 class="section-title">Audio controls</h2>
+          <p class="section-desc">Shape the background track to match your setup.</p>
+        </div>
         <div class="grid">
           <div class="card">
             <h3>Chill thump — full control</h3>
@@ -586,7 +897,7 @@ body{
               <input type="range" id="master" min="0" max="1" step="0.01" value="0.85">
             </div>
 
-            <p style="opacity:.85">Tip: Click “Enter with sound” — then fine‑tune speed, EQ, reverb, stereo, and volume live.</p>
+            <p style="opacity:.85;margin-top:6px;">Tip: Hit “Enter with sound” first. Then tweak speed, EQ, reverb, stereo, and volume live while you browse.</p>
           </div>
         </div>
       </div>
@@ -610,14 +921,40 @@ body{
 </div>
 
 <script>
-/* Tabs */
+/* Tabs with fold-out animation */
 const buttons=[...document.querySelectorAll('.tab-btn')];
 const panels=[...document.querySelectorAll('.tab-content')];
+
+let activePanel=document.querySelector('.tab-content.active');
+
 buttons.forEach(btn=>{
   btn.addEventListener('click',()=>{
     const id=btn.getAttribute('data-tab');
+    const nextPanel=document.getElementById(id);
+    if(!nextPanel || nextPanel===activePanel) return;
+
     buttons.forEach(b=>b.classList.toggle('active',b===btn));
-    panels.forEach(p=>p.classList.toggle('active',p.id===id));
+
+    if(activePanel){
+      activePanel.classList.remove('entering','active');
+      activePanel.classList.add('leaving');
+      const onLeaveEnd=(e)=>{
+        if(e.target!==activePanel) return;
+        activePanel.classList.remove('leaving');
+        activePanel.removeEventListener('animationend',onLeaveEnd);
+      };
+      activePanel.addEventListener('animationend',onLeaveEnd);
+    }
+
+    nextPanel.classList.add('active','entering');
+    const onEnterEnd=(e)=>{
+      if(e.target!==nextPanel) return;
+      nextPanel.classList.remove('entering');
+      nextPanel.removeEventListener('animationend',onEnterEnd);
+    };
+    nextPanel.addEventListener('animationend',onEnterEnd);
+
+    activePanel=nextPanel;
   });
 });
 
@@ -627,6 +964,7 @@ const gate=document.getElementById('soundGate');
 const enableBtn=document.getElementById('enableSound');
 const pinLogo=document.getElementById('pinLogo');
 const homeBox=document.getElementById('homeBox');
+const wavyIntro=document.getElementById('wavyIntro');
 
 let audioCtx, source, bass, mid, treble, convolver, reverbGain, dryGain, stereoSplitter, stereoMerger, stereoWidth, master;
 
@@ -704,11 +1042,24 @@ async function enterWithSound(){
     await video.play();
     await audioCtx.resume();
   }catch(e){
-    // still dismiss gate so UI is usable
+    // ignore, still close gate
   }finally{
     gate.style.display='none';
+
+    // Activate subtle particle glow on home box
     homeBox.classList.add('intro-active');
-    setTimeout(()=> pinLogo.classList.add('show'), 2200);
+
+    // Show wavy neon intro
+    wavyIntro.classList.remove('hide');
+    wavyIntro.classList.add('show');
+
+    // After wavy intro, fade it out and then reveal pin logo
+    setTimeout(()=>{
+      wavyIntro.classList.remove('show');
+      wavyIntro.classList.add('hide');
+    }, 2000);
+
+    setTimeout(()=> pinLogo.classList.add('show'), 2600);
   }
 }
 
@@ -726,7 +1077,8 @@ async function loadData(url){
   }
 }
 function renderCards(targetId, items){
-  const grid=document.getElementById(targetId); grid.innerHTML='';
+  const grid=document.getElementById(targetId); 
+  grid.innerHTML='';
   if(!items||items.length===0){
     grid.innerHTML='<p style="opacity:.8;font-size:.88rem;">No items yet. Add JSON entries and refresh.</p>';
     return;
@@ -751,6 +1103,39 @@ function renderCards(targetId, items){
   renderCards('downloadsGrid', await loadData('data/downloads.json'));
   renderCards('sourcesGrid', await loadData('data/sources.json'));
 })();
+
+/* Subtle parallax / tilt that follows mouse (optimized) */
+const panelShell=document.getElementById('panelShell');
+const sidebar=document.querySelector('.sidebar');
+let mouseX=0, mouseY=0;
+let ticking=false;
+
+function updateTilt(){
+  const rect=panelShell.getBoundingClientRect();
+  const centerX=rect.left + rect.width/2;
+  const centerY=rect.top + rect.height/2;
+
+  const dx=(mouseX - centerX)/rect.width;
+  const dy=(mouseY - centerY)/rect.height;
+
+  const maxTilt=5;
+  const rotateX=dy * -maxTilt;
+  const rotateY=dx * maxTilt;
+
+  panelShell.style.transform=`rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0)`;
+  sidebar.style.transform=`translateZ(0) translateY(${dy*4}px)`;
+
+  ticking=false;
+}
+
+window.addEventListener('mousemove',(e)=>{
+  mouseX=e.clientX;
+  mouseY=e.clientY;
+  if(!ticking){
+    window.requestAnimationFrame(updateTilt);
+    ticking=true;
+  }
+});
 </script>
 </body>
 </html>
