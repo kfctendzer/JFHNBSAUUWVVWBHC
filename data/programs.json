@@ -4,24 +4,21 @@
     "description": "Shiros new updated logger now contains backdoors and kernel level logic!!!!",
     "version": "3.0.0",
     "author": "Ashihiro",
-    "tags": ["Tool","CLI","Python"],
+    "tags": ["Tool", "CLI", "Python"],
     "link": "https://github.com/kfctendzer/New-world-order-"
   },
   {
     "name": "Ashihiro Grabber OLDER VERSION NONE UPDATED YET",
-    "description": "New features New persitence/ locations",
+    "description": "New features New persistence/locations",
     "version": "1.0.0",
-    "tags": "Python, Logger",
+    "tags": ["Python", "Logger"],
     "download": "assets/downloads/AshihiroGrabberv1.rar"
-  }
-
-]
-[
-    {
+  },
+  {
     "name": "Ashihiro athena menu",
     "description": "Athena OS menu for advanced recon and advanced payloads!!!!",
     "version": "2.0.0",
-    "tags": "Python, Athena OS",
+    "tags": ["Python", "Athena OS"],
     "download": "assets/downloads/Ashihiro_athena.txt"
   }
 ]
