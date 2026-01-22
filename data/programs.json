@@ -14,7 +14,15 @@
     "tags": "Python, Logger",
     "download": "assets/downloads/AshihiroGrabberv1.rar"
   }
+  {
+    "name": "Ashihiro athena menu",
+    "description": "Athena OS menu for advanced recon and advanced payloads!!!!",
+    "version": "2.0.0",
+    "tags": "Python, Athena OS",
+    "download": "assets/downloads/Ashihiro_athena.txt"
+  }
 
 ]
+
 
 
