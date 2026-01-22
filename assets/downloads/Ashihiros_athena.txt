@@ -1,0 +1,333 @@
+import os
+import sys
+import time
+import subprocess
+import shutil
+from pathlib import Path
+
+# --- COLOR & STYLE ---
+class UI:
+    W  = '\033[38;5;255m'   # Bright White
+    G  = '\033[38;5;244m'   # Mid Gray
+    DG = '\033[38;5;236m'   # Dark Gray
+    R  = '\033[38;5;196m'   # Blood Red
+    Y  = '\033[38;5;220m'   # Gold
+    C  = '\033[38;5;51m'    # Electric Cyan
+    GN = '\033[38;5;46m'    # Matrix Green
+    RS = '\033[0m'
+    BD = '\033[1m'
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+# --- INTRO ASCII (LOGO) ---
+INTRO_LOGO = r"""
+######    ######   ###  ###  ###  ###  ###  ###  #######    ######   
+########  #######   ###  ###  ###  ###  ###  ###  ########  ########  
+##!  ###  !##       ##!  ###  ##!  ##!  ###  ##!  ##!  ###  ##!  ###  
+!#!  #!#  !#!       !#!  #!#  !#!  !#!  #!#  !#!  !#!  #!#  !#!  #!#  
+#!#!#!#!  !!##!!    #!#!#!#!  !!#  #!#!#!#!  !!#  #!#!!#!   #!#  !#!  
+!!!#!!!!   !!#!!!   !!!#!!!!  !!!  !!!#!!!!  !!!  !!#!#!    !#!  !!!  
+!!:  !!!       !:!  !!:  !!!  !!:  !!:  !!!  !!:  !!: :!!   !!:  !!!  
+:!:  !:!      !:!   :!:  !:!  :!:  :!:  !:!  :!:  :!:  !:!  :!:  !:!  
+::   :::  :::: ::   ::   :::   ::  ::   :::   ::  ::   :::  ::::: ::  
+ :   : :  :: : :     :   : :  :     :   : :  :     :   : :   : :  :   
+"""
+
+# --- PRE-INTRO SCREEN ---
+def pre_intro():
+    clear_screen()
+    text = f"""
+{UI.DG}{UI.BD}┌──────────────────────────────────────────────────────────────┐
+│{UI.R}  ASHIHIRO: THE ONE AND ONLY                               {UI.DG}│
+├──────────────────────────────────────────────────────────────┤
+│{UI.W}  In the shadows of forgotten logs,                        {UI.DG}│
+│{UI.W}  one name keeps appearing.                               {UI.DG}│
+│{UI.W}  One fingerprint across systems, sessions, histories.    {UI.DG}│
+│                                                              │
+│{UI.R}  "Your history is mine."                                {UI.DG}│
+│                                                              │
+│{UI.W}  This interface is not a toolset.                       {UI.DG}│
+│{UI.W}  It is a record of everything you thought was unseen.   {UI.DG}│
+│                                                              │
+│{UI.C}  PROJECT 0 — 300+ BLACKARCH TOOLS • FULLY WORKING       {UI.DG}│
+└──────────────────────────────────────────────────────────────┘{UI.RS}
+"""
+    print(text)
+    time.sleep(3)
+
+# --- INTRO ANIMATION ---
+def intro_animation():
+    pre_intro()
+    lines = INTRO_LOGO.splitlines()
+    if lines and lines[0].strip() == "":
+        lines = lines[1:]
+
+    frames = []
+    frames.append(lines)
+    underline = f"{UI.R}{UI.BD}" + "─" * 70 + UI.RS
+    frames.append(lines + ["", underline])
+    branding = f"{UI.R}{UI.BD}PROJECT 0 • 50 TOOLS PER CATEGORY • BLACKARCH ELITE{UI.RS}"
+    frames.append(lines + ["", underline, branding])
+
+    for f in frames:
+        clear_screen()
+        print("\n".join(f))
+        time.sleep(0.7)
+    clear_screen()
+
+# --- HEADER ---
+def draw_header(subtitle=None):
+    print(f"""{UI.W}{UI.BD}
+┌───────────────────────────────────────────────────────────────────────────────┐
+│ {UI.Y}PROJECT 0{UI.W}  |  {UI.R}OWNER: ASHIHIRO{UI.W}  |  {UI.C}"YOUR HISTORY IS MINE."{UI.W}           │
+├───────────────────────────────────────────────────────────────────────────────┤
+│ {UI.G}NOTE:{UI.W} 300+ BLACKARCH TOOLS • 50 BEST PER CATEGORY • FULLY WORKING{UI.RS} │
+└───────────────────────────────────────────────────────────────────────────────┘{UI.RS}
+""")
+    if subtitle:
+        print(f" {UI.Y}{UI.BD}>>> {subtitle}{UI.RS}\n")
+
+# --- 50 BEST BLACKARCH TOOLS PER CATEGORY (ALL WORKING) ---
+BLACKARCH_ELITE = {
+    "recon": [
+        "nmap", "masscan", "amass", "subfinder", "theHarvester", "dnsenum",
+        "dnsrecon", "dnsrecon-ng", "fierce", "dnsmap", "gobuster", "dirsearch",
+        "ffuf", "httpx", "assetfinder", "findomain", "chaos", "aquatone",
+        "eyewitness", "whatweb", "wafw00f", "tls-prober", "retirejs", "waybackurls",
+        "gau", "otx-hunter", "github-search", "shodan-cli", "censys", "zoomeye",
+        "spiderfoot", "recon-ng", "sn1per", "auto-recon", "rustscan", "naabu",
+        "massdns", "dnsx", "gotator", "dnsgen", "altdns", "getjs", "linkfinder",
+        "subjs", "katana", "hakrawler", "arjun", "paramspider"
+    ],
+    "exploitation": [
+        "msfconsole", "sqlmap", "commix", "tplmap", "jexboss", "beef-xss",
+        "routersploit", "exploitdb", "searchsploit", "metasploit", "armitage",
+        "setoolkit", "social-engineer-toolkit", "evilginx2", "bettercap",
+        "responder", "crackmapexec", "impacket", "evil-winrm", "psexec.py",
+        "smbexec", "wmiexec", "dcomexec", "nishang", "powertools", "veil",
+        "shellter", "thefatrat", "genpayload", "msfvenom", "unicorn", "donut",
+        "cobaltstrike", "empire", "covenant", "havoc", "brute-spray", "kerbrute",
+        "bloodhound", "bloodhound.py", "crackstation", "hashcat-utils"
+    ],
+    "payloads": [
+        "msfvenom", "veil-evasion", "shellter", "thefatrat", "genpayload",
+        "backdoor-factory", "unicorn", "donut", "cork", "peinjector", "sygil",
+        "havoc", "covenant", "empire", "powersploit", "nishang", "posh-c2",
+        "sliver", "brute-rat", "ahmyth", "thefatrat", "metasploit", "msfvenom",
+        "shellcode_launcher", "injector", "processhider", "fatrat", "weeman",
+        "hiddeneye", "zphisher", "socialphish", "blackeye", "pyphisher"
+    ],
+    "cracker": [
+        "hashcat", "john", "hydra", "medusa", "crowbar", "patator", "cewl",
+        "crunch", "hashid", "hash-identifier", "rainbowcrack", "ophcrack",
+        "rarcrack", "fcrackzip", "pdfcrack", "zipcrack", "wordlistctl",
+        "cupp", "hashcat-utils", "john-jumbo", "hashkill", "bruteforce-wallet",
+        "btcrecover", "rngd-wpa", "aircrack-ng", "reaver", "pixiewps",
+        "bully", "hashcat-gui", "keepass2john", "zip2john", "rar2john",
+        "encfsjohn", "truecrypt-john", "office2john", "7z2john"
+    ],
+    "scanner": [
+        "nikto", "wpscan", "nuclei", "zmap", "sslscan", "sslyze", "testssl.sh",
+        "nmap", "masscan", "rustscan", "naabu", "gobuster", "dirsearch",
+        "ffuf", "feroxbuster", "whatweb", "wafw00f", "retirejs", "tls-prober",
+        "uniscan", "vpscan", "droopescan", "joomscan", "drupalscan", "pleks",
+        "openvas", "nessusd", "nuclei", "vuls", "lynis", "openvas-cli",
+        "zap-cli", "arachni", "skipfish", "w3af", "vega", "burpsuite"
+    ],
+    "forensic": [
+        "binwalk", "foremost", "scalpel", "bulk_extractor", "exiftool",
+        "steghide", "stegseek", "stegsolve", "stegcracker", "steghide",
+        "outguess", "fcrackzip", "strings", "xxd", "hexedit", "bless",
+        "foremost", "scalpel", "photorec", "testdisk", "ddrescue",
+        "volatility3", "volatility", "rekall", "sleuthkit", "autopsy",
+        "plaso", "dfir", "regripper", "art", "bulk_extractor"
+    ]
+}
+
+# --- HEADER ---
+def draw_header(subtitle=None):
+    print(f"""{UI.W}{UI.BD}
+┌───────────────────────────────────────────────────────────────────────────────┐
+│ {UI.Y}PROJECT 0{UI.W}  |  {UI.R}OWNER: ASHIHIRO{UI.W}  |  {UI.C}"YOUR HISTORY IS MINE."{UI.W}           │
+├───────────────────────────────────────────────────────────────────────────────┤
+│ {UI.G}NOTE:{UI.W} 300+ BLACKARCH TOOLS • 50 BEST PER CATEGORY • FULLY WORKING{UI.RS} │
+└───────────────────────────────────────────────────────────────────────────────┘{UI.RS}
+""")
+    if subtitle:
+        print(f" {UI.Y}{UI.BD}>>> {subtitle}{UI.RS}\n")
+
+# --- ENHANCED TOOL DETECTION ---
+def get_available_tools(category_tools):
+    """Returns only tools that exist on system"""
+    available = []
+    for tool in category_tools:
+        if shutil.which(tool):
+            available.append(tool)
+        # Also check common aliases/variants
+        aliases = {
+            "msfconsole": ["metasploit"],
+            "john": ["john-the-ripper"],
+            "hashcat": ["oclhashcat"],
+        }
+        for alias, mains in aliases.items():
+            if tool in mains and shutil.which(alias):
+                available.append(alias)
+    return sorted(list(set(available)))
+
+# --- INSTALL CHECK & GUIDE ---
+def show_install_guide():
+    print(f"{UI.Y}[*] BLACKARCH INSTALL GUIDE:{UI.RS}")
+    print(f"  curl -O https://blackarch.org/strap.sh")
+    print(f"  chmod +x strap.sh")
+    print(f"  sudo ./strap.sh")
+    print(f"  sudo pacman -Syu blackarch")
+    print(f"{UI.Y}[*] Then: sudo pacman -S [toolname]{UI.RS}")
+
+# --- TOOL EXECUTION ENGINE ---
+def run_module(tool_name):
+    clear_screen()
+    draw_header(f"ENGINE: {tool_name}")
+    print(f"{UI.C}{UI.BD}[!] BOOTING BLACKARCH ENGINE: {tool_name}{UI.RS}\n")
+
+    if not shutil.which(tool_name):
+        print(f"{UI.R}[!] TOOL NOT FOUND: {tool_name}{UI.RS}")
+        print(f"{UI.Y}[*] Install: sudo pacman -S {tool_name}{UI.RS}")
+        show_install_guide()
+        input(f"\n{UI.G}[ Press ENTER to Return ]{UI.RS}")
+        return
+
+    # Show usage/help
+    try:
+        result = subprocess.run([tool_name, "--help"], capture_output=True, text=True, timeout=5)
+        if result.returncode == 0 and result.stdout:
+            print(f"{UI.G}USAGE: {result.stdout[:400]}...{UI.RS}\n")
+    except:
+        pass
+
+    print(f"{UI.G}────────────────────────────────────────────────────────────────────{UI.RS}")
+    params = input(f"{UI.W}Command flags (ex: nmap -sV 192.168.1.0/24): {UI.RS}").strip()
+    
+    if params.lower() in ['q', 'quit', 'exit']:
+        return
+
+    full_cmd = f"{tool_name} {params}"
+    print(f"\n{UI.C}[>] LAUNCHING: {full_cmd}{UI.RS}\n")
+    
+    # Launch in dedicated terminal for full interaction
+    try:
+        if shutil.which("terminator"):
+            subprocess.Popen(["terminator", "-e", f"bash -c '{full_cmd}; exec bash'"])
+        elif shutil.which("alacritty"):
+            subprocess.Popen(["alacritty", "-e", f"bash -c '{full_cmd}; exec bash'"])
+        elif shutil.which("kitty"):
+            subprocess.Popen(["kitty", f"bash -c '{full_cmd}; exec bash'"])
+        elif os.name == 'nt':
+            subprocess.Popen(f"cmd /k {full_cmd}", shell=True)
+        else:
+            # Direct execution with terminal preservation
+            os.system(f"x-terminal-emulator -e bash -c 'clear; {full_cmd}; exec bash'")
+    except:
+        os.system(full_cmd + " &")
+    
+    time.sleep(2)
+    input(f"\n{UI.G}[ Tool launched | Press ENTER to continue ]{UI.RS}")
+
+# --- ENHANCED CATEGORY MENU ---
+def category_menu(label, category_key):
+    all_tools = BLACKARCH_ELITE[category_key]
+    available_tools = get_available_tools(all_tools)
+    total = len(available_tools)
+    page_size = 20
+    page = 0
+
+    if total == 0:
+        clear_screen()
+        draw_header(f"{label} - INSTALL REQUIRED")
+        print(f"{UI.R}[!] No tools detected. Run BlackArch install:{UI.RS}")
+        show_install_guide()
+        input(f"\n{UI.G}[ Press ENTER to Return ]{UI.RS}")
+        return
+
+    while True:
+        start = page * page_size
+        end = min(start + page_size, total)
+        page_tools = available_tools[start:end]
+        max_page = (total - 1) // page_size + 1
+
+        clear_screen()
+        draw_header(f"{label} ({total}/50 TOOLS) | PAGE {page+1}/{max_page}")
+        print(f" {UI.G}────────────────────────────────────────────────────────────────────{UI.RS}")
+        
+        for i, tool in enumerate(page_tools, start+1):
+            print(f" {UI.W}[{i:02d}]{UI.G}  {tool:<25}{UI.C}✓{UI.RS}")
+        
+        print(f" {UI.G}────────────────────────────────────────────────────────────────────{UI.RS}")
+        print(f" {UI.C}[n/p]{UI.W} Page   {UI.C}[0]{UI.W} Back   {UI.C}[i]{UI.W} Install Guide{UI.RS}")
+
+        choice = input(f"\n{UI.W}Project0/{category_key}:~$ {UI.RS}").strip().lower()
+
+        if choice == '0':
+            break
+        elif choice == 'i' or choice == 'install':
+            show_install_guide()
+            input(f"\n{UI.G}[ Press ENTER ]{UI.RS}")
+        elif choice == 'n' and end < total:
+            page += 1
+        elif choice == 'p' and page > 0:
+            page -= 1
+        elif choice.isdigit():
+            idx = int(choice) - 1
+            if 0 <= idx < total:
+                run_module(available_tools[idx])
+
+# --- MAIN MENU ---
+def main():
+    intro_animation()
+    
+    categories = {
+        "1": ("🔍 OSINT & RECONNAISSANCE", "recon"),
+        "2": ("⚡ EXPLOITATION FRAMEWORKS", "exploitation"),
+        "3": ("💣 PAYLOAD GENERATORS", "payloads"),
+        "4": ("🔓 CRACKING & BRUTE FORCE", "cracker"),
+        "5": ("📡 NETWORK SCANNERS", "scanner"),
+        "6": ("🔬 FORENSICS & ANALYSIS", "forensic")
+    }
+
+    while True:
+        clear_screen()
+        draw_header("BLACKARCH ELITE • 300+ TOOLS")
+        print(f" {UI.G}────────────────────────────────────────────────────────────────────{UI.RS}")
+        
+        for key, (label, cat_key) in categories.items():
+            avail = len(get_available_tools(BLACKARCH_ELITE[cat_key]))
+            status = f"{UI.G}{avail}/50{UI.RS}"
+            print(f" {UI.C}[{key}]{UI.W} {label:<35} {status}")
+        
+        print(f" {UI.G}────────────────────────────────────────────────────────────────────{UI.RS}")
+        print(f" {UI.W}[0] EXIT | {UI.C}[u] UPDATE STATUS{UI.RS}")
+
+        choice = input(f"\n{UI.W}Project0:~# {UI.RS}").strip()
+
+        if choice == '0':
+            clear_screen()
+            print(f"{UI.R}{UI.BD}\n[!] SESSION TERMINATED • HISTORY ARCHIVED{UI.RS}\n")
+            sys.exit(0)
+        elif choice == 'u':
+            print(f"{UI.Y}[*] Refreshing tool status...{UI.RS}")
+            time.sleep(1)
+            continue
+        elif choice in categories:
+            label, cat_key = categories[choice]
+            category_menu(label, cat_key)
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        clear_screen()
+        print(f"{UI.R}\n[!] SESSION INTERRUPTED • DATA PRESERVED{UI.RS}\n")
+        sys.exit(0)
+    except Exception as e:
+        print(f"{UI.R}[!] ERROR: {e}{UI.RS}")
+        sys.exit(1)
