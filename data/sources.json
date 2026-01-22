@@ -1,23 +1,21 @@
 [
   {
     "name": "Image Logger Source",
-    "description": "Free open source Image logger i remade you can do whatever Credits to me Ashihiro and the orginal owner Have fun",
+    "description": "Free open source Image logger I remade. You can do whatever. Credits to me Ashihiro and the original owner. Have fun.",
     "author": "Minix",
     "tags": ["github", "open-source"],
     "link": "https://github.com/kfctendzer/Image"
   },
   {
     "name": "Shiros Rare Name Generator",
-    "description": "Rare name Generator with real smart logic",
+    "description": "Rare name generator with real smart logic",
     "author": "Ashihiro",
     "tags": ["Gen", "Name"],
     "link": "https://github.com/kfctendzer/Rare-name-generator"
-  }
-]
-[
-    {
+  },
+  {
     "name": "Ashihiros OSINT tool",
-    "description": "Advanced geo malware builder and ddos features customizable bot and webhook required!!!!",
+    "description": "Advanced geo tool with customizable bot and webhook features",
     "author": "Ashihiro",
     "tags": ["Python", "Py"],
     "link": "https://github.com/kfctendzer/babymomma"
