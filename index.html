@@ -21,202 +21,402 @@
 <meta name="twitter:description" content="We Remake Progams, hacking tools, remodeled Luna and more. Come grab some, check the socials, and join up!!! Owner: 9ukx">
 <meta name="twitter:image" content="https://shiroshome.vercel.app/assets/banner.gif">
 
-<link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2 22 12 12 22 2 12z' fill='%23b100ff'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 :root{
   --bg:#0a0a0f; --panel:#0f0f18;
   --primary:#b100ff; --primarySoft:#d26aff; --accent:#00ffff;
   --text:#eae7ff; --muted:#cfc8ff;
+  --line:rgba(177,0,255,.35);
+  --grad:linear-gradient(135deg,#b100ff 0%,#d26aff 40%,#00ffff 100%);
+  --glow:0 0 18px rgba(177,0,255,.45);
 }
 
-/* Base */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font-family:'Audiowide',sans-serif;
+  font-family:'Rajdhani','Audiowide',sans-serif;
+  font-size:17px;
   overflow:hidden;
 }
+::selection{background:rgba(177,0,255,.55);color:#fff}
+
+/* Scrollbars */
+*::-webkit-scrollbar{width:9px;height:9px}
+*::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:99px}
+*::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#b100ff,#5a2a86);border-radius:99px;border:2px solid var(--bg)}
+*::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#d26aff,#00ffff)}
 
 /* Background video */
-.video-bg{
-  position:fixed;inset:0;z-index:-2;overflow:hidden;
-}
-.video-bg video{
-  width:100%;height:100%;
-  object-fit:cover;
-  opacity:.9;
-  filter:saturate(1.08) contrast(1.05);
-}
+.video-bg{position:fixed;inset:0;z-index:-3;overflow:hidden}
+.video-bg video{width:100%;height:100%;object-fit:cover;opacity:.9;filter:saturate(1.08) contrast(1.05)}
 
-/* Intro overlay (now triggered only after sound) */
+/* Ambient layers over the video */
+.ambient{position:fixed;inset:0;z-index:-2;pointer-events:none}
+.ambient::before{ /* dark tint + vignette */
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(10,10,15,.28), rgba(10,10,15,.72) 78%),
+    linear-gradient(180deg,rgba(10,10,15,.5),rgba(10,10,15,.15) 40%,rgba(10,10,15,.65));
+}
+.ambient::after{ /* scanlines */
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+  mix-blend-mode:overlay;
+  opacity:.55;
+}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.35;mix-blend-mode:screen}
+.orb-a{width:44vmax;height:44vmax;left:-12vmax;top:-10vmax;background:radial-gradient(circle,#b100ff,transparent 65%);animation:orbFloat 18s ease-in-out infinite}
+.orb-b{width:38vmax;height:38vmax;right:-10vmax;bottom:-12vmax;background:radial-gradient(circle,#00ffff,transparent 65%);animation:orbFloat 22s ease-in-out infinite reverse}
+.scan-line{position:fixed;left:0;right:0;height:120px;z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(0,255,255,.06),transparent);animation:scanline 9s linear infinite}
+canvas#fxCanvas{position:fixed;inset:0;z-index:-1;pointer-events:none}
+
+/* ---------- Intro ---------- */
 .intro{
   position:fixed;inset:0;z-index:10;
   display:grid;place-items:center;
   backdrop-filter:blur(16px);
   background:radial-gradient(circle at center, rgba(177,0,255,0.22), rgba(15,15,24,0.75));
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  position:fixed;
+  opacity:0;visibility:hidden;pointer-events:none;
 }
 .intro::before{
-  content:"";
-  position:absolute;inset:-20%;
+  content:"";position:absolute;inset:-20%;
   background:
     radial-gradient(circle at 10% -10%, rgba(255,255,255,0.22), transparent 55%),
     radial-gradient(circle at 80% 110%, rgba(177,0,255,0.28), transparent 60%);
+  opacity:0;mix-blend-mode:screen;
+}
+.intro::after{ /* sweep line during intro */
+  content:"";position:absolute;left:0;right:0;top:-10%;
+  height:18%;background:linear-gradient(180deg,transparent,rgba(0,255,255,.5),transparent);
   opacity:0;
-  mix-blend-mode:screen;
 }
-
-/* When intro is playing */
-.intro.play{
-  opacity:1;
-  visibility:visible;
-  animation:introHold 5s ease-in forwards, introFade 1.2s ease-in-out 5s forwards;
-}
-.intro.play::before{
-  animation:particleDrift 1.8s ease-out 4.2s forwards;
-}
-
+.intro.play{opacity:1;visibility:visible;animation:introHold 5s ease-in forwards, introFade 1.2s ease-in-out 5s forwards}
+.intro.play::before{animation:particleDrift 1.8s ease-out 4.2s forwards}
+.intro.play::after{animation:sweep 2.4s ease-in-out .4s forwards}
 .title{
   display:inline-flex;gap:.06em;
   font-size:clamp(3rem,7vw,5.4rem);
-  color:#fff;
+  color:#fff;font-family:'Audiowide',sans-serif;
   text-shadow:0 0 6px #fff,0 0 18px var(--primary),0 0 42px var(--primarySoft);
 }
-.title span{
-  display:inline-block;
-  animation:wavy 2.8s ease-in-out infinite;
-}
+.title span{display:inline-block;animation:wavy 2.8s ease-in-out infinite}
 .title span:nth-child(odd){animation-delay:.1s}
 .title span:nth-child(even){animation-delay:.3s}
-
-.flash{
-  position:absolute;inset:0;display:grid;place-items:center;
-  opacity:0;pointer-events:none;
-}
-.intro.play .flash{
-  animation:flashShow 1s ease-in 5s forwards, flashHide .9s ease-out 6s forwards;
-}
+.flash{position:absolute;inset:0;display:grid;place-items:center;opacity:0;pointer-events:none}
+.intro.play .flash{animation:flashShow 1s ease-in 5s forwards, flashHide .9s ease-out 6s forwards}
 .flash .flash-text{
-  font-size:clamp(2.6rem,6vw,4.6rem);color:#fff;
+  font-size:clamp(2.6rem,6vw,4.6rem);color:#fff;font-family:'Audiowide',sans-serif;
   text-shadow:0 0 8px #fff,0 0 22px var(--primary),0 0 48px var(--primarySoft);
 }
 
-/* Pinned logo */
-.pin-logo{
-  position:fixed;top:16px;right:16px;z-index:7;
-  font-size:1.5rem;color:#fff;
-  text-shadow:0 0 6px #fff,0 0 18px var(--primary),0 0 36px var(--primarySoft);
-  opacity:0;transform:translateY(-8px);
-}
-.pin-logo.show{
-  animation:pinReveal .9s ease forwards;
-}
-
-/* Sound gate (original look) */
+/* ---------- Sound gate ---------- */
 .sound-gate{
   position:fixed;inset:0;z-index:9999;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.55);
-  backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;gap:22px;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.62);
+  backdrop-filter:blur(10px);
 }
+.sound-gate .gate-logo{font-size:clamp(1.6rem,3.4vw,2.4rem);color:#fff;font-family:'Audiowide',sans-serif;text-shadow:0 0 10px #fff,0 0 28px var(--primary),0 0 60px var(--primarySoft);animation:pulseGlow 2.6s ease-in-out infinite}
+.sound-gate .gate-hint{color:var(--muted);font-size:1rem;letter-spacing:.14em;opacity:.85}
 .sound-btn{
-  padding:12px 18px;border-radius:999px;color:#fff;cursor:pointer;
+  padding:14px 26px;border-radius:999px;color:#fff;cursor:pointer;font-family:'Audiowide',sans-serif;font-size:1.05rem;
   background:linear-gradient(180deg, rgba(177,0,255,0.28), rgba(177,0,255,0.14));
   border:1px solid rgba(177,0,255,0.6);
   box-shadow:0 0 22px rgba(177,0,255,0.55);
-  font-size:1rem;
-  transition:transform .18s ease, box-shadow .2s ease;
+  transition:transform .18s ease, box-shadow .2s ease, background .2s ease;
 }
-.sound-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 26px rgba(177,0,255,0.75);
-}
+.sound-btn:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(177,0,255,.85);background:linear-gradient(180deg, rgba(210,106,255,.35), rgba(177,0,255,.18))}
+.sound-btn:active{transform:translateY(0)}
 
-/* Menu (centered, cleaner) */
-.menu{
-  position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:7;
-  display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;
-  backdrop-filter:blur(8px);
+/* ---------- App shell ---------- */
+.app-shell{
+  position:fixed;inset:0;z-index:2;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .8s ease, transform .8s ease;
+  pointer-events:none;
 }
-.tab-btn{
-  padding:8px 14px;border-radius:999px;
-  font-size:.9rem;color:#fff;cursor:pointer;
-  background:linear-gradient(180deg, rgba(177,0,255,0.18), rgba(177,0,255,0.08));
-  border:1px solid rgba(177,0,255,0.55);
-  transition:transform .18s ease, box-shadow .25s ease, background .25s ease, opacity .2s ease;
-  opacity:.9;
-}
-.tab-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 22px rgba(177,0,255,0.55);
-  opacity:1;
-}
-.tab-btn.active{
-  background:linear-gradient(180deg, rgba(177,0,255,0.36), rgba(177,0,255,0.22));
-  box-shadow:0 0 22px rgba(177,0,255,0.7);
-}
+.app-shell.show{opacity:1;transform:translateY(0);pointer-events:auto}
 
-/* Panels (centered) */
-.tabs{
-  position:fixed;top:70px;left:50%;transform:translateX(-50%);
-  width:min(900px,82vw);height:min(62vh,620px);z-index:5;
-  border:1px solid rgba(177,0,255,0.4);border-radius:16px;
-  background:linear-gradient(180deg, rgba(15,15,24,0.78), rgba(12,12,20,0.68));
-  backdrop-filter:blur(10px) saturate(110%);
-  box-shadow:0 12px 32px rgba(0,0,0,0.45), 0 0 22px rgba(177,0,255,0.25);
-  overflow:auto;
+/* Sidebar */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:244px;z-index:8;
+  display:flex;flex-direction:column;
+  background:linear-gradient(180deg, rgba(15,15,24,.85), rgba(10,10,15,.9));
+  border-right:1px solid var(--line);
+  backdrop-filter:blur(14px) saturate(120%);
+  box-shadow:8px 0 30px rgba(0,0,0,.4);
+  padding:18px 14px 14px;
+  transition:transform .3s ease;
 }
-.tab-content{
-  display:none;padding:18px;
-  animation:panelFade .45s ease-out forwards;
+.brand{display:flex;align-items:center;gap:12px;padding:6px 8px 18px;border-bottom:1px solid rgba(177,0,255,.18)}
+.brand-mark{width:44px;height:44px;flex:none;filter:drop-shadow(0 0 8px rgba(177,0,255,.7));animation:spinSlow 9s linear infinite}
+.brand-name{font-family:'Audiowide',sans-serif;font-size:1.15rem;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.06em}
+.brand-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);letter-spacing:.2em;margin-top:2px}
+
+.side-nav{flex:1;overflow-y:auto;padding:14px 0;display:flex;flex-direction:column;gap:6px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;width:100%;
+  padding:11px 14px;border-radius:12px;cursor:pointer;
+  background:transparent;border:1px solid transparent;color:var(--muted);
+  font-family:'Rajdhani',sans-serif;font-size:1.02rem;font-weight:600;letter-spacing:.06em;
+  text-align:left;position:relative;
+  transition:background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .15s ease;
 }
-.tab-content.active{display:block}
-.section-title{font-size:1.1rem;margin:2px 0 12px}
+.nav-item::before{
+  content:"";position:absolute;left:0;top:22%;bottom:22%;width:3px;border-radius:3px;
+  background:var(--grad);opacity:0;transform:scaleY(.3);
+  transition:opacity .2s ease, transform .2s ease;
+}
+.nav-item .nav-ic{width:20px;height:20px;flex:none;opacity:.85;transition:transform .2s ease}
+.nav-item .nav-ic svg{width:100%;height:100%}
+.nav-item:hover{color:var(--text);background:rgba(177,0,255,.1);transform:translateX(3px)}
+.nav-item:hover .nav-ic{transform:scale(1.12)}
+.nav-item.active{
+  color:#fff;border-color:rgba(177,0,255,.45);
+  background:linear-gradient(90deg, rgba(177,0,255,.24), rgba(177,0,255,.05));
+  box-shadow:0 0 18px rgba(177,0,255,.35), inset 0 0 12px rgba(177,0,255,.12);
+}
+.nav-item.active::before{opacity:1;transform:scaleY(1)}
+.nav-item.active .nav-ic{color:var(--accent)}
+.nav-badge{
+  margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.66rem;
+  padding:2px 8px;border-radius:99px;color:var(--accent);
+  background:rgba(0,255,255,.1);border:1px solid rgba(0,255,255,.35);
+}
+.nav-badge.hide{display:none}
+
+.side-foot{
+  border-top:1px solid rgba(177,0,255,.18);padding:12px 8px 4px;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;
+  display:flex;flex-direction:column;gap:6px;
+}
+.side-foot .live{display:flex;align-items:center;gap:8px;color:var(--accent)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:blink 1.6s ease-in-out infinite}
+
+/* Main column */
+.main{
+  position:absolute;top:0;left:244px;right:0;bottom:0;
+  display:flex;flex-direction:column;
+  padding:18px clamp(14px,3vw,40px) 26px;
+}
+.topbar{
+  display:flex;align-items:center;gap:14px;
+  padding:10px 18px;margin-bottom:16px;
+  border-radius:14px;border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(177,0,255,.09), rgba(177,0,255,.02));
+  backdrop-filter:blur(10px);
+}
+.hamburger{
+  display:none;background:transparent;border:1px solid var(--line);border-radius:9px;
+  color:var(--text);font-size:1.15rem;width:38px;height:38px;cursor:pointer;
+  transition:background .2s ease, box-shadow .2s ease;
+}
+.hamburger:hover{background:rgba(177,0,255,.15);box-shadow:0 0 12px rgba(177,0,255,.4)}
+.page-title{font-family:'Audiowide',sans-serif;font-size:1.02rem;letter-spacing:.16em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+.topbar .spacer{flex:1}
+.topbar .top-stat{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);letter-spacing:.1em}
+.topbar .top-stat b{color:var(--accent);font-weight:600}
+.sound-toggle{
+  background:transparent;border:1px solid var(--line);border-radius:99px;cursor:pointer;
+  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.12em;
+  padding:7px 14px;transition:background .2s ease, box-shadow .2s ease, color .2s ease;
+}
+.sound-toggle:hover{background:rgba(177,0,255,.15);box-shadow:0 0 14px rgba(177,0,255,.4)}
+.sound-toggle.on{color:var(--accent);border-color:rgba(0,255,255,.5);box-shadow:0 0 12px rgba(0,255,255,.3)}
+
+/* Panel */
+.panel{
+  position:relative;flex:1;overflow-y:auto;overflow-x:hidden;
+  border:1px solid rgba(177,0,255,.4);border-radius:18px;
+  background:linear-gradient(180deg, rgba(15,15,24,.78), rgba(12,12,20,.72));
+  backdrop-filter:blur(12px) saturate(115%);
+  box-shadow:0 14px 40px rgba(0,0,0,.5), 0 0 26px rgba(177,0,255,.22);
+  padding:clamp(16px,3vw,30px);
+  scroll-behavior:smooth;
+}
+.corner{position:absolute;width:22px;height:22px;pointer-events:none;z-index:1;opacity:.85}
+.corner.tl{top:9px;left:9px;border-top:2px solid var(--accent);border-left:2px solid var(--accent)}
+.corner.tr{top:9px;right:9px;border-top:2px solid var(--accent);border-right:2px solid var(--accent)}
+.corner.bl{bottom:9px;left:9px;border-bottom:2px solid var(--accent);border-left:2px solid var(--accent)}
+.corner.br{bottom:9px;right:9px;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent)}
+
+.tab-content{display:none;padding:6px 4px}
+.tab-content.active{display:block;animation:panelIn .45s ease-out forwards}
+.section-title{
+  font-family:'Audiowide',sans-serif;font-size:clamp(1.1rem,2.4vw,1.4rem);letter-spacing:.12em;
+  margin:2px 0 6px;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  display:inline-block;
+}
+.section-sub{color:var(--muted);margin:0 0 18px;font-size:1.02rem}
+
+/* Home hero */
+.hero{text-align:center;padding:clamp(18px,4vw,42px) 10px 22px}
+.hero-title{
+  font-family:'Audiowide',sans-serif;
+  font-size:clamp(2.4rem,6.5vw,4.6rem);letter-spacing:.06em;margin:0 0 6px;
+  background:linear-gradient(135deg,#fff 0%,#d26aff 35%,#00ffff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 16px rgba(177,0,255,.5));
+  animation:glitch 6s steps(2,end) infinite;
+  position:relative;
+}
+.hero-sub{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted);letter-spacing:.3em;margin:0 0 22px}
+.hero-desc{max-width:640px;margin:0 auto 26px;color:var(--text);font-size:1.1rem;line-height:1.5;opacity:.95}
+.hero-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:30px}
+.chip-nav{
+  padding:9px 16px;border-radius:999px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.08em;
+  background:linear-gradient(180deg, rgba(177,0,255,.2), rgba(177,0,255,.08));
+  border:1px solid rgba(177,0,255,.55);color:#fff;
+  transition:transform .16s ease, box-shadow .2s ease, background .2s ease;
+  box-shadow:0 0 12px rgba(177,0,255,.25);
+}
+.chip-nav:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(177,0,255,.65);background:linear-gradient(180deg, rgba(210,106,255,.3), rgba(177,0,255,.14))}
+.stat-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-top:6px}
+.stat-card{
+  padding:16px;border-radius:14px;text-align:center;
+  background:linear-gradient(180deg, rgba(177,0,255,.1), rgba(177,0,255,.04));
+  border:1px solid rgba(177,0,255,.3);
+  transition:transform .16s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(0,255,255,.5);box-shadow:0 0 18px rgba(0,255,255,.25)}
+.stat-card .num{font-family:'Audiowide',sans-serif;font-size:1.7rem;color:var(--accent);text-shadow:0 0 12px rgba(0,255,255,.6)}
+.stat-card .lbl{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);letter-spacing:.22em;margin-top:4px}
 
 /* Cards/grids */
-.grid{
-  display:grid;gap:14px;
-  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
 .card{
-  padding:12px;border-radius:12px;
-  background:linear-gradient(180deg, rgba(177,0,255,0.12), rgba(177,0,255,0.06));
-  border:1px solid rgba(177,0,255,0.35);
-  box-shadow:0 6px 18px rgba(0,0,0,0.35);
-  transition:transform .18s ease, box-shadow .25s ease, background .25s ease;
+  position:relative;display:flex;flex-direction:column;gap:8px;
+  padding:14px;border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg, rgba(177,0,255,.12), rgba(177,0,255,.06));
+  border:1px solid rgba(177,0,255,.35);
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+  transition:transform .18s ease, box-shadow .25s ease, border-color .25s ease;
 }
-.card:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 18px rgba(177,0,255,0.5);
+.card::before{content:"";position:absolute;top:0;left:-100%;width:60%;height:2px;background:var(--grad);transition:left .45s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 0 22px rgba(177,0,255,.5);border-color:rgba(177,0,255,.6)}
+.card:hover::before{left:120%}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.card h3{margin:0;font-size:1.08rem;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:.04em}
+.card p{margin:0;opacity:.9;line-height:1.45}
+.card .meta{font-size:.88rem;opacity:.82;font-family:'JetBrains Mono',monospace}
+.card .meta .k{color:var(--accent);letter-spacing:.14em;font-size:.68rem}
+.ver{
+  flex:none;font-family:'JetBrains Mono',monospace;font-size:.66rem;padding:3px 9px;border-radius:99px;
+  color:var(--accent);background:rgba(0,255,255,.08);border:1px solid rgba(0,255,255,.35);
 }
-.card h3{margin:0 0 8px;font-size:1.02rem}
-.card p{margin:0 0 10px;opacity:.9}
-.card .meta{font-size:.88rem;opacity:.82}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:.64rem;padding:2px 9px;border-radius:99px;color:var(--primarySoft);background:rgba(177,0,255,.12);border:1px solid rgba(177,0,255,.4)}
+.card-actions{display:flex;gap:8px;margin-top:auto;padding-top:8px}
+.btn{
+  flex:1;text-align:center;text-decoration:none;cursor:pointer;
+  padding:8px 12px;border-radius:9px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.06em;
+  transition:transform .15s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+}
+.btn-dl{color:#001018;background:var(--grad);box-shadow:0 0 14px rgba(177,0,255,.4)}
+.btn-dl:hover{transform:translateY(-1px);box-shadow:0 0 22px rgba(0,255,255,.6)}
+.btn-open{color:var(--text);background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.btn-open:hover{transform:translateY(-1px);background:rgba(177,0,255,.15);box-shadow:0 0 14px rgba(177,0,255,.4)}
 
-/* Socials */
-.socials{
-  position:fixed;bottom:16px;right:16px;z-index:7;
-  display:flex;gap:10px;
+.empty-note{opacity:.8;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted);letter-spacing:.06em}
+
+/* Owner / contact / social cards */
+.owner-card{max-width:420px;display:flex;align-items:center;gap:16px;padding:18px;border-radius:16px;background:linear-gradient(180deg, rgba(177,0,255,.13), rgba(177,0,255,.05));border:1px solid rgba(177,0,255,.4);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.owner-avatar{width:64px;height:64px;flex:none;border-radius:50%;display:grid;place-items:center;font-family:'Audiowide',sans-serif;font-size:1.4rem;color:#fff;background:var(--grad);box-shadow:0 0 20px rgba(177,0,255,.7);animation:pulseGlow 3s ease-in-out infinite}
+.owner-info h3{margin:0 0 4px;font-size:1.2rem}
+.owner-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.16em;color:var(--accent);background:rgba(0,255,255,.08);border:1px solid rgba(0,255,255,.4);padding:3px 10px;border-radius:99px}
+
+.plain-list{display:grid;gap:12px;max-width:560px}
+.plain-item{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 16px;border-radius:13px;background:linear-gradient(180deg, rgba(177,0,255,.1), rgba(177,0,255,.04));border:1px solid rgba(177,0,255,.3)}
+.plain-item .k{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.18em}
+.plain-item .v{color:var(--text);font-weight:700}
+.cta-card{max-width:560px;padding:20px;border-radius:16px;text-align:center;background:linear-gradient(180deg, rgba(177,0,255,.14), rgba(177,0,255,.04));border:1px solid rgba(177,0,255,.45);box-shadow:0 8px 26px rgba(0,0,0,.4)}
+.cta-card p{margin:0 0 16px;font-size:1.08rem;line-height:1.5}
+.cta-card a{display:inline-block;text-decoration:none;padding:11px 26px;border-radius:999px;color:#001018;background:var(--grad);font-weight:700;box-shadow:0 0 18px rgba(177,0,255,.5);transition:transform .15s ease, box-shadow .2s ease}
+.cta-card a:hover{transform:translateY(-2px);box-shadow:0 0 26px rgba(0,255,255,.7)}
+
+/* ---------- Audio page ---------- */
+.audio-wrap{display:grid;gap:18px;grid-template-columns:1fr;max-width:880px}
+@media (min-width:760px){.audio-wrap{grid-template-columns:1.05fr .95fr;align-items:start}}
+.audio-viz-col{display:flex;flex-direction:column;gap:14px}
+.viz-box{
+  position:relative;border-radius:14px;overflow:hidden;
+  border:1px solid rgba(177,0,255,.4);
+  background:linear-gradient(180deg, rgba(10,10,16,.85), rgba(15,15,24,.7));
+  box-shadow:inset 0 0 30px rgba(0,0,0,.5), 0 0 18px rgba(177,0,255,.18);
 }
+.viz-box canvas{display:block;width:100%;height:190px}
+.viz-box .viz-tag{position:absolute;top:10px;left:12px;font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.22em;color:var(--accent);opacity:.9;pointer-events:none}
+.presets{display:flex;gap:9px;flex-wrap:wrap}
+.preset-btn{
+  padding:7px 14px;border-radius:999px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.14em;
+  background:rgba(177,0,255,.1);border:1px solid rgba(177,0,255,.4);color:var(--text);
+  transition:transform .15s ease, box-shadow .2s ease, background .2s ease;
+}
+.preset-btn:hover{transform:translateY(-2px);box-shadow:0 0 14px rgba(177,0,255,.5);background:rgba(177,0,255,.2)}
+.preset-btn.on{color:var(--accent);border-color:rgba(0,255,255,.5);box-shadow:0 0 12px rgba(0,255,255,.3);background:rgba(0,255,255,.08)}
+.ctl{padding:12px 0;border-bottom:1px dashed rgba(177,0,255,.2)}
+.ctl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.ctl-head label{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.18em;color:var(--muted)}
+.ctl-head output{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent)}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:99px;
+  background:linear-gradient(90deg, rgba(177,0,255,.7), rgba(0,255,255,.7));
+  outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;
+  background:#fff;border:3px solid var(--primary);
+  box-shadow:0 0 10px rgba(177,0,255,.9);cursor:grab;transition:transform .12s ease;
+}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--primary);box-shadow:0 0 10px rgba(177,0,255,.9);cursor:grab}
+.audio-tip{opacity:.85;font-size:.98rem;color:var(--muted);line-height:1.5}
+
+/* Socials dock */
+.socials{position:fixed;bottom:16px;right:16px;z-index:7;display:flex;gap:10px;flex-direction:column}
 .icon-btn{
-  width:48px;height:48px;border-radius:50%;display:grid;place-items:center;
-  background:radial-gradient(circle, rgba(177,0,255,0.32), rgba(15,15,24,0.7));
-  border:1px solid rgba(177,0,255,0.55);
-  box-shadow:0 0 18px rgba(177,0,255,0.55);
+  position:relative;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle, rgba(177,0,255,.32), rgba(15,15,24,.7));
+  border:1px solid rgba(177,0,255,.55);
+  box-shadow:0 0 18px rgba(177,0,255,.55);
   transition:transform .16s ease, box-shadow .22s ease;
 }
-.icon-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 24px rgba(177,0,255,0.8);
+.icon-btn:hover{transform:translateY(-2px);box-shadow:0 0 26px rgba(0,255,255,.7)}
+.icon-btn .tip{
+  position:absolute;right:62px;top:50%;transform:translateY(-50%) translateX(6px);
+  background:rgba(15,15,24,.95);border:1px solid var(--line);border-radius:9px;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.12em;color:var(--text);
+  padding:5px 10px;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
 }
-.icon svg{width:24px;height:24px;fill:#fff}
+.icon-btn:hover .tip{opacity:1;transform:translateY(-50%) translateX(0)}
+.icon svg{width:26px;height:26px;fill:#fff}
+
+/* Toasts */
+.toast-ctn{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.1em;
+  color:var(--text);background:rgba(15,15,24,.95);
+  border:1px solid rgba(177,0,255,.55);border-radius:99px;
+  padding:9px 20px;box-shadow:0 0 18px rgba(177,0,255,.4);
+  animation:toastIn .3s ease-out forwards;
+}
+.toast.out{animation:toastOut .3s ease-in forwards}
+
+/* Backdrop for mobile drawer */
+.drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);z-index:7;opacity:0;visibility:hidden;transition:opacity .25s ease}
+.drawer-backdrop.open{opacity:1;visibility:visible}
 
 /* Animations */
 @keyframes wavy{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
@@ -224,13 +424,44 @@ body{
 @keyframes introFade{0%{opacity:1}100%{opacity:0;visibility:hidden}}
 @keyframes flashShow{0%{opacity:0}100%{opacity:1}}
 @keyframes flashHide{0%{opacity:1}100%{opacity:0}}
-@keyframes pinReveal{0%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:translateY(0)}}
-@keyframes panelFade{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
-/* Soft particle-like glow drift */
-@keyframes particleDrift{
-  0%{opacity:0;transform:translate3d(0,0,0) scale(1);}
-  40%{opacity:.9;transform:translate3d(8px,-6px,0) scale(1.05);}
-  100%{opacity:0;transform:translate3d(18px,-12px,0) scale(1.12);}
+@keyframes particleDrift{0%{opacity:0;transform:translate3d(0,0,0) scale(1)}40%{opacity:.9;transform:translate3d(8px,-6px,0) scale(1.05)}100%{opacity:0;transform:translate3d(18px,-12px,0) scale(1.12)}}
+@keyframes sweep{0%{opacity:0;top:-10%}30%{opacity:.8}100%{opacity:0;top:110%}}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vmax,4vmax) scale(1.12)}}
+@keyframes scanline{0%{top:-130px}100%{top:110%}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 18px rgba(177,0,255,.6)}50%{box-shadow:0 0 30px rgba(0,255,255,.8)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes spinSlow{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+@keyframes panelIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes glitch{
+  0%,92%,100%{transform:translate(0,0)}
+  93%{transform:translate(-2px,1px)}
+  95%{transform:translate(2px,-1px)}
+  97%{transform:translate(-1px,-1px)}
+}
+@keyframes toastIn{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{0%{opacity:1}100%{opacity:0;transform:translateY(8px)}}
+
+/* Responsive */
+@media (max-width:900px){
+  .sidebar{transform:translateX(-100%);box-shadow:none}
+  .sidebar.open{transform:translateX(0);box-shadow:14px 0 40px rgba(0,0,0,.6)}
+  .main{left:0;padding:12px 12px 22px}
+  .hamburger{display:block}
+  .socials{flex-direction:row;bottom:14px;right:14px}
+  .icon-btn{width:46px;height:46px}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .topbar .top-stat{display:none}
+  .grid{grid-template-columns:1fr}
+  .audio-wrap{max-width:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+/* Fallback: if gradient text clipping isn't supported, use solid colors */
+@supports not ((background-clip: text) or (-webkit-background-clip: text)){
+  .brand-name,.page-title,.section-title,.hero-title{color:#d26aff;-webkit-text-fill-color:#d26aff;background:none}
 }
 </style>
 </head>
@@ -245,300 +476,631 @@ body{
   </video>
 </div>
 
-<!-- Intro (now triggered after sound) -->
+<!-- Ambient overlays -->
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+</div>
+<div class="scan-line" aria-hidden="true"></div>
+<canvas id="fxCanvas" aria-hidden="true"></canvas>
+
+<!-- Intro -->
 <div class="intro" id="intro">
   <div class="title" id="title"></div>
   <div class="flash"><div class="flash-text">@Ashihiro</div></div>
 </div>
 
-<!-- Sound gate (original behavior) -->
+<!-- Sound gate -->
 <div class="sound-gate" id="soundGate" aria-modal="true" role="dialog">
-  <button class="sound-btn" id="enableSound" type="button" aria-label="Enable sound">
-    Enter with sound
-  </button>
+  <div class="gate-logo">ASHIHIRO</div>
+  <div class="gate-hint">SOUND REQUIRED FOR FULL EXPERIENCE</div>
+  <button class="sound-btn" id="enableSound" type="button" aria-label="Enable sound">Enter with sound</button>
 </div>
 
-<!-- Pinned logo -->
-<div class="pin-logo" id="pinLogo">@Ashihiro</div>
+<!-- App shell -->
+<div class="app-shell" id="appShell">
 
-<!-- Menu -->
-<nav class="menu" id="menu">
-  <button class="tab-btn active" data-tab="home">Home</button>
-  <button class="tab-btn" data-tab="about">About me</button>
-  <button class="tab-btn" data-tab="owners">Owners</button>
-  <button class="tab-btn" data-tab="programs">Programs</button>
-  <button class="tab-btn" data-tab="downloads">Downloads</button>
-  <button class="tab-btn" data-tab="sources">Sources</button>
-  <button class="tab-btn" data-tab="socials">Socials</button>
-  <button class="tab-btn" data-tab="contact">Contact</button>
-  <button class="tab-btn" data-tab="audio">Audio</button>
-</nav>
-
-<!-- Panels -->
-<section class="tabs">
-  <div id="home" class="tab-content active">
-    <h2 class="section-title">Home</h2>
-    <p>Welcome to Ashihiros man cave where projects are brought to light Checkout some of my Products and sources all free remade sources by himself ASHIHIRO YESSSSS !!!!</p>
-  </div>
-
-  <div id="about" class="tab-content">
-    <h2 class="section-title">About me</h2>
-    <p>Im a solo man as off right now...... but its okay ASHIHIRO IS HERE MAKING BANGERS lol !!! we make remade stuff remade luna grabber its a open source project anyones free to tamper with it but owner got account deleted so</p>
-  </div>
-
-  <div id="owners" class="tab-content">
-    <h2 class="section-title">Owners</h2>
-    <ul>
-      <li><strong>9ukx (Owner)</strong></li>
-    </ul>
-  </div>
-
-  <div id="programs" class="tab-content">
-    <h2 class="section-title">Programs</h2>
-    <div class="grid" id="programsGrid"></div>
-  </div>
-
-  <div id="downloads" class="tab-content">
-    <h2 class="section-title">Downloads</h2>
-    <div class="grid" id="downloadsGrid"></div>
-  </div>
-
-  <div id="sources" class="tab-content">
-    <h2 class="section-title">Sources</h2>
-    <div class="grid" id="sourcesGrid"></div>
-  </div>
-
-  <div id="socials" class="tab-content">
-    <h2 class="section-title">Socials</h2>
-    <p><strong>Discord:</strong> 9ukx</p>
-    <p><strong>Not shit here:</strong> <a href="NOT SHIT HERE LIKE I SAID" target="_blank" style="color:var(--accent)"></a></p>
-  </div>
-
-  <div id="contact" class="tab-content">
-    <h2 class="section-title">Contact</h2>
-    <p>Asking For help or other sources contact my discord: <strong>9ukx</strong>.</p>
-  </div>
-
-  <div id="audio" class="tab-content">
-    <h2 class="section-title">Audio controls</h2>
-    <div class="grid">
-      <div class="card">
-        <h3>Chill thump — full control</h3>
-        <p>its tuned for a loud thump thats why its loud get steelseries sonar !!!</p>
-
-        <div class="control-row">
-          <label for="speed">Playback speed</label>
-          <input type="range" id="speed" min="0.5" max="1.25" step="0.001" value="0.998">
-        </div>
-
-        <div class="control-row">
-          <label for="bass">Bass</label>
-          <input type="range" id="bass" min="-18" max="18" step="1" value="4">
-        </div>
-
-        <div class="control-row">
-          <label for="mid">Mid</label>
-          <input type="range" id="mid" min="-12" max="12" step="1" value="1">
-        </div>
-
-        <div class="control-row">
-          <label for="treble">Treble</label>
-          <input type="range" id="treble" min="-18" max="18" step="1" value="4">
-        </div>
-
-        <div class="control-row">
-          <label for="reverbMix">Reverb mix</label>
-          <input type="range" id="reverbMix" min="0" max="0.5" step="0.01" value="0.12">
-        </div>
-
-        <div class="control-row">
-          <label for="stereo">Stereo width</label>
-          <input type="range" id="stereo" min="0" max="1" step="0.01" value="0.2">
-        </div>
-
-        <div class="control-row">
-          <label for="master">Master volume</label>
-          <input type="range" id="master" min="0" max="1" step="0.01" value="0.85">
-        </div>
-
-        <p style="opacity:.85">Tip: Click “Enter with sound” — then fine‑tune speed, EQ, reverb, stereo, and volume live.</p>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar" aria-label="Navigation">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 44 44">
+        <defs>
+          <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#b100ff"/><stop offset="1" stop-color="#00ffff"/>
+          </linearGradient>
+        </defs>
+        <path d="M22 2 42 22 22 42 2 22z" fill="none" stroke="url(#bg1)" stroke-width="2"/>
+        <path d="M22 10 34 22 22 34 10 22z" fill="url(#bg1)"/>
+      </svg>
+      <div>
+        <span class="brand-name">ASHIHIRO</span>
+        <span class="brand-tag">@Ashihiro</span>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- Socials -->
-<div class="socials">
-  <a class="icon-btn" href="" target="_blank" aria-label="">
-    <span class="icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm6.75-2.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0z"/></svg>
-    </span>
-  </a>
-  <a class="icon-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" aria-label="Discord">
-    <span class="icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515c-.211.375-.447.864-.612 1.249a18.06 18.06 0 0 0-5.48 0c-.165-.397-.401-.874-.612-1.249A19.736 19.736 0 0 0 3.13 4.396C1.875 9.281 1.145 14.085 1.22 18.834a19.9 19.9 0 0 0 6.02 3.055c.463-.634.876-1.304 1.23-2.003-.662-.25-1.291-.558-1.882-.916.398-.3.794-.615 1.166-.938 3.927 1.798 8.18 1.798 12.061 0 .372.323.767.64 1.166.94a10.381 10.381 0 0 1-1.883.916c.36.695.774 1.365 1.23 2.002a19.9 19.9 0 0 0 6.02-3.055c.102-6.63-1.08-11.404-3.487-14.438zM8.7 15.325c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438zm6.622 0c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438z"/></svg>
-    </span>
-  </a>
+    <nav class="side-nav" id="sideNav">
+      <button class="nav-item active" data-tab="home" data-label="HOME"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></span><span class="nav-lbl">Home</span></button>
+      <button class="nav-item" data-tab="about" data-label="ABOUT ME"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span><span class="nav-lbl">About me</span></button>
+      <button class="nav-item" data-tab="owners" data-label="OWNERS"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l4 3 4-6 4 6 4-3-2 10H6L4 8z"/></svg></span><span class="nav-lbl">Owners</span></button>
+      <button class="nav-item" data-tab="programs" data-label="PROGRAMS"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 9.5h16M9.5 4v16"/></svg></span><span class="nav-lbl">Programs</span><span class="nav-badge hide" data-badge-for="programs">0</span></button>
+      <button class="nav-item" data-tab="downloads" data-label="DOWNLOADS"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></span><span class="nav-lbl">Downloads</span><span class="nav-badge hide" data-badge-for="downloads">0</span></button>
+      <button class="nav-item" data-tab="sources" data-label="SOURCES"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/></svg></span><span class="nav-lbl">Sources</span><span class="nav-badge hide" data-badge-for="sources">0</span></button>
+      <button class="nav-item" data-tab="socials" data-label="SOCIALS"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8.6 10.7l6.8-3.4M8.6 13.3l6.8 3.4"/></svg></span><span class="nav-lbl">Socials</span></button>
+      <button class="nav-item" data-tab="contact" data-label="CONTACT"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg></span><span class="nav-lbl">Contact</span></button>
+      <button class="nav-item" data-tab="audio" data-label="AUDIO"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span><span class="nav-lbl">Audio</span></button>
+    </nav>
+
+    <div class="side-foot">
+      <span class="live"><span class="live-dot"></span>SYSTEM ONLINE</span>
+      <span id="sideClock">--:--:--</span>
+    </div>
+  </aside>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Open menu">☰</button>
+      <span class="page-title" id="pageTitle">HOME</span>
+      <span class="spacer"></span>
+      <span class="top-stat">MODEL <b id="topClock">--:--:--</b></span>
+      <button class="sound-toggle on" id="soundToggle" type="button">SOUND · ON</button>
+    </header>
+
+    <section class="panel" id="panel">
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+
+      <!-- HOME -->
+      <div id="home" class="tab-content active">
+        <div class="hero">
+          <h1 class="hero-title">ASHIHIRO</h1>
+          <p class="hero-sub">PROJECT 0 // ASHIHIRO'S HACKING ARSENAL</p>
+          <p class="hero-desc">Welcome to Ashihiros man cave where projects are brought to light Checkout some of my Products and sources all free remade sources by himself ASHIHIRO YESSSSS !!!!</p>
+          <div class="hero-chips">
+            <button class="chip-nav" data-goto="programs">▸ PROGRAMS</button>
+            <button class="chip-nav" data-goto="downloads">▸ DOWNLOADS</button>
+            <button class="chip-nav" data-goto="sources">▸ SOURCES</button>
+            <button class="chip-nav" data-goto="audio">▸ AUDIO</button>
+            <button class="chip-nav" data-goto="socials">▸ SOCIALS</button>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card"><div class="num" id="statPrograms">--</div><div class="lbl">PROGRAMS</div></div>
+            <div class="stat-card"><div class="num" id="statDownloads">--</div><div class="lbl">DOWNLOADS</div></div>
+            <div class="stat-card"><div class="num" id="statSources">--</div><div class="lbl">SOURCES</div></div>
+            <div class="stat-card"><div class="num" id="statTotal">--</div><div class="lbl">TOTAL ITEMS</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div id="about" class="tab-content">
+        <h2 class="section-title">About me</h2>
+        <p class="section-sub">who runs this place</p>
+        <div class="cta-card" style="text-align:left;max-width:640px">
+          <p>Im a solo man as off right now...... but its okay ASHIHIRO IS HERE MAKING BANGERS lol !!! we make remade stuff remade luna grabber its a open source project anyones free to tamper with it but owner got account deleted so</p>
+        </div>
+      </div>
+
+      <!-- OWNERS -->
+      <div id="owners" class="tab-content">
+        <h2 class="section-title">Owners</h2>
+        <p class="section-sub">the people behind the arsenal</p>
+        <div class="owner-card">
+          <div class="owner-avatar">9</div>
+          <div class="owner-info">
+            <h3>9ukx</h3>
+            <span class="owner-badge">OWNER</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROGRAMS -->
+      <div id="programs" class="tab-content">
+        <h2 class="section-title">Programs</h2>
+        <p class="section-sub">remade programs by Ashihiro</p>
+        <div class="grid" id="programsGrid"><p class="empty-note">Loading…</p></div>
+      </div>
+
+      <!-- DOWNLOADS -->
+      <div id="downloads" class="tab-content">
+        <h2 class="section-title">Downloads</h2>
+        <p class="section-sub">grab the goods</p>
+        <div class="grid" id="downloadsGrid"><p class="empty-note">Loading…</p></div>
+      </div>
+
+      <!-- SOURCES -->
+      <div id="sources" class="tab-content">
+        <h2 class="section-title">Sources</h2>
+        <p class="section-sub">open source remade stuff</p>
+        <div class="grid" id="sourcesGrid"><p class="empty-note">Loading…</p></div>
+      </div>
+
+      <!-- SOCIALS -->
+      <div id="socials" class="tab-content">
+        <h2 class="section-title">Socials</h2>
+        <p class="section-sub">come find us</p>
+        <div class="plain-list">
+          <div class="plain-item"><span class="k">DISCORD</span><span class="v">9ukx</span></div>
+          <div class="plain-item"><span class="k">NOT SHIT HERE</span><span class="v">add your link ↓</span></div>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div id="contact" class="tab-content">
+        <h2 class="section-title">Contact</h2>
+        <p class="section-sub">need help or another source?</p>
+        <div class="cta-card">
+          <p>Asking For help or other sources contact my discord: <strong style="color:var(--accent)">9ukx</strong></p>
+          <a href="https://discord.gg/Rjgd4q7cGq" target="_blank" rel="noopener">JOIN THE DISCORD ▸</a>
+        </div>
+      </div>
+
+      <!-- AUDIO -->
+      <div id="audio" class="tab-content">
+        <h2 class="section-title">Audio controls</h2>
+        <p class="section-sub">chill thump — full control</p>
+        <div class="audio-wrap">
+          <div class="audio-viz-col">
+            <div class="viz-box">
+              <span class="viz-tag">LIVE SPECTRUM</span>
+              <canvas id="vizCanvas"></canvas>
+            </div>
+            <div class="presets">
+              <button class="preset-btn on" data-preset="DEFAULT">DEFAULT</button>
+              <button class="preset-btn" data-preset="DEEP">DEEP</button>
+              <button class="preset-btn" data-preset="CRISP">CRISP</button>
+              <button class="preset-btn" data-preset="CHILL">CHILL</button>
+            </div>
+          </div>
+          <div class="card" style="margin:0">
+            <p style="margin-bottom:4px">its tuned for a loud thump thats why its loud get steelseries sonar !!!</p>
+            <div class="ctl">
+              <div class="ctl-head"><label for="speed">Playback speed</label><output id="speedVal" for="speed">0.998</output></div>
+              <input type="range" id="speed" min="0.5" max="1.25" step="0.001" value="0.998">
+            </div>
+            <div class="ctl">
+              <div class="ctl-head"><label for="bass">Bass</label><output id="bassVal" for="bass">4</output></div>
+              <input type="range" id="bass" min="-18" max="18" step="1" value="4">
+            </div>
+            <div class="ctl">
+              <div class="ctl-head"><label for="mid">Mid</label><output id="midVal" for="mid">1</output></div>
+              <input type="range" id="mid" min="-12" max="12" step="1" value="1">
+            </div>
+            <div class="ctl">
+              <div class="ctl-head"><label for="treble">Treble</label><output id="trebleVal" for="treble">4</output></div>
+              <input type="range" id="treble" min="-18" max="18" step="1" value="4">
+            </div>
+            <div class="ctl">
+              <div class="ctl-head"><label for="reverbMix">Reverb mix</label><output id="reverbMixVal" for="reverbMix">0.12</output></div>
+              <input type="range" id="reverbMix" min="0" max="0.5" step="0.01" value="0.12">
+            </div>
+            <div class="ctl">
+              <div class="ctl-head"><label for="stereo">Stereo width</label><output id="stereoVal" for="stereo">0.2</output></div>
+              <input type="range" id="stereo" min="0" max="1" step="0.01" value="0.2">
+            </div>
+            <div class="ctl">
+              <div class="ctl-head"><label for="master">Master volume</label><output id="masterVal" for="master">0.85</output></div>
+              <input type="range" id="master" min="0" max="1" step="0.01" value="0.85">
+            </div>
+            <p class="audio-tip" style="margin:14px 0 0">Tip: Click “Enter with sound” — then fine‑tune speed, EQ, reverb, stereo, and volume live.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Socials dock -->
+  <div class="socials">
+    <a class="icon-btn" href="" target="_blank" aria-label="Instagram">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm6.75-2.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0z"/></svg>
+      </span>
+      <span class="tip">INSTAGRAM · add link</span>
+    </a>
+    <a class="icon-btn" href="https://discord.gg/Rjgd4q7cGq" target="_blank" rel="noopener" aria-label="Discord">
+      <span class="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.369a19.791 19.791 0 0 0-4.885-1.515c-.211.375-.447.864-.612 1.249a18.06 18.06 0 0 0-5.48 0c-.165-.397-.401-.874-.612-1.249A19.736 19.736 0 0 0 3.13 4.396C1.875 9.281 1.145 14.085 1.22 18.834a19.9 19.9 0 0 0 6.02 3.055c.463-.634.876-1.304 1.23-2.003-.662-.25-1.291-.558-1.882-.916.398-.3.794-.615 1.166-.938 3.927 1.798 8.18 1.798 12.061 0 .372.323.767.64 1.166.94a10.381 10.381 0 0 1-1.883.916c.36.695.774 1.365 1.23 2.002a19.9 19.9 0 0 0 6.02-3.055c.102-6.63-1.08-11.404-3.487-14.438zM8.7 15.325c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438zm6.622 0c-1.185 0-2.153-1.093-2.153-2.438s.957-2.438 2.153-2.438c1.206 0 2.164 1.103 2.153 2.438 0 1.345-.957 2.438-2.153 2.438z"/></svg>
+      </span>
+      <span class="tip">DISCORD · JOIN</span>
+    </a>
+  </div>
 </div>
 
+<div class="toast-ctn" id="toastCtn"></div>
+
 <script>
-/* Wavy title */
+/* ============ helpers ============ */
+const $  = (s, c) => (c || document).querySelector(s);
+const $$ = (s, c) => [...(c || document).querySelectorAll(s)];
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function toast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  $('#toastCtn').appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 320); }, 2600);
+}
+
+/* ============ wavy title ============ */
 function buildTitle(text){
-  const el=document.getElementById('title');
-  el.innerHTML='';
-  [...text].forEach(ch=>{
-    const span=document.createElement('span');
-    span.textContent=ch;
-    el.appendChild(span);
+  const el = $('#title'); el.innerHTML = '';
+  [...text].forEach(ch => {
+    const span = document.createElement('span');
+    span.textContent = ch; el.appendChild(span);
   });
 }
 buildTitle('Ashihiro');
 
-/* Tabs */
-const buttons=[...document.querySelectorAll('.tab-btn')];
-const panels=[...document.querySelectorAll('.tab-content')];
-buttons.forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    buttons.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const id=btn.getAttribute('data-tab');
-    panels.forEach(p=>p.classList.toggle('active', p.id===id));
-  });
+/* ============ tabs ============ */
+const TABS = ['home','about','owners','programs','downloads','sources','socials','contact','audio'];
+const navBtns = $$('.nav-item');
+const panels  = $$('.tab-content');
+const pageTitleEl = $('#pageTitle');
+const panelEl = $('#panel');
+let currentTab = 'home';
+
+function switchTab(id, {announce}={}){
+  currentTab = id;
+  navBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  panels.forEach(p => p.classList.toggle('active', p.id === id));
+  const btn = $(`.nav-item[data-tab="${id}"]`);
+  pageTitleEl.textContent = btn ? btn.dataset.label : id.toUpperCase();
+  panelEl.scrollTop = 0;
+  drawerClose();
+  updateViz();
+  if(announce) toast(announce);
+}
+navBtns.forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+$$('.chip-nav').forEach(c => c.addEventListener('click', () => switchTab(c.dataset.goto)));
+window.addEventListener('keydown', e => {
+  const n = parseInt(e.key, 10);
+  if(n >= 1 && n <= TABS.length) switchTab(TABS[n - 1]);
 });
 
-/* Audio chain: chill thump, crisp treble, subtle reverb */
-const video=document.getElementById('bgVideo');
-const gate=document.getElementById('soundGate');
-const enableBtn=document.getElementById('enableSound');
-const intro=document.getElementById('intro');
-const pinLogo=document.getElementById('pinLogo');
+/* ============ mobile drawer ============ */
+const sidebar = $('#sidebar');
+const drawerBackdrop = $('#drawerBackdrop');
+function drawerOpen(){ sidebar.classList.add('open'); drawerBackdrop.classList.add('open'); }
+function drawerClose(){ sidebar.classList.remove('open'); drawerBackdrop.classList.remove('open'); }
+$('#hamburger').addEventListener('click', drawerOpen);
+drawerBackdrop.addEventListener('click', drawerClose);
 
-let audioCtx, source, bass, mid, treble, convolver, reverbGain, dryGain, stereoSplitter, stereoMerger, stereoWidth, master;
+/* ============ clock ============ */
+function tickClock(){
+  const d = new Date(); const p = n => String(n).padStart(2, '0');
+  const s = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+  $('#sideClock').textContent = s;
+  $('#topClock').textContent = s;
+}
+setInterval(tickClock, 1000); tickClock();
+
+/* ============ audio chain ============ */
+const video = $('#bgVideo');
+const gate = $('#soundGate');
+const enableBtn = $('#enableSound');
+const intro = $('#intro');
+const appShell = $('#appShell');
+const soundToggle = $('#soundToggle');
+
+let audioCtx, source, bass, mid, treble, convolver, reverbGain, dryGain, stereoSplitter, stereoMerger, stereoWidth, master, mix, analyser;
+let leftGain, rightGain;
 
 async function buildImpulse(){
-  const sr=audioCtx.sampleRate, length=sr*1.1;
-  const buf=audioCtx.createBuffer(2, length, sr);
-  for(let ch=0; ch<2; ch++){
-    const data=buf.getChannelData(ch);
-    for(let i=0;i<length;i++){
-      data[i]=(Math.random()*2-1)*Math.pow(1 - i/length, 3) * 0.1;
+  const sr = audioCtx.sampleRate, length = sr * 1.1;
+  const buf = audioCtx.createBuffer(2, length, sr);
+  for(let ch = 0; ch < 2; ch++){
+    const data = buf.getChannelData(ch);
+    for(let i = 0; i < length; i++){
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 3) * 0.1;
     }
   }
   return buf;
 }
 
 async function setupAudio(){
-  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  source=audioCtx.createMediaElementSource(video);
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  source = audioCtx.createMediaElementSource(video);
 
-  bass=audioCtx.createBiquadFilter(); bass.type="lowshelf"; bass.frequency.value=90; bass.gain.value=4;
-  mid=audioCtx.createBiquadFilter();  mid.type="peaking";  mid.frequency.value=1000; mid.Q.value=1; mid.gain.value=1;
-  treble=audioCtx.createBiquadFilter(); treble.type="highshelf"; treble.frequency.value=5200; treble.gain.value=4;
+  bass = audioCtx.createBiquadFilter(); bass.type = "lowshelf"; bass.frequency.value = 90; bass.gain.value = 4;
+  mid = audioCtx.createBiquadFilter();  mid.type = "peaking";  mid.frequency.value = 1000; mid.Q.value = 1; mid.gain.value = 1;
+  treble = audioCtx.createBiquadFilter(); treble.type = "highshelf"; treble.frequency.value = 5200; treble.gain.value = 4;
 
-  convolver=audioCtx.createConvolver(); convolver.buffer=await buildImpulse();
-  dryGain=audioCtx.createGain(); dryGain.gain.value=1.0;
-  reverbGain=audioCtx.createGain(); reverbGain.gain.value=0.12;
+  convolver = audioCtx.createConvolver(); convolver.buffer = await buildImpulse();
+  dryGain = audioCtx.createGain(); dryGain.gain.value = 1.0;
+  reverbGain = audioCtx.createGain(); reverbGain.gain.value = 0.12;
 
-  stereoSplitter=audioCtx.createChannelSplitter(2);
-  stereoMerger=audioCtx.createChannelMerger(2);
-  stereoWidth=audioCtx.createGain(); stereoWidth.gain.value=0.2;
+  stereoSplitter = audioCtx.createChannelSplitter(2);
+  stereoMerger = audioCtx.createChannelMerger(2);
+  stereoWidth = audioCtx.createGain(); stereoWidth.gain.value = 0.2;
 
   source.connect(bass); bass.connect(mid); mid.connect(treble);
 
-  const eqOut=treble;
+  const eqOut = treble;
   eqOut.connect(dryGain);
   eqOut.connect(convolver);
   convolver.connect(reverbGain);
 
-  const mix=audioCtx.createGain();
+  mix = audioCtx.createGain();
   dryGain.connect(mix);
   reverbGain.connect(mix);
 
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+  analyser.smoothingTimeConstant = 0.8;
+  mix.connect(analyser);
+
   mix.connect(stereoSplitter);
-  const leftGain=audioCtx.createGain(); const rightGain=audioCtx.createGain();
-  leftGain.gain.value=1 + stereoWidth.gain.value;
-  rightGain.gain.value=1 - stereoWidth.gain.value;
+  leftGain = audioCtx.createGain(); rightGain = audioCtx.createGain();
+  leftGain.gain.value = 1 + stereoWidth.gain.value;
+  rightGain.gain.value = 1 - stereoWidth.gain.value;
   stereoSplitter.connect(leftGain, 0);
   stereoSplitter.connect(rightGain, 1);
   leftGain.connect(stereoMerger, 0, 0);
   rightGain.connect(stereoMerger, 0, 1);
 
-  master=audioCtx.createGain(); master.gain.value=0.85;
+  master = audioCtx.createGain(); master.gain.value = 0.85;
   stereoMerger.connect(master);
   master.connect(audioCtx.destination);
 
-  document.getElementById('bass').addEventListener('input', e=> bass.gain.value=Number(e.target.value));
-  document.getElementById('mid').addEventListener('input', e=> mid.gain.value=Number(e.target.value));
-  document.getElementById('treble').addEventListener('input', e=> treble.gain.value=Number(e.target.value));
-  document.getElementById('reverbMix').addEventListener('input', e=> reverbGain.gain.value=Number(e.target.value));
-  document.getElementById('stereo').addEventListener('input', e=>{
-    stereoWidth.gain.value=Number(e.target.value);
-    leftGain.gain.value=1 + stereoWidth.gain.value;
-    rightGain.gain.value=1 - stereoWidth.gain.value;
-  });
-  document.getElementById('master').addEventListener('input', e=> master.gain.value=Number(e.target.value));
-  document.getElementById('speed').addEventListener('input', e=> video.playbackRate=Number(e.target.value));
+  wireSliders();
 }
 
-async function enterWithSound(){
-  try{
-    if(!audioCtx) await setupAudio();
-    video.muted=false;
-    video.playbackRate=0.998;
-    await video.play();
-    await audioCtx.resume();
-  }catch(e){
-    // Even if blocked, hide gate so UI is accessible
-  }finally{
-    gate.style.display='none';
-    // Start intro sequence only after entering with sound
-    intro.classList.add('play');
-    // Show pinned logo after intro finishes (~6.1s from start of intro)
-    setTimeout(()=> pinLogo.classList.add('show'), 6100);
+const sliderIds = ['speed','bass','mid','treble','reverbMix','stereo','master'];
+function wireSliders(){
+  sliderIds.forEach(id => {
+    const el = document.getElementById(id);
+    const out = document.getElementById(id + 'Val');
+    el.addEventListener('input', () => {
+      out.textContent = el.value;
+      const v = Number(el.value);
+      if(id === 'speed') video.playbackRate = v;
+      if(id === 'bass') bass.gain.value = v;
+      if(id === 'mid') mid.gain.value = v;
+      if(id === 'treble') treble.gain.value = v;
+      if(id === 'reverbMix') reverbGain.gain.value = v;
+      if(id === 'stereo' && leftGain){
+        stereoWidth.gain.value = v;
+        leftGain.gain.value = 1 + v;
+        rightGain.gain.value = 1 - v;
+      }
+      if(id === 'master') master.gain.value = v;
+    });
+  });
+}
+
+/* stereo width left/right gains stored for slider access */
+
+/* preset system */
+const PRESETS = {
+  DEFAULT: {speed:0.998, bass:4,   mid:1, treble:4,   reverbMix:0.12, stereo:0.2,  master:0.85},
+  DEEP:    {speed:0.95,  bass:12,  mid:-2, treble:0,   reverbMix:0.18, stereo:0.25, master:0.9},
+  CRISP:   {speed:1.05,  bass:0,   mid:4,  treble:10,  reverbMix:0.08, stereo:0.35, master:0.8},
+  CHILL:   {speed:0.9,   bass:6,   mid:2,  treble:2,   reverbMix:0.3,  stereo:0.45, master:0.7},
+};
+let activePreset = 'DEFAULT';
+function applyPreset(name){
+  activePreset = name;
+  $$('.preset-btn').forEach(b => b.classList.toggle('on', b.dataset.preset === name));
+  const p = PRESETS[name];
+  sliderIds.forEach(id => {
+    if(id === 'stereo' || id === 'master' || id === 'speed') return; // handled below
+    const el = document.getElementById(id);
+    el.value = p[id];
+    el.dispatchEvent(new Event('input'));
+  });
+  document.getElementById('speed').value = p.speed;
+  document.getElementById('speed').dispatchEvent(new Event('input'));
+  document.getElementById('stereo').value = p.stereo;
+  document.getElementById('stereo').dispatchEvent(new Event('input'));
+  document.getElementById('master').value = p.master;
+  document.getElementById('master').dispatchEvent(new Event('input'));
+  toast('PRESET · ' + name);
+}
+$$('.preset-btn').forEach(b => b.addEventListener('click', () => {
+  if(!audioCtx){ toast('ENTER WITH SOUND FIRST'); return; }
+  applyPreset(b.dataset.preset);
+}));
+
+/* spectrum visualizer */
+const vizCanvas = $('#vizCanvas');
+const vizCtx = vizCanvas.getContext('2d');
+let rafId = 0;
+function sizeViz(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = vizCanvas.clientWidth || 700;
+  const h = vizCanvas.clientHeight || 190;
+  vizCanvas.width = w * dpr;
+  vizCanvas.height = h * dpr;
+  vizCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+addEventListener('resize', sizeViz);
+sizeViz();
+
+function drawViz(){
+  rafId = requestAnimationFrame(drawViz);
+  const w = vizCanvas.width / (Math.min(window.devicePixelRatio || 1, 2));
+  const h = vizCanvas.height / (Math.min(window.devicePixelRatio || 1, 2));
+  vizCtx.clearRect(0, 0, w, h);
+
+  const active = audioCtx && audioCtx.state === 'running' && analyser && !video.muted;
+  if(!active){
+    vizCtx.fillStyle = 'rgba(177,0,255,.8)';
+    vizCtx.font = '600 12px JetBrains Mono, monospace';
+    vizCtx.textAlign = 'center';
+    vizCtx.fillText('ENTER WITH SOUND TO ACTIVATE LIVE VISUALIZER', w / 2, h / 2);
+    return;
+  }
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(data);
+  const bars = 48;
+  const bw = (w - 20) / bars;
+  const grad = vizCtx.createLinearGradient(0, h, 0, 0);
+  grad.addColorStop(0, '#00ffff');
+  grad.addColorStop(1, '#b100ff');
+  for(let i = 0; i < bars; i++){
+    const v = data[Math.floor((i / bars) * data.length)] / 255;
+    const bh = Math.max(3, v * (h - 18));
+    vizCtx.fillStyle = grad;
+    vizCtx.globalAlpha = 0.55 + v * 0.45;
+    vizCtx.fillRect(10 + i * bw, h - 9 - bh, bw - 4, bh);
+  }
+  vizCtx.globalAlpha = 1;
+}
+function updateViz(){
+  if(currentTab === 'audio'){
+    sizeViz();
+    if(!rafId) drawViz();
+  } else if(rafId){
+    cancelAnimationFrame(rafId); rafId = 0;
   }
 }
 
-/* Robust interactions */
+/* enter with sound */
+async function enterWithSound(){
+  try{
+    if(!audioCtx) await setupAudio();
+    video.muted = false;
+    video.playbackRate = 0.998;
+    await video.play();
+    await audioCtx.resume();
+    soundToggle.classList.add('on');
+    soundToggle.textContent = 'SOUND · ON';
+  }catch(e){
+    /* even if blocked, keep UI accessible */
+  }finally{
+    gate.style.display = 'none';
+    intro.classList.add('play');
+    setTimeout(() => appShell.classList.add('show'), 6400);
+    updateViz();
+  }
+}
 enableBtn.addEventListener('click', enterWithSound);
-gate.addEventListener('click', (e)=>{ if(e.target===gate) enterWithSound(); });
-window.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') enterWithSound(); });
+gate.addEventListener('click', e => { if(e.target === gate) enterWithSound(); });
+window.addEventListener('keydown', e => {
+  if(e.key === 'Enter' || e.key === ' ') enterWithSound();
+});
 
-/* Data-driven sections */
+/* sound toggle (after entry) */
+soundToggle.addEventListener('click', () => {
+  if(!audioCtx){ toast('ENTER WITH SOUND FIRST'); return; }
+  video.muted = !video.muted;
+  soundToggle.classList.toggle('on', !video.muted);
+  soundToggle.textContent = video.muted ? 'SOUND · OFF' : 'SOUND · ON';
+  updateViz();
+});
+
+/* ============ data-driven sections ============ */
 async function loadData(url){
   try{
-    const r=await fetch(url,{cache:'no-store'});
-    return r.ok? r.json(): null;
+    const r = await fetch(url, {cache: 'no-store'});
+    return r.ok ? await r.json() : null;
   }catch(e){
     return null;
   }
 }
+function cardHTML(item){
+  const tags = Array.isArray(item.tags)
+    ? item.tags
+    : (item.tags ? String(item.tags).split(',').map(s => s.trim()).filter(Boolean) : []);
+  const hasDl = !!(item.download);
+  const link = item.link || item.download || '';
+  return `
+    <div class="card">
+      <div class="card-top">
+        <h3>${esc(item.name || 'Untitled')}</h3>
+        ${item.version ? `<span class="ver">v${esc(item.version)}</span>` : ''}
+      </div>
+      ${item.description ? `<p>${esc(item.description)}</p>` : ''}
+      ${item.author ? `<p class="meta"><span class="k">AUTHOR</span> ${esc(item.author)}</p>` : ''}
+      ${tags.length ? `<div class="chips">${tags.map(t => `<span class="chip">${esc(t)}</span>`).join('')}</div>` : ''}
+      <div class="card-actions">
+        ${hasDl ? `<a class="btn btn-dl" href="${esc(item.download)}" target="_blank" rel="noopener">▾ Download</a>` : ''}
+        ${link ? `<a class="btn btn-open" href="${esc(link)}" target="_blank" rel="noopener">Open ↗</a>` : ''}
+      </div>
+    </div>`;
+}
 function renderCards(targetId, items){
-  const grid=document.getElementById(targetId); grid.innerHTML='';
-  if(!items||items.length===0){
-    grid.innerHTML='<p style="opacity:.8">No items yet. Add JSON entries and refresh.</p>';
+  const grid = document.getElementById(targetId);
+  if(!grid) return;
+  if(!items || items.length === 0){
+    grid.innerHTML = '<p class="empty-note">No items yet — add entries to the matching data/*.json file and refresh.</p>';
     return;
   }
-  items.forEach(item=>{
-    const div=document.createElement('div'); div.className='card';
-    div.innerHTML=`
-      <h3>${item.name||'Untitled'}</h3>
-      <p>${item.description||''}</p>
-      ${item.version?`<p class="meta"><strong>Version:</strong> ${item.version}</p>`:''}
-      ${item.author?`<p class="meta"><strong>Author:</strong> ${item.author}</p>`:''}
-      ${item.tags?`<p class="meta"><strong>Tags:</strong> ${Array.isArray(item.tags)?item.tags.join(', '):item.tags}</p>`:''}
-      ${item.link?`<p><a href="${item.link}" target="_blank" style="color:var(--accent)">Open</a></p>`:''}
-      ${item.download?`<p><a href="${item.download}" target="_blank" style="color:var(--accent)">Download</a></p>`:''}
-    `;
-    grid.appendChild(div);
-  });
+  grid.innerHTML = items.map(cardHTML).join('');
 }
-(async ()=>{
-  renderCards('programsGrid', await loadData('data/programs.json'));
-  renderCards('downloadsGrid', await loadData('data/downloads.json'));
-  renderCards('sourcesGrid', await loadData('data/sources.json'));
+(async () => {
+  const [progs, dls, srcs] = await Promise.all([
+    loadData('data/programs.json'),
+    loadData('data/downloads.json'),
+    loadData('data/sources.json')
+  ]);
+  renderCards('programsGrid', progs);
+  renderCards('downloadsGrid', dls);
+  renderCards('sourcesGrid', srcs);
+  const n = a => Array.isArray(a) ? a.length : 0;
+  const setBadge = (key, v) => {
+    const el = $(`.nav-badge[data-badge-for="${key}"]`);
+    if(!el) return;
+    if(v > 0){ el.textContent = v; el.classList.remove('hide'); }
+    else el.classList.add('hide');
+  };
+  setBadge('programs', n(progs));
+  setBadge('downloads', n(dls));
+  setBadge('sources', n(srcs));
+  const setStat = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  setStat('statPrograms', n(progs));
+  setStat('statDownloads', n(dls));
+  setStat('statSources', n(srcs));
+  setStat('statTotal', n(progs) + n(dls) + n(srcs));
+})();
+
+/* ============ particles ============ */
+(function initParticles(){
+  const cv = document.getElementById('fxCanvas');
+  const c = cv.getContext('2d');
+  let w, h, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function resize(){
+    w = cv.width = innerWidth * dpr;
+    h = cv.height = innerHeight * dpr;
+    cv.style.width = innerWidth + 'px';
+    cv.style.height = innerHeight + 'px';
+  }
+  resize();
+  addEventListener('resize', resize);
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const N = reduced ? 12 : 48;
+  const pts = Array.from({length: N}, () => ({
+    x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+    r: Math.random() * 1.7 + 0.5,
+    s: Math.random() * 0.45 + 0.15,
+    drift: Math.random() * 0.6 - 0.3,
+    cyan: Math.random() < 0.5
+  }));
+  function drawOnce(){
+    c.clearRect(0, 0, w, h);
+    for(const p of pts){
+      c.beginPath();
+      c.arc(p.x * dpr, p.y * dpr, p.r * dpr, 0, 7);
+      c.fillStyle = p.cyan ? 'rgba(0,255,255,.3)' : 'rgba(177,0,255,.35)';
+      c.fill();
+    }
+  }
+  function loop(){
+    c.clearRect(0, 0, w, h);
+    for(const p of pts){
+      p.y -= p.s; p.x += p.drift;
+      if(p.y < -10){ p.y = innerHeight + 10; p.x = Math.random() * innerWidth; }
+      c.beginPath();
+      c.arc(p.x * dpr, p.y * dpr, p.r * dpr, 0, 7);
+      c.fillStyle = p.cyan ? 'rgba(0,255,255,' + (0.18 + Math.random() * 0.2) + ')' : 'rgba(177,0,255,' + (0.22 + Math.random() * 0.22) + ')';
+      c.fill();
+    }
+    requestAnimationFrame(loop);
+  }
+  if(reduced) drawOnce(); else loop();
 })();
 </script>
 </body>
 </html>
-
-
