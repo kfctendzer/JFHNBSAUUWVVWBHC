@@ -26,7 +26,7 @@
     "description": "Ashihiro's Basic stressor. Open source free to remodel. More to come.",
     "version": "v1",
     "tags": ["Py", "DDos"],
-    "download": "assets/downloads/Ashihiro_athena.txt"
+    "download": "assets/downloads/stress.py"
   },
 ]
 
