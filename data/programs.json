@@ -21,13 +21,6 @@
     "tags": ["Py", "Athena OS"],
     "download": "assets/downloads/Ashihiro_athena.txt"
   },
-  {
-    "name": "Ashihiro's Basic stressor",
-    "description": "Ashihiro's Basic stressor. Open source free to remodel. More to come.",
-    "version": "v1",
-    "tags": ["Py", "DDos"],
-    "download": "assets/downloads/stress.py"
-  },
 ]
 
 
