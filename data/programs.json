@@ -11,6 +11,7 @@
     "name": "Ashihiro's Standalone AI",
     "description": "Standalone ai Add api key and model Zero restrictions",
     "version": "v2",
+    "author": "Ashihiro",
     "tags": ["Html", "Ai"],
     "download": "assets/downloads/apex v12.zip"
   },
@@ -18,6 +19,7 @@
     "name": "Ashihiro athena menu",
     "description": "Athena OS menu for osint, payloads, recon, etc,",
     "version": "v2",
+    "author": "Ashihiro",
     "tags": ["Py", "Athena OS"],
     "download": "assets/downloads/Ashihiro_athena.txt"
   },
