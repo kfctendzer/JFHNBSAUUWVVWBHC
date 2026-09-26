@@ -1,6 +1,6 @@
 [
   {
-    "name": "Ashihiros Image Logger",
+    "name": "Ashihiro's Image Logger",
     "description": "Free open source Image logger I remade. You can do whatever. Credits to me Ashihiro and the original owner. Have fun.",
     "author": "Ashihiro",
     "tags": ["Py", "open-source"],
@@ -14,7 +14,7 @@
     "link": "https://github.com/kfctendzer/Rare-name-generator"
   },
   {
-    "name": "Ashihiros DDOS",
+    "name": "Ashihiro's DDOS",
     "description": "a project that hasnt been complete ill come back to it. this is for recon, might add osint and other stuff like scraping later. work in progress.",
     "author": "Ashihiro",
     "tags": ["Recon", "Py"],
