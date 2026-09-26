@@ -1,6 +1,6 @@
 [
   {
-    "name": "Ashihiro Grabber Github",
+    "name": "Ashihiro's Grabber",
     "description": "Updated recently added. hkey, api calling, new persitence like. it calls kernel32.dll, sys32.dll, etc, to bypass edr.",
     "version": "v4",
     "author": "Ashihiro",
@@ -16,7 +16,7 @@
     "download": "assets/downloads/apex v12.zip"
   },
   {
-    "name": "Ashihiro athena menu",
+    "name": "Ashihiro's Athena menu",
     "description": "Athena OS menu for osint, payloads, recon, etc,",
     "version": "v2",
     "author": "Ashihiro",
@@ -24,7 +24,7 @@
     "download": "assets/downloads/Ashihiro_athena.txt"
   },
   {
-    "name": "Ashihiro athena menu",
+    "name": "Ashihiro's Stressor",
     "description": "Ashihiro's stressor this is basic alot more to come.",
     "version": "v2",
     "author": "Ashihiro",
