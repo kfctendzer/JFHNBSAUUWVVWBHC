@@ -2,22 +2,22 @@
   {
     "name": "Ashihiros Image Logger",
     "description": "Free open source Image logger I remade. You can do whatever. Credits to me Ashihiro and the original owner. Have fun.",
-    "author": "Minix",
-    "tags": ["github", "open-source"],
+    "author": "Ashihiro",
+    "tags": ["Py", "open-source"],
     "link": "https://github.com/kfctendzer/Image"
   },
   {
     "name": "Ashihiro's rare username gen",
-    "description": "Rare name generator with real smart logic",
+    "description": "Rare username genarator. it doesnt use api's to find users. it has a hand built logic for scoring etc. open source free to tamper.",
     "author": "Ashihiro",
-    "tags": ["Gen", "Name"],
+    "tags": ["py", "Rare-Username Gen"],
     "link": "https://github.com/kfctendzer/Rare-name-generator"
   },
   {
     "name": "Ashihiros DDOS",
-    "description": "Advanced geo tool with customizable bot and webhook features",
+    "description": "a project that hasnt been complete ill come back to it. this is for recon, might add osint and other stuff like scraping later. work in progress.",
     "author": "Ashihiro",
-    "tags": ["Python", "Py"],
+    "tags": ["Recon", "Py"],
     "link": "https://github.com/kfctendzer/babymomma"
   }
 ]
